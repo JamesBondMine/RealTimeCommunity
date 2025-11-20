@@ -1,0 +1,13 @@
+//
+//  NJCategoryTitleVerticalZoomCellModel.m
+// 
+//
+//  Created by jiaxin on 2019/2/14.
+//  Copyright © 2019 jiaxin. All rights reserved.
+// 
+
+#import "NJCategoryTitleVerticalZoomCellModel.h"
+
+@implementation NJCategoryTitleVerticalZoomCellModel
+
+@end

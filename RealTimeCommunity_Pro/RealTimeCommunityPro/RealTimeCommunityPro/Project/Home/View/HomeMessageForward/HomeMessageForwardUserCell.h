@@ -1,0 +1,18 @@
+//
+//  HomeMessageForwardUserCell.h
+//  CIMKit
+//
+//  Created by cusPro on 2022/12/7.
+//
+
+#import <UIKit/UIKit.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface HomeMessageForwardUserCell : UICollectionViewCell
+
+@property (nonatomic, strong) NSDictionary *toUserDic;
+
+@end
+
+NS_ASSUME_NONNULL_END

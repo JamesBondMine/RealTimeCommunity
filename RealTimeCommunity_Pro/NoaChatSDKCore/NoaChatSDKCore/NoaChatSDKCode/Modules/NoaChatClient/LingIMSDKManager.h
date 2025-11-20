@@ -1,0 +1,200 @@
+//
+//  LingIMSDKManager.h
+//  NoaChatSDKCore
+//
+//  Created by cusPro on 2022/10/21.
+//
+
+// 基于GCDSocket封装的单例
+
+#define IMSDKManager [LingIMSDKManager sharedTool]
+
+
+#import <Foundation/Foundation.h>
+#import <AFNetworking/AFNetworking.h>
+#import <pthread.h>
+//SDK
+#import "LingIMSDK.h"//sdk头文件
+
+#import "OIMGCDMulticastDelegate.h"//一对多代理
+#import "LingIMSDKDelegate.h"//代理
+#import "LingIMModelTool.h"//model工具
+
+#import "LingIMDBHeader.h"//数据库
+
+#import "LingIMSDKApiOptions.h"//服务器相关配置参数
+#import "LingIMSDKHostOptions.h"//IM主机相关配置参数
+#import "LingIMSDKUserOptions.h"//用户信息相关配置参数
+
+#define LAST_SYNC_SESSION_TIME_KEY  @"LAST_SYNC_SESSION_TIME_KEY_VERSION2"//会话列表
+#define LAST_SYNC_SECTION_TIME_KEY  @"LAST_SYNC_SECTION_TIME_KEY_VERSION2"//通讯录分组
+#define LAST_SYNC_FRIEND_TIME_KEY   @"LAST_SYNC_FRIEND_TIME_KEY_VERSION2"//通讯录好友
+#define LAST_SYNC_GROUP_TIME_KEY    @"LAST_SYNC_GROUP_TIME_KEY_VERSION2"//群组列表
+#define LAST_SYNC_MEMBER_TIME_KEY   @"LAST_SYNC_MEMBER_TIME_KEY_VERSION2"//群成员列表
+
+
+static inline void dispatch_async_on_main_queue(void (^ _Nullable block)(void)) {
+    if (pthread_main_np()) {
+        block();
+    } else {
+        dispatch_async(dispatch_get_main_queue(), block);
+    }
+}
+
+//接口请求成功带有服务器时间的回调
+typedef void (^LingIMSuccessWithTimeCallback)(id _Nullable data, long long serviceTime);
+
+//接口请求成功回调
+typedef void (^LingIMSuccessCallback)(id _Nullable data, NSString * _Nullable traceId);
+
+//接口请求失败回调
+typedef void (^LingIMFailureCallback)(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId);
+
+//聊天历史记录回调
+typedef void (^LingIMChatMessageHistoryBlock) (NSArray <LingIMChatMessageModel *> * _Nullable chatMessageHistory, NSInteger offset, BOOL isLocal, NSInteger pageNumber);
+
+//重连历史记录回调
+typedef void (^LingIMReConnectMessageHistoryBlock) (NSArray <LingIMChatMessageModel *> * _Nullable chatMessageHistory, NSInteger offset);
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface LingIMSDKManager : NSObject
+
+#pragma mark - 单例
++ (instancetype)sharedTool;
+//单例一般不需要清空，但是在执行某些功能的时候，防止数据更换不及时，可以清空一下
+- (void)clearTool;
+
+#pragma mark - ******业务******
+/******* 注意初始化的时候按照123的顺序进行配置 ******/
+/******* 初始化完成后可根据需求单独调用某个配置方法 ******/
+
+/// 1.SDK api 相关信息 配置/更新
+/// - Parameter apiOptions: api信息
+- (void)configSDKApiWith:(LingIMSDKApiOptions *)apiOptions;
+
+/// 3.SDK user 相关信息 配置/更新
+/// @param userOptions 用户信息
+- (void)configSDKUserWith:(LingIMSDKUserOptions *)userOptions;
+///SDK SSO 相关信息 配置/更新
+/// @param ssoInfoStr 企业号 或者 IP/域名+端口
+- (void)configSDKSsoInfo:(NSString *)ssoInfoStr;
+
+/// @param liceseId 企业号
+- (void)configSDKLiceseId:(NSString *)liceseId;
+
+/// @param tenantCode 接口验签
+- (void)configSDKTenantCode:(NSString *)tenantCode;
+
+/// @param captchaChannel 验证方式
+- (void)configSDKCaptchaChannel:(NSInteger)captchaChannel;
+
+/// SDK重连机制
+- (void)reconnectedSDK;
+
+//设置请求的域名
+- (void)configApiHost:(NSString *)apiHost;
+
+/// 获取我的信息
+- (NSString *)myUserID;
+/// 获取我的token
+- (NSString *)myUserToken;
+/// 获取我的昵称
+- (NSString *)myUserNickname;
+//更新昵称
+- (void)configNewUserNickName:(NSString *)nickName;
+/// 获取我的头像
+- (NSString *)myUserAvatar;
+//更新头像
+- (void)configNewUserAvatar:(NSString *)avatar;
+/// 获取我的ssoInfo
+- (NSString *)mySsoInfo;
+/// 获取当前liceseId
+- (NSString *)currentLiceseId;
+/// 获取captchaChannel
+- (NSInteger)captchaChannel;
+/// 获取tenantCode
+- (NSString *)tenantCode;
+/// 清除用户信息
+- (void)clearMyUserInfo;
+
+- (long long)lastSyncSessionTime;
+/// 上次同步通讯录分组数据时间戳
+- (long long)lastSyncSectionTime;
+/// 上次同步通讯录好友数据时间戳
+- (long long)lastSyncFriendTime;
+/// 上次同步群组列表时间戳
+- (long long)lastSyncGroupTime;
+
+/// 获取当前企业号或者IP/域名+端口号下，储存 敏感词 的表名
+- (NSString *)getTableNameForSensitive;
+
+/// 多租户获取
+- (NSString *)orgName;
+/// 网络地址
+- (NSString *)apiHost;
+
+/// SDK版本号
+- (NSString *)sdkVersion;
+
+/// 添加连接代理
+- (void)addConnectDelegate:(id <CIMToolConnectDelegate> )delegate;
+/// 移除连接代理
+- (void)removeConnectDelegate:(id <CIMToolConnectDelegate> )delegate;
+
+/// 添加消息代理
+- (void)addMessageDelegate:(id <CIMToolMessageDelegate> )delegate;
+/// 移除消息代理
+- (void)removeMessageDelegate:(id <CIMToolMessageDelegate> )delegate;
+
+/// 添加用户代理
+- (void)addUserDelegate:(id <CIMToolUserDelegate> )delegate;
+/// 移除用户代理
+- (void)removeUserDelegate:(id <CIMToolUserDelegate> )delegate;
+
+/// 添加会话代理
+- (void)addSessionDelegate:(id <CIMToolSessionDelegate> )delegate;
+/// 移除会话代理
+- (void)removeSessionDelegate:(id <CIMToolSessionDelegate> )delegate;
+
+/// 添加群聊代理
+- (void)addGroupDelegate:(id <CIMToolGroupDelegate> )delegate;
+/// 移除群聊代理
+- (void)removeGroupDelegate:(id <CIMToolGroupDelegate> )delegate;
+
+/// 添加多媒体会话代理(音视频通话)
+- (void)addMediaCallDelegate:(id <LingIMMediaCallDelegate> )delegate;
+/// 移除多媒体会话代理(音视频通话)
+- (void)removeMediaCallDelegate:(id <LingIMMediaCallDelegate> )delegate;
+
+//注意此处的代理仅作为响应回调使用，服从代理需要调用 业务addFriendDelegate等方法
+/// 连接代理
+@property (nonatomic, strong) OIMGCDMulticastDelegate <CIMToolConnectDelegate> *connectDelegate;
+/// 消息代理
+@property (nonatomic, strong) OIMGCDMulticastDelegate <CIMToolMessageDelegate> *messageDelegate;
+/// 用户代理
+@property (nonatomic, strong) OIMGCDMulticastDelegate <CIMToolUserDelegate> *userDelegate;
+/// 会话代理
+@property (nonatomic, strong) OIMGCDMulticastDelegate <CIMToolSessionDelegate> *sessionDelegate;
+/// 群聊代理
+@property (nonatomic, strong) OIMGCDMulticastDelegate <CIMToolGroupDelegate> *groupDelegate;
+/// 多媒体代理(音视频通话)
+@property (nonatomic, strong) OIMGCDMulticastDelegate <LingIMMediaCallDelegate> *mediaCallDelegate;
+@property (nonatomic, strong) dispatch_queue_t sessionListUpdateQueue;
+@property (nonatomic, strong) dispatch_queue_t friendGroupListUpdateQueue;
+@property (nonatomic, strong) dispatch_queue_t contactsListUpdateQueue;
+@property (nonatomic, strong) dispatch_queue_t friendListQueue;
+@property (nonatomic, strong) dispatch_queue_t friendOnlineQueue;
+
+@property (nonatomic, strong) dispatch_queue_t groupListQueue;
+@property (nonatomic, strong) dispatch_queue_t imSdkUpdateAppSensitiveQueue;
+
+@property (nonatomic, strong) dispatch_queue_t unreadCountQueue;
+@property (nonatomic, strong) dispatch_queue_t appUserAndSessionTranslateInfoServerQueue;
+
+@property (nonatomic, strong) NSMutableArray *allSessionList;
+@property (nonatomic, strong) NSDictionary * _Nullable clearReadNumSMsgIdDict;
+
+@end
+
+NS_ASSUME_NONNULL_END

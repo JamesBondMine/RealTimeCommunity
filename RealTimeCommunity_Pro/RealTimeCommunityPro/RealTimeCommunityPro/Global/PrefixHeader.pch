@@ -1,0 +1,89 @@
+//
+//  PrefixHeader.pch
+//  CIMKit
+//
+//  Created by cusPro on 2024/02/28.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+/** 宏定义相关 */
+#import "GlobalConfigHeader.h"
+/** Categorys */
+#import "ZCategoryHeader.h"
+/** 枚举 */
+#import "ZEnumHeader.h"
+/** 颜色 */
+#import "ZColorHeader.h"
+#import "YYText.h"
+/** 工具类 */
+//域名、端口号相关
+#import "ZUrlHostManager.h"
+//获取和设备相关的
+#import "ZDeviceTool.h"
+//用户信息
+#import "ZUserManager.h"
+//多语言切换
+#import "MainLanguageManager.h"
+//缓存
+#import "MainWebCacheManager.h"
+
+//主题切换相关
+#import <TKThemeConfig/TKThemeConfig.h>
+//Toast提醒
+#import "ZHUDManager.h"
+//错误码
+#import "ZHttpResponse.h"
+
+/** 自定义View */
+//从底部弹出的弹窗
+#import "ZPresentView.h"
+
+/** Model */
+#import "ZUserModel.h"
+#import "ZSsoInfoModel.h"
+
+
+#import "MMKV.h"
+
+/** 第三方 */
+//键盘
+#import <IQKeyboardManager/IQKeyboardManager.h>
+//布局
+#import <Masonry/Masonry.h>
+//数据加载
+#import <MJRefresh/MJRefresh.h>
+//图片加载
+#import <SDWebImage/SDWebImage.h>
+//MJ - 数据映射为Model
+#import "MJExtension/MJExtension.h"
+
+//即时通讯SDK
+#import <NoaChatSDKCore/LingIMSDKCore.h>
+
+//图片扩展类
+#import "UIImage+YYImageHelper.h"
+//xor加密管理
+#import "ZEncryptManager.h"
+
+#import "ZToolManager.h"
+
+#import "YYText.h"
+
+/** swift*/
+#import "RealTimeCommunityPro-Swift.h"
+
+#import <ReactiveObjC/ReactiveObjC.h>
+
+#import <NetworkStatus/NetworkStatus-Swift.h>
+
+#import <EncryptLib/EncryptManager.h>
+
+#import <LocalLogLib/LocalLogLib-Swift.h>
+
+#if DEBUG
+#import "LLDebug.h"
+#endif
+
+#endif /* PrefixHeader_pch */

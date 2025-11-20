@@ -1,0 +1,27 @@
+//
+//  ZMediaCallVideoView.h
+//  CIMKit
+//
+//  Created by cusPro on 2023/1/29.
+//
+
+#import <UIKit/UIKit.h>
+#import "BBBaseImageView.h"
+#import "ZMediaCallSampleVideoView.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface ZMediaCallVideoView : UIView
+
+@property (nonatomic, strong) VideoView *viewVideo;//视频通话渲染 LiveKit
+@property (nonatomic, strong) ZMediaCallSampleVideoView *sampleViewVideo;//视频通话 视频轨道渲染
+
+@property (nonatomic, strong) BBBaseImageView *ivHeader;
+
+//更新头像的大小
+- (void)updateHeaderSizeWith:(CGFloat)headerW;
+//是否显示头像
+- (void)showHeaderWith:(BOOL)show;
+@end
+
+NS_ASSUME_NONNULL_END

@@ -1,0 +1,23 @@
+//
+//  ZChatTextUrlListView.h
+//  CIMKit
+//
+//  Created by cusPro on 2023/7/23.
+//
+
+#import <UIKit/UIKit.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface ZChatTextUrlListView : UIView
+
+@property (nonatomic, copy) void(^textUrlClickBlock)(NSInteger clickIndex);
+
+- (instancetype)initWithDataList:(NSArray *)dataList;
+//界面显示/关闭操作
+- (void)viewShow;
+- (void)viewDismiss;
+
+@end
+
+NS_ASSUME_NONNULL_END

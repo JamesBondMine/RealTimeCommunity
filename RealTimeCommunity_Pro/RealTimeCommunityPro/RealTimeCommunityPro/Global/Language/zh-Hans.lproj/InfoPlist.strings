@@ -1,0 +1,19 @@
+/* 
+  InfoPlist.strings
+  CIMKit
+
+  Created by CMac on 2025/05/16.
+  
+*/
+//简体中文
+"CFBundleDisplayName" = "RealTalk";
+"CFBundleName" = "RealTalk";
+
+"NSCameraUsageDescription" = "请点击“好”以允许访问。如不允许您将无法正常使用相机进行扫码登录、拍摄照片、头像、录制视频，以及进行视频通话。";
+"NSLocationAlwaysUsageDescription" = "请点击“好”以允许允许访问,以便个人名片中访问您的位置信息。";
+"NSLocationWhenInUseUsageDescription" = "请点击“好”以允许允许访问,以便个人名片中访问您的位置信息。";
+"NSLocationWhenInUseUsageDescription" = "请点击“好”以允许允许访问,以便个人名片中访问您的位置信息。";
+"NSMicrophoneUsageDescription" = "请点击“好”以允许访问。如果不允许，将无法正常使用语音聊天功能。";
+"NSPhotoLibraryUsageDescription" = "请点击“好”以允许访问。如果不允许将无法选择照片作为头像或发送给朋友";
+"NSPhotoLibraryAddUsageDescription" = "请点击“好”以允许访问。如果不允许，将无法把您想要下载的图片保存到手机相册。";
+"NSLocalNetworkUsageDescription" = "请点击“好”以允许访问本地网络以便设备通信。";

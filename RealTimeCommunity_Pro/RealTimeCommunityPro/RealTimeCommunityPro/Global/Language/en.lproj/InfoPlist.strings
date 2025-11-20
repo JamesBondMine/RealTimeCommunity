@@ -1,0 +1,19 @@
+/* 
+  InfoPlist.strings
+  CIMKit
+
+  Created by CMac on 2025/05/16.
+  
+*/
+//英文
+"CFBundleDisplayName" = "RealTalk";
+"CFBundleName" = "RealTalk";
+
+"NSCameraUsageDescription" = "Please click 'OK' to allow access. If you do not allow it, you will not be able to use the camera to scan code to login, take photos, avatars, record videos, or make video calls.";
+"NSLocationWhenInUseUsageDescription" = "Please click “OK” to allow access to your location infor in your personal business card.";
+"NSLocationAlwaysUsageDescription" = "Please click “OK” to allow access to your location infor in your personal business card.";
+"NSLocationWhenInUseUsageDescription" = "Please click “OK” to allow access to your location infor in your personal business card.";
+"NSMicrophoneUsageDescription" = "Please click “OK” to allow access. If not allowed, you will not be able to use the voice chat function properly.";
+"NSPhotoLibraryUsageDescription" = "Please click 'OK' to allow access. If you not, you won't be able to select photos as avatars or send them to friends.";
+"NSPhotoLibraryAddUsageDescription" = "Please click “OK” to allow access. If you don't, you will not be able to save the pictures you want to download to the phone album.";
+"NSLocalNetworkUsageDescription" = "Click OK to allow access to the local network to communicate.";

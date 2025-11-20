@@ -1,0 +1,20 @@
+//
+//  NVGlobalSearchSectionFooterView.h
+//  CIMKit
+//
+//  Created by cusPro on 2022/9/15.
+//
+
+#import <UIKit/UIKit.h>
+
+NS_ASSUME_NONNULL_BEGIN
+@protocol ZGlobalSearchSectinFooterViewDelegate <NSObject>
+- (void)sectionFooterShowMore:(NSInteger)footerSection;
+@end
+
+@interface NVGlobalSearchSectionFooterView : UITableViewHeaderFooterView
+@property (nonatomic, assign) NSInteger footerSection;
+@property (nonatomic, weak) id <ZGlobalSearchSectinFooterViewDelegate> delegate;
+@end
+
+NS_ASSUME_NONNULL_END
