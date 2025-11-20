@@ -15,9 +15,9 @@
 @property (nonatomic, strong) UIView *viewHUDBg;//提示层
 
 @property (nonatomic, strong) ZWindowFloatView *viewFloat;//浮窗视频流
-@property (nonatomic, strong) ZMediaCallVideoView *viewFloatVideo;
+@property (nonatomic, strong) MediaZZCallVideoView *viewFloatVideo;
 
-@property (nonatomic, strong) ZMediaCallVideoView *viewPositionVideo;//固定视频流
+@property (nonatomic, strong) MediaZZCallVideoView *viewPositionVideo;//固定视频流
 
 @property (nonatomic, strong) ZUserModel *userModel;//对方用户信息
 @end
@@ -860,7 +860,7 @@
         _viewFloat.delegate = self;
         _viewFloat.hidden = YES;
         
-        _viewFloatVideo = [[ZMediaCallVideoView alloc] initWithFrame:CGRectMake(0, 0, DWScale(112), DWScale(200))];
+        _viewFloatVideo = [[MediaZZCallVideoView alloc] initWithFrame:CGRectMake(0, 0, DWScale(112), DWScale(200))];
         _viewFloatVideo.layer.cornerRadius = DWScale(8);
         _viewFloatVideo.layer.masksToBounds = YES;
         [_viewFloat addSubview:_viewFloatVideo];
@@ -868,9 +868,9 @@
     return _viewFloat;
 }
 
-- (ZMediaCallVideoView *)viewPositionVideo {
+- (MediaZZCallVideoView *)viewPositionVideo {
     if (!_viewPositionVideo) {
-        _viewPositionVideo = [[ZMediaCallVideoView alloc] initWithFrame:CGRectMake(0, 0, DScreenWidth, DScreenHeight)];
+        _viewPositionVideo = [[MediaZZCallVideoView alloc] initWithFrame:CGRectMake(0, 0, DScreenWidth, DScreenHeight)];
         _viewPositionVideo.hidden = YES;
     }
     return _viewPositionVideo;

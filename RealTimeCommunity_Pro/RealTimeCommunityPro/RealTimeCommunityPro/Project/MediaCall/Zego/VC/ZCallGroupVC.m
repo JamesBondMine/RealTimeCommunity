@@ -8,15 +8,15 @@
 #import "ZCallGroupVC.h"
 #import "SyncMutableArray.h"
 #import "MediaZZCallShimmerView.h"
-#import "ZMediaCallMoreVideoItem.h"
-#import "ZMediaCallMoreInviteVC.h"
+#import "MediaZZCallMoreVideoItem.h"
+#import "MediaZZCallMoreInviteVC.h"
 #import "MCMediaCallGroupMemberModel.h"
 #import "ZMediaCallMoreLayout.h"
-#import "ZMediaCallMoreContentView.h"
+#import "MediaZZCallMoreContentView.h"
 #import "ZCallGroupFloatView.h"
 #import "UIButton+Gradient.h"
 
-@interface ZCallGroupVC () <UICollectionViewDataSource, UICollectionViewDelegate, ZMediaCallMoreVideoItemDelegate>
+@interface ZCallGroupVC () <UICollectionViewDataSource, UICollectionViewDelegate, MediaZZCallMoreVideoItemDelegate>
 {
     dispatch_queue_t _callMemberQueue;
 }
@@ -41,7 +41,7 @@
 
 @property (nonatomic, strong) UIButton *btnBig;//放大成员点击按钮
 @property (nonatomic, strong) MCMediaCallGroupMemberModel *modelBig;//放大的model
-@property (nonatomic, strong) ZMediaCallMoreContentView *viewBig;
+@property (nonatomic, strong) MediaZZCallMoreContentView *viewBig;
 
 @property (nonatomic, strong) UILabel *lblTime;//会话进行的时间
 
@@ -176,7 +176,7 @@
     _collectionViewCall.tkThemebackgroundColors = @[COLOR_CLEAR, COLOR_CLEAR_DARK];
     _collectionViewCall.dataSource = self;
     _collectionViewCall.delegate = self;
-    [_collectionViewCall registerClass:[ZMediaCallMoreVideoItem class] forCellWithReuseIdentifier:NSStringFromClass([ZMediaCallMoreVideoItem class])];
+    [_collectionViewCall registerClass:[MediaZZCallMoreVideoItem class] forCellWithReuseIdentifier:NSStringFromClass([MediaZZCallMoreVideoItem class])];
     [_viewCollectionBg addSubview:_collectionViewCall];
     
     self.btnMini.frame = CGRectMake(DWScale(18), DStatusBarH, DWScale(24), DWScale(24));
@@ -463,7 +463,7 @@
     return _callUserList.count;
 }
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    ZMediaCallMoreVideoItem *item = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([ZMediaCallMoreVideoItem class]) forIndexPath:indexPath];
+    MediaZZCallMoreVideoItem *item = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([MediaZZCallMoreVideoItem class]) forIndexPath:indexPath];
     MCMediaCallGroupMemberModel *model = [_callUserList objectAtIndex:indexPath.row];
     item.model = model;
     item.delegate = self;
@@ -531,9 +531,9 @@
             if ([selectUid isEqualToString:objUid]) {
                 
                 [ZTOOL doInMain:^{
-                    ZMediaCallMoreVideoItem *cell = (ZMediaCallMoreVideoItem *)[weakSelf.collectionViewCall cellForItemAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
+                    MediaZZCallMoreVideoItem *cell = (MediaZZCallMoreVideoItem *)[weakSelf.collectionViewCall cellForItemAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
                     CGRect selectRect = [cell convertRect:cell.viewContent.frame toView:weakSelf.viewCollectionBg];
-                    weakSelf.viewBig = [ZMediaCallMoreContentView new];
+                    weakSelf.viewBig = [MediaZZCallMoreContentView new];
                     weakSelf.viewBig.model = obj;
                     weakSelf.viewBig.frame = selectRect;
                     [weakSelf.viewCollectionBg addSubview:weakSelf.viewBig];
@@ -559,7 +559,7 @@
     });
     
 }
-#pragma mark - ZMediaCallMoreVideoItemDelegate
+#pragma mark - MediaZZCallMoreVideoItemDelegate
 - (void)mediaCallMoreVideoItemDelete:(MCMediaCallGroupMemberModel *)model {
     if (model) {
         
@@ -632,7 +632,7 @@
     
     ZCallOptions *currentOptions = [ZCallManager sharedManager].currentCallOptions;
     
-    ZMediaCallMoreInviteVC *vc = [ZMediaCallMoreInviteVC new];
+    MediaZZCallMoreInviteVC *vc = [MediaZZCallMoreInviteVC new];
     vc.groupID = currentOptions.groupID;
     vc.callType = currentOptions.zgCallOptions.callType;
     vc.requestMore = 2;

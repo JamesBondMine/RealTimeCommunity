@@ -1,19 +1,19 @@
 //
-//  ZMediaCallVideoView.m
+//  MediaZZCallVideoView.m
 //  CIMKit
 //
 //  Created by cusPro on 2023/1/29.
 //
 
-#import "ZMediaCallVideoView.h"
+#import "MediaZZCallVideoView.h"
 #import "ZToolManager.h"
 #import "ZCallManager.h"
 
-@interface ZMediaCallVideoView ()
+@interface MediaZZCallVideoView ()
 
 @end
 
-@implementation ZMediaCallVideoView
+@implementation MediaZZCallVideoView
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -36,7 +36,7 @@
         make.edges.equalTo(self);
     }];
     
-    _sampleViewVideo = [ZMediaCallSampleVideoView new];
+    _sampleViewVideo = [MediaZZCallSampleVideoView new];
     [self addSubview:_sampleViewVideo];
     [_sampleViewVideo mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self);

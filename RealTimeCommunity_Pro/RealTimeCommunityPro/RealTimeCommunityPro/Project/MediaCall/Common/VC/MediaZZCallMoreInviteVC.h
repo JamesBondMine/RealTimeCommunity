@@ -1,5 +1,5 @@
 //
-//  ZMediaCallMoreInviteVC.h
+//  MediaZZCallMoreInviteVC.h
 //  CIMKit
 //
 //  Created by cusPro on 2023/2/6.
@@ -13,7 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ZMediaCallMoreInviteVC : BBBaseViewController
+@interface MediaZZCallMoreInviteVC : BBBaseViewController
 @property (nonatomic, copy) NSString *groupID;//群ID
 @property (nonatomic, assign) LingIMCallType callType;//视频 / 语音
 @property (nonatomic, assign) NSInteger requestMore;//1发起多人音视频 2邀请加入多人音视频

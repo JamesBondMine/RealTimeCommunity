@@ -1,20 +1,20 @@
 //
-//  ZMediaCallMoreContentView.m
+//  MediaZZCallMoreContentView.m
 //  CIMKit
 //
 //  Created by cusPro on 2023/2/15.
 //
 
-#import "ZMediaCallMoreContentView.h"
+#import "MediaZZCallMoreContentView.h"
 #import "ZToolManager.h"
 #import "ZCallManager.h"//即构
 
-@interface ZMediaCallMoreContentView () <ParticipantDelegate>
+@interface MediaZZCallMoreContentView () <ParticipantDelegate>
 
 
 @end
 
-@implementation ZMediaCallMoreContentView
+@implementation MediaZZCallMoreContentView
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -29,7 +29,7 @@
 - (void)setupUI {
     
     //视频渲染view
-    _sampleViewVideo = [ZMediaCallSampleVideoView new];
+    _sampleViewVideo = [MediaZZCallSampleVideoView new];
     [self addSubview:_sampleViewVideo];
     [_sampleViewVideo mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self);

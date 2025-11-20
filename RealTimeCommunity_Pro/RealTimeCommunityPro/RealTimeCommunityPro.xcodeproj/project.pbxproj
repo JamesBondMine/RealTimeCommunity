@@ -30,7 +30,7 @@
 		040CADA92C9D7EA0002CC885 /* AliyCloundDNSDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 040CADA82C9D7EA0002CC885 /* AliyCloundDNSDecoder.m */; };
 		04180F972A24580000046229 /* AppDelegate+MediaCall.m in Sources */ = {isa = PBXBuildFile; fileRef = 04180F962A24580000046229 /* AppDelegate+MediaCall.m */; };
 		04180F9E2A259C5B00046229 /* ZCallGroupVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04180F9D2A259C5B00046229 /* ZCallGroupVC.m */; };
-		04180FA12A259FCD00046229 /* ZMediaCallSampleVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04180FA02A259FCD00046229 /* ZMediaCallSampleVideoView.m */; };
+		04180FA12A259FCD00046229 /* MediaZZCallSampleVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04180FA02A259FCD00046229 /* MediaZZCallSampleVideoView.m */; };
 		041A81D72A160B5F00EC4FB3 /* ZCallManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 041A81D62A160B5F00EC4FB3 /* ZCallManager.m */; };
 		041A81DA2A160E0D00EC4FB3 /* ZCallOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 041A81D92A160E0D00EC4FB3 /* ZCallOptions.m */; };
 		041B219D2B9860EE0097B992 /* ZMessageVoiceHudView.m in Sources */ = {isa = PBXBuildFile; fileRef = 041B219C2B9860EE0097B992 /* ZMessageVoiceHudView.m */; };
@@ -202,7 +202,7 @@
 		0468558828CB312200853098 /* ZBaseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0468558728CB312200853098 /* ZBaseCell.m */; };
 		0468558B28CB32C400853098 /* CNAddFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0468558A28CB32C400853098 /* CNAddFriendCell.m */; };
 		046A28E72999CEF1008A5BE7 /* ZMediaCallMoreLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 046A28E62999CEF1008A5BE7 /* ZMediaCallMoreLayout.m */; };
-		046A29FC299C8766008A5BE7 /* ZMediaCallMoreContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 046A29FB299C8766008A5BE7 /* ZMediaCallMoreContentView.m */; };
+		046A29FC299C8766008A5BE7 /* MediaZZCallMoreContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 046A29FB299C8766008A5BE7 /* MediaZZCallMoreContentView.m */; };
 		046ABC6129669F790038C3B7 /* ZMessageFileCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 046ABC6029669F790038C3B7 /* ZMessageFileCell.m */; };
 		046ABC642966B1450038C3B7 /* ZMessageVoiceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 046ABC632966B1450038C3B7 /* ZMessageVoiceCell.m */; };
 		046C6A6B28F2A2D8002FC033 /* ZImagePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 046C6A6A28F2A2D8002FC033 /* ZImagePickerVC.m */; };
@@ -246,7 +246,7 @@
 		04840B1A28C9FC3400936BFA /* ZPresentItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 04840B1628C9FC3400936BFA /* ZPresentItem.m */; };
 		048751BA2A6E21BF0010B70D /* NTMTeamModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 048751B92A6E21BF0010B70D /* NTMTeamModel.m */; };
 		048751BD2A6E47F40010B70D /* IVTTeamMemberModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 048751BC2A6E47F40010B70D /* IVTTeamMemberModel.m */; };
-		048824B22986227800FC58CB /* ZMediaCallVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 048824B12986227800FC58CB /* ZMediaCallVideoView.m */; };
+		048824B22986227800FC58CB /* MediaZZCallVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 048824B12986227800FC58CB /* MediaZZCallVideoView.m */; };
 		048824FD298C999700FC58CB /* KNActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 048824DC298C999700FC58CB /* KNActionSheet.m */; };
 		048824FE298C999700FC58CB /* KNActionSheetItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 048824DD298C999700FC58CB /* KNActionSheetItem.m */; };
 		048824FF298C999700FC58CB /* KNPhotoImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 048824DF298C999700FC58CB /* KNPhotoImageCell.m */; };
@@ -547,9 +547,9 @@
 		04F5078428D2C49F0048FFB5 /* ZUserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F5078328D2C49F0048FFB5 /* ZUserModel.m */; };
 		04F5078728D2C6940048FFB5 /* ZUserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F5078628D2C6940048FFB5 /* ZUserManager.m */; };
 		04F5078D28D2FA930048FFB5 /* ZSsoInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F5078C28D2FA930048FFB5 /* ZSsoInfoModel.m */; };
-		04F6F3342990AF580021D136 /* ZMediaCallMoreInviteVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F6F3332990AF580021D136 /* ZMediaCallMoreInviteVC.m */; };
-		04F6F3372990E58A0021D136 /* ZMediaCallMoreInviteCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F6F3362990E58A0021D136 /* ZMediaCallMoreInviteCell.m */; };
-		04F6F33D29910C140021D136 /* ZMediaCallMoreVideoItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F6F33C29910C140021D136 /* ZMediaCallMoreVideoItem.m */; };
+		04F6F3342990AF580021D136 /* MediaZZCallMoreInviteVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F6F3332990AF580021D136 /* MediaZZCallMoreInviteVC.m */; };
+		04F6F3372990E58A0021D136 /* MediaZZCallMoreInviteCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F6F3362990E58A0021D136 /* MediaZZCallMoreInviteCell.m */; };
+		04F6F33D29910C140021D136 /* MediaZZCallMoreVideoItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F6F33C29910C140021D136 /* MediaZZCallMoreVideoItem.m */; };
 		04F6F3442991E1050021D136 /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F6F3422991E1050021D136 /* FBShimmeringLayer.m */; };
 		04F6F3452991E1050021D136 /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F6F3432991E1050021D136 /* FBShimmeringView.m */; };
 		04F6F43E299346A60021D136 /* ZMediaCallMoreFloatView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F6F43D299346A60021D136 /* ZMediaCallMoreFloatView.m */; };
@@ -841,8 +841,8 @@
 		04180F962A24580000046229 /* AppDelegate+MediaCall.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+MediaCall.m"; sourceTree = "<group>"; };
 		04180F9C2A259C5B00046229 /* ZCallGroupVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZCallGroupVC.h; sourceTree = "<group>"; };
 		04180F9D2A259C5B00046229 /* ZCallGroupVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZCallGroupVC.m; sourceTree = "<group>"; };
-		04180F9F2A259FCD00046229 /* ZMediaCallSampleVideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZMediaCallSampleVideoView.h; sourceTree = "<group>"; };
-		04180FA02A259FCD00046229 /* ZMediaCallSampleVideoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZMediaCallSampleVideoView.m; sourceTree = "<group>"; };
+		04180F9F2A259FCD00046229 /* MediaZZCallSampleVideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaZZCallSampleVideoView.h; sourceTree = "<group>"; };
+		04180FA02A259FCD00046229 /* MediaZZCallSampleVideoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaZZCallSampleVideoView.m; sourceTree = "<group>"; };
 		041A81D52A160B5F00EC4FB3 /* ZCallManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZCallManager.h; sourceTree = "<group>"; };
 		041A81D62A160B5F00EC4FB3 /* ZCallManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZCallManager.m; sourceTree = "<group>"; };
 		041A81D82A160E0D00EC4FB3 /* ZCallOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZCallOptions.h; sourceTree = "<group>"; };
@@ -1182,8 +1182,8 @@
 		0468558A28CB32C400853098 /* CNAddFriendCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CNAddFriendCell.m; sourceTree = "<group>"; };
 		046A28E52999CEF1008A5BE7 /* ZMediaCallMoreLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZMediaCallMoreLayout.h; sourceTree = "<group>"; };
 		046A28E62999CEF1008A5BE7 /* ZMediaCallMoreLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZMediaCallMoreLayout.m; sourceTree = "<group>"; };
-		046A29FA299C8766008A5BE7 /* ZMediaCallMoreContentView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZMediaCallMoreContentView.h; sourceTree = "<group>"; };
-		046A29FB299C8766008A5BE7 /* ZMediaCallMoreContentView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZMediaCallMoreContentView.m; sourceTree = "<group>"; };
+		046A29FA299C8766008A5BE7 /* MediaZZCallMoreContentView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaZZCallMoreContentView.h; sourceTree = "<group>"; };
+		046A29FB299C8766008A5BE7 /* MediaZZCallMoreContentView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaZZCallMoreContentView.m; sourceTree = "<group>"; };
 		046ABC5F29669F790038C3B7 /* ZMessageFileCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZMessageFileCell.h; sourceTree = "<group>"; };
 		046ABC6029669F790038C3B7 /* ZMessageFileCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZMessageFileCell.m; sourceTree = "<group>"; };
 		046ABC622966B1450038C3B7 /* ZMessageVoiceCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZMessageVoiceCell.h; sourceTree = "<group>"; };
@@ -1265,8 +1265,8 @@
 		048751B92A6E21BF0010B70D /* NTMTeamModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NTMTeamModel.m; sourceTree = "<group>"; };
 		048751BB2A6E47F40010B70D /* IVTTeamMemberModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IVTTeamMemberModel.h; sourceTree = "<group>"; };
 		048751BC2A6E47F40010B70D /* IVTTeamMemberModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IVTTeamMemberModel.m; sourceTree = "<group>"; };
-		048824B02986227800FC58CB /* ZMediaCallVideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZMediaCallVideoView.h; sourceTree = "<group>"; };
-		048824B12986227800FC58CB /* ZMediaCallVideoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZMediaCallVideoView.m; sourceTree = "<group>"; };
+		048824B02986227800FC58CB /* MediaZZCallVideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaZZCallVideoView.h; sourceTree = "<group>"; };
+		048824B12986227800FC58CB /* MediaZZCallVideoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaZZCallVideoView.m; sourceTree = "<group>"; };
 		048824DA298C999700FC58CB /* KNActionSheetItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNActionSheetItem.h; sourceTree = "<group>"; };
 		048824DB298C999700FC58CB /* KNActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNActionSheet.h; sourceTree = "<group>"; };
 		048824DC298C999700FC58CB /* KNActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNActionSheet.m; sourceTree = "<group>"; };
@@ -1877,12 +1877,12 @@
 		04F5078628D2C6940048FFB5 /* ZUserManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZUserManager.m; sourceTree = "<group>"; };
 		04F5078B28D2FA930048FFB5 /* ZSsoInfoModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZSsoInfoModel.h; sourceTree = "<group>"; };
 		04F5078C28D2FA930048FFB5 /* ZSsoInfoModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZSsoInfoModel.m; sourceTree = "<group>"; };
-		04F6F3322990AF580021D136 /* ZMediaCallMoreInviteVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZMediaCallMoreInviteVC.h; sourceTree = "<group>"; };
-		04F6F3332990AF580021D136 /* ZMediaCallMoreInviteVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZMediaCallMoreInviteVC.m; sourceTree = "<group>"; };
-		04F6F3352990E58A0021D136 /* ZMediaCallMoreInviteCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZMediaCallMoreInviteCell.h; sourceTree = "<group>"; };
-		04F6F3362990E58A0021D136 /* ZMediaCallMoreInviteCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZMediaCallMoreInviteCell.m; sourceTree = "<group>"; };
-		04F6F33B29910C140021D136 /* ZMediaCallMoreVideoItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZMediaCallMoreVideoItem.h; sourceTree = "<group>"; };
-		04F6F33C29910C140021D136 /* ZMediaCallMoreVideoItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZMediaCallMoreVideoItem.m; sourceTree = "<group>"; };
+		04F6F3322990AF580021D136 /* MediaZZCallMoreInviteVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaZZCallMoreInviteVC.h; sourceTree = "<group>"; };
+		04F6F3332990AF580021D136 /* MediaZZCallMoreInviteVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaZZCallMoreInviteVC.m; sourceTree = "<group>"; };
+		04F6F3352990E58A0021D136 /* MediaZZCallMoreInviteCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaZZCallMoreInviteCell.h; sourceTree = "<group>"; };
+		04F6F3362990E58A0021D136 /* MediaZZCallMoreInviteCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaZZCallMoreInviteCell.m; sourceTree = "<group>"; };
+		04F6F33B29910C140021D136 /* MediaZZCallMoreVideoItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaZZCallMoreVideoItem.h; sourceTree = "<group>"; };
+		04F6F33C29910C140021D136 /* MediaZZCallMoreVideoItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaZZCallMoreVideoItem.m; sourceTree = "<group>"; };
 		04F6F33F2991E1050021D136 /* FBShimmering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmering.h; sourceTree = "<group>"; };
 		04F6F3402991E1050021D136 /* FBShimmeringLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmeringLayer.h; sourceTree = "<group>"; };
 		04F6F3412991E1050021D136 /* FBShimmeringView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmeringView.h; sourceTree = "<group>"; };
@@ -3608,16 +3608,16 @@
 				0400A353296BA82F001BA200 /* ZWindowFloatView.m */,
 				0444E83229BF29E400DB6293 /* MediaZZCallShimmerView.h */,
 				0444E83329BF29E400DB6293 /* MediaZZCallShimmerView.m */,
-				048824B02986227800FC58CB /* ZMediaCallVideoView.h */,
-				048824B12986227800FC58CB /* ZMediaCallVideoView.m */,
-				046A29FA299C8766008A5BE7 /* ZMediaCallMoreContentView.h */,
-				046A29FB299C8766008A5BE7 /* ZMediaCallMoreContentView.m */,
-				04180F9F2A259FCD00046229 /* ZMediaCallSampleVideoView.h */,
-				04180FA02A259FCD00046229 /* ZMediaCallSampleVideoView.m */,
-				04F6F33B29910C140021D136 /* ZMediaCallMoreVideoItem.h */,
-				04F6F33C29910C140021D136 /* ZMediaCallMoreVideoItem.m */,
-				04F6F3352990E58A0021D136 /* ZMediaCallMoreInviteCell.h */,
-				04F6F3362990E58A0021D136 /* ZMediaCallMoreInviteCell.m */,
+				048824B02986227800FC58CB /* MediaZZCallVideoView.h */,
+				048824B12986227800FC58CB /* MediaZZCallVideoView.m */,
+				046A29FA299C8766008A5BE7 /* MediaZZCallMoreContentView.h */,
+				046A29FB299C8766008A5BE7 /* MediaZZCallMoreContentView.m */,
+				04180F9F2A259FCD00046229 /* MediaZZCallSampleVideoView.h */,
+				04180FA02A259FCD00046229 /* MediaZZCallSampleVideoView.m */,
+				04F6F33B29910C140021D136 /* MediaZZCallMoreVideoItem.h */,
+				04F6F33C29910C140021D136 /* MediaZZCallMoreVideoItem.m */,
+				04F6F3352990E58A0021D136 /* MediaZZCallMoreInviteCell.h */,
+				04F6F3362990E58A0021D136 /* MediaZZCallMoreInviteCell.m */,
 				04F6F43F299349940021D136 /* MediaCallTipView */,
 			);
 			path = View;
@@ -3626,8 +3626,8 @@
 		0476A5282A20407F005E2229 /* VC */ = {
 			isa = PBXGroup;
 			children = (
-				04F6F3322990AF580021D136 /* ZMediaCallMoreInviteVC.h */,
-				04F6F3332990AF580021D136 /* ZMediaCallMoreInviteVC.m */,
+				04F6F3322990AF580021D136 /* MediaZZCallMoreInviteVC.h */,
+				04F6F3332990AF580021D136 /* MediaZZCallMoreInviteVC.m */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -6045,7 +6045,7 @@
 				045EE90428D06DB400CC9AC3 /* NSDictionary+Addition.m in Sources */,
 				045F1EB828DDAAD8003D2818 /* MainImageTitleContentArrowCell.m in Sources */,
 				04D21EE32A6688E0000B4572 /* ZChatNavLinkSettingView.m in Sources */,
-				048824B22986227800FC58CB /* ZMediaCallVideoView.m in Sources */,
+				048824B22986227800FC58CB /* MediaZZCallVideoView.m in Sources */,
 				045DDC0D2918FFB90031F7F5 /* ZGroupSetBasicInfoCell.m in Sources */,
 				04882508298C999800FC58CB /* KNPhotoAVPlayerView.m in Sources */,
 				049020282B9B066E00C1FCA1 /* ZMessageSendTask.m in Sources */,
@@ -6234,7 +6234,7 @@
 				04FAD6E8293DE45D006BE195 /* ZAtUsetListCell.m in Sources */,
 				04A6BCE62A6916C4000A818D /* ZTeamManagerVC.m in Sources */,
 				184043EC2B0C54E400E575B0 /* YYTextRubyAnnotation.m in Sources */,
-				04F6F33D29910C140021D136 /* ZMediaCallMoreVideoItem.m in Sources */,
+				04F6F33D29910C140021D136 /* MediaZZCallMoreVideoItem.m in Sources */,
 				049D0B8329DA637D006F2577 /* NMMyQRCodeViewController.m in Sources */,
 				041EEB6E29F28AE200CDCC1A /* HomeMassMessageFileDetailVC.m in Sources */,
 				04A6D9C52C6A0B6F00FD7521 /* HomeChatHistoryChoiceUserVC.m in Sources */,
@@ -6320,7 +6320,7 @@
 				04AE18662B4F79C9007D33F8 /* ZBaseUserModel.m in Sources */,
 				0453621E2A6CCD7900BF5713 /* ZChatTextUrlListView.m in Sources */,
 				041EEBAE29F7AECC00CDCC1A /* ZGroupManageContentCell.m in Sources */,
-				04F6F3342990AF580021D136 /* ZMediaCallMoreInviteVC.m in Sources */,
+				04F6F3342990AF580021D136 /* MediaZZCallMoreInviteVC.m in Sources */,
 				184171F529729C6400F8D80A /* AppDelegate+Push.m in Sources */,
 				04CDD4AA2AE90D830068D830 /* ZEmojiPackageDetailCell.m in Sources */,
 				08B3F8172DB6242000CE0DE4 /* ErrorCodeManager.m in Sources */,
@@ -6435,7 +6435,7 @@
 				048E83092BA96333004AE2E1 /* FMsgPrecheckModel.m in Sources */,
 				040CADA92C9D7EA0002CC885 /* AliyCloundDNSDecoder.m in Sources */,
 				184043E32B0C54E400E575B0 /* YYTextLine.m in Sources */,
-				04180FA12A259FCD00046229 /* ZMediaCallSampleVideoView.m in Sources */,
+				04180FA12A259FCD00046229 /* MediaZZCallSampleVideoView.m in Sources */,
 				04A6BCCD2A67BF21000A818D /* SpecMiniAppFloatListCell.m in Sources */,
 				6CADF7B72DE4603600750D87 /* BAWebImageDownloaderDecryptor.m in Sources */,
 				04C3A3A129F2611800DE81B7 /* HomeMssageMultiBottomView.m in Sources */,
@@ -6494,7 +6494,7 @@
 				041EEB8629F52E3A00CDCC1A /* ZGestureLockIndicatorView.m in Sources */,
 				042D7F58291E873400D2BB59 /* ZChatHistoryTextVC.m in Sources */,
 				04E5192D295BE02500EF0500 /* ZLanguageSettingCell.m in Sources */,
-				046A29FC299C8766008A5BE7 /* ZMediaCallMoreContentView.m in Sources */,
+				046A29FC299C8766008A5BE7 /* MediaZZCallMoreContentView.m in Sources */,
 				04C321FB2A4ADB4800EDCC0F /* VIResourceLoader.m in Sources */,
 				042D7F172915089500D2BB59 /* ZChatSingleSetVC.m in Sources */,
 				04ACB0752A3C455400FA82E8 /* ZFileOssInfoModel.m in Sources */,
@@ -6615,7 +6615,7 @@
 				0488250C298C999800FC58CB /* KNPhotoBrowserNumView.m in Sources */,
 				0459D1C32A29D09D009148AE /* ZCallGroupFloatView.m in Sources */,
 				04A2DE772B85D799007655BA /* ZNoticeTranslateEditView.m in Sources */,
-				04F6F3372990E58A0021D136 /* ZMediaCallMoreInviteCell.m in Sources */,
+				04F6F3372990E58A0021D136 /* MediaZZCallMoreInviteCell.m in Sources */,
 				0430E1C529EFD8930071B489 /* ZMyCollectionModel.m in Sources */,
 				2D7B4B002E9FD4C100E71727 /* ZNetworkDetectionSectionHeaderView.m in Sources */,
 				04D21EDD2A66659C000B4572 /* ZChatLinkCollectCell.m in Sources */,

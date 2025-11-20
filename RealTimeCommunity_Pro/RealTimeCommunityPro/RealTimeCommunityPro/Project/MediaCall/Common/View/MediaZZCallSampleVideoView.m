@@ -1,16 +1,16 @@
 //
-//  ZMediaCallSampleVideoView.m
+//  MediaZZCallSampleVideoView.m
 //  CIMKit
 //
 //  Created by cusPro on 2023/5/30.
 //
 
-#import "ZMediaCallSampleVideoView.h"
+#import "MediaZZCallSampleVideoView.h"
 #import "ZToolManager.h"
 #import "ZCallManager.h"
 
 
-@implementation ZMediaCallSampleVideoView
+@implementation MediaZZCallSampleVideoView
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {

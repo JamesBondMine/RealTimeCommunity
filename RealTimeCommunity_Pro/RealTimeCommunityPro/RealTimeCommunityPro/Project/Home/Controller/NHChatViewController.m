@@ -44,7 +44,7 @@
 #import "HomeChatGroupNoticeTipView.h"    //群公告提示
 #import "ZMediaCallManager.h"//LiveKit音视频通话
 #import "ZCallManager.h"//即构音视频通话
-#import "ZMediaCallMoreInviteVC.h"//音视频通话邀请好友
+#import "MediaZZCallMoreInviteVC.h"//音视频通话邀请好友
 #import "ZChatGroupCallTipView.h"//群聊多人通话提示，如果有的话
 #import "KNPhotoBrowser.h"//图片视频浏览
 #import "ZFileUploadModel.h"
@@ -5996,7 +5996,7 @@
     if ([ZMediaCallManager sharedManager].mediaCallState != ZMediaCallStateEnd) return;
     
     [ZTOOL doInMain:^{
-        ZMediaCallMoreInviteVC *vc = [ZMediaCallMoreInviteVC new];
+        MediaZZCallMoreInviteVC *vc = [MediaZZCallMoreInviteVC new];
         vc.groupID = weakSelf.sessionID;
         vc.callType = callType;//语音/视频通话
         vc.requestMore = 1;
@@ -6024,7 +6024,7 @@
 - (void)zgCallRequestForGroupWith:(LingIMCallType)callType {
     WeakSelf
     [ZTOOL doInMain:^{
-        ZMediaCallMoreInviteVC *vc = [ZMediaCallMoreInviteVC new];
+        MediaZZCallMoreInviteVC *vc = [MediaZZCallMoreInviteVC new];
         vc.groupID = weakSelf.sessionID;
         vc.callType = callType;
         vc.requestMore = 1;

@@ -15,7 +15,7 @@
 #import "ZWindowFloatView.h"
 #import "ZCallFloatView.h"//单人音视频浮窗UI
 //#import "ZMediaCallMoreFloatView.h"//多人音视频浮窗UI
-#import "ZMediaCallVideoView.h"//视频渲染控件
+#import "MediaZZCallVideoView.h"//视频渲染控件
 
 NS_ASSUME_NONNULL_BEGIN
 

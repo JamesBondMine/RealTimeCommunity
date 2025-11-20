@@ -1,21 +1,21 @@
 //
-//  ZMediaCallMoreInviteCell.m
+//  MediaZZCallMoreInviteCell.m
 //  CIMKit
 //
 //  Created by cusPro on 2023/2/6.
 //
 
-#import "ZMediaCallMoreInviteCell.h"
+#import "MediaZZCallMoreInviteCell.h"
 //#import <YYText/YYText.h>
 
-@interface ZMediaCallMoreInviteCell ()
+@interface MediaZZCallMoreInviteCell ()
 @property (nonatomic, strong) UIImageView *ivCycle;
 @property (nonatomic, strong) UIImageView *ivHeader;
 @property (nonatomic, strong) UILabel *ivRoleName;//用户角色名称
 @property (nonatomic, strong) UILabel *lblNickname;
 @end
 
-@implementation ZMediaCallMoreInviteCell
+@implementation MediaZZCallMoreInviteCell
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -79,7 +79,7 @@
     
 }
 #pragma mark - 渲染赋值
-- (void)configCellWith:(LingIMGroupMemberModel *)groupMemberModel searchString:(NSString *)searchStr selected:(ZMediaCallMoreInviteCellSelectedType)selectedType {
+- (void)configCellWith:(LingIMGroupMemberModel *)groupMemberModel searchString:(NSString *)searchStr selected:(MediaZZCallMoreInviteCellSelectedType)selectedType {
     if (!groupMemberModel) return;
     
     _groupMemberModel = groupMemberModel;
@@ -87,13 +87,13 @@
     _selectedType = selectedType;
     
     switch (selectedType) {
-        case ZMediaCallMoreInviteCellSelectedTypeDefault:
+        case MediaZZCallMoreInviteCellSelectedTypeDefault:
             _ivCycle.image = ImgNamed(@"com_c_select_unknow");
             break;
-        case ZMediaCallMoreInviteCellSelectedTypeNo:
+        case MediaZZCallMoreInviteCellSelectedTypeNo:
             _ivCycle.image = ImgNamed(@"com_c_select_no");
             break;
-        case ZMediaCallMoreInviteCellSelectedTypeYes:
+        case MediaZZCallMoreInviteCellSelectedTypeYes:
             _ivCycle.image = ImgNamed(@"com_c_select_yes");
             break;
             

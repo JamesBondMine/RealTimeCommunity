@@ -1,5 +1,5 @@
 //
-//  ZMediaCallSampleVideoView.h
+//  MediaZZCallSampleVideoView.h
 //  CIMKit
 //
 //  Created by cusPro on 2023/5/30.
@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ZMediaCallSampleVideoView : UIView
+@interface MediaZZCallSampleVideoView : UIView
 
 @property (nonatomic, strong) VideoView *viewVideo;//视频通话渲染 LiveKit
 @property (nonatomic, strong) UIView *viewVideoZG;//视频通话渲染 ZEGO

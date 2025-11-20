@@ -1,16 +1,16 @@
 //
-//  ZMediaCallMoreInviteVC.m
+//  MediaZZCallMoreInviteVC.m
 //  CIMKit
 //
 //  Created by cusPro on 2023/2/6.
 //
 
-#import "ZMediaCallMoreInviteVC.h"
+#import "MediaZZCallMoreInviteVC.h"
 #import "MainSearchView.h"
-#import "ZMediaCallMoreInviteCell.h"
+#import "MediaZZCallMoreInviteCell.h"
 
 
-@interface ZMediaCallMoreInviteVC () <MainSearchViewDelegate, UITableViewDataSource, UITableViewDelegate, ZBaseCellDelegate>
+@interface MediaZZCallMoreInviteVC () <MainSearchViewDelegate, UITableViewDataSource, UITableViewDelegate, ZBaseCellDelegate>
 @property (nonatomic, strong) MainSearchView *viewSearch;//搜索控件
 @property (nonatomic, strong) NSMutableArray *groupMemberList;//群成员列表
 @property (nonatomic, strong) NSMutableArray *groupMemberShowList;//群成员展示列表
@@ -20,7 +20,7 @@
 
 @end
 
-@implementation ZMediaCallMoreInviteVC
+@implementation MediaZZCallMoreInviteVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -74,7 +74,7 @@
         make.top.equalTo(_viewSearch.mas_bottom).offset(DWScale(6));
     }];
     
-    [self.baseTableView registerClass:[ZMediaCallMoreInviteCell class] forCellReuseIdentifier:[ZMediaCallMoreInviteCell cellIdentifier]];
+    [self.baseTableView registerClass:[MediaZZCallMoreInviteCell class] forCellReuseIdentifier:[MediaZZCallMoreInviteCell cellIdentifier]];
     self.baseTableView.delaysContentTouches = NO;
 }
 #pragma mark - 交互事件
@@ -130,21 +130,21 @@
     return _groupMemberShowList.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ZMediaCallMoreInviteCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZMediaCallMoreInviteCell cellIdentifier] forIndexPath:indexPath];
+    MediaZZCallMoreInviteCell *cell = [tableView dequeueReusableCellWithIdentifier:[MediaZZCallMoreInviteCell cellIdentifier] forIndexPath:indexPath];
     cell.baseCellIndexPath = indexPath;
     cell.baseDelegate = self;
     
     LingIMGroupMemberModel *model = [_groupMemberShowList objectAtIndexSafe:indexPath.row];
     NSString *modelUserID = [NSString stringWithFormat:@"%@", model.userUid];//用户ID
     
-    ZMediaCallMoreInviteCellSelectedType selectedType;
+    MediaZZCallMoreInviteCellSelectedType selectedType;
     
     if ([_currentRoomUser containsObject:modelUserID]) {
-        selectedType = ZMediaCallMoreInviteCellSelectedTypeDefault;
+        selectedType = MediaZZCallMoreInviteCellSelectedTypeDefault;
     }else if ([_groupMemberSelectList containsObject:modelUserID]) {
-        selectedType = ZMediaCallMoreInviteCellSelectedTypeYes;
+        selectedType = MediaZZCallMoreInviteCellSelectedTypeYes;
     }else {
-        selectedType = ZMediaCallMoreInviteCellSelectedTypeNo;
+        selectedType = MediaZZCallMoreInviteCellSelectedTypeNo;
     }
     [cell configCellWith:model searchString:_searchStr selected:selectedType];
     
@@ -152,7 +152,7 @@
 }
 #pragma mark - UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [ZMediaCallMoreInviteCell defaultCellHeight];
+    return [MediaZZCallMoreInviteCell defaultCellHeight];
 }
 #pragma mark - ZBaseCellDelegate
 - (void)cellClickAction:(NSIndexPath *)indexPath {

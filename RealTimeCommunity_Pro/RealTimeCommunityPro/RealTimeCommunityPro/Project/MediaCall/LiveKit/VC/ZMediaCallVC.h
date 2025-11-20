@@ -15,7 +15,7 @@
 #import "ZMediaCallFloatView.h"//单人音视频浮窗UI
 #import "ZMediaCallMoreFloatView.h"//多人音视频浮窗UI
 #import "AppDelegate.h"
-#import "ZMediaCallVideoView.h"
+#import "MediaZZCallVideoView.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

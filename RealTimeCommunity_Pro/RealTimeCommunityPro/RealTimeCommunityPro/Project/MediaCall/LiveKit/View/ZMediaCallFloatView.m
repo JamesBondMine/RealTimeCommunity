@@ -8,7 +8,7 @@
 #import "ZMediaCallFloatView.h"
 #import "ZMediaCallManager.h"
 #import "ZToolManager.h"
-#import "ZMediaCallVideoView.h"
+#import "MediaZZCallVideoView.h"
 
 
 @interface ZMediaCallFloatView () <ZMediaCallManagerDelegate,RoomDelegateObjC>
@@ -17,7 +17,7 @@
 @property (nonatomic, strong) UIImageView *ivCallState;
 @property (nonatomic, strong) UILabel *lblCallTip;
 
-@property (nonatomic, strong) ZMediaCallVideoView *viewVideo;
+@property (nonatomic, strong) MediaZZCallVideoView *viewVideo;
 @end
 
 @implementation ZMediaCallFloatView
@@ -343,9 +343,9 @@
     [self setupVideoTrack];
 }
 #pragma mark - 懒加载
-- (ZMediaCallVideoView *)viewVideo {
+- (MediaZZCallVideoView *)viewVideo {
     if (!_viewVideo) {
-        _viewVideo = [ZMediaCallVideoView new];
+        _viewVideo = [MediaZZCallVideoView new];
         [_viewVideo updateHeaderSizeWith:DWScale(38)];
         _viewVideo.hidden = YES;
     }

@@ -8,7 +8,7 @@
 #import "ZCallFloatView.h"
 #import "ZCallManager.h"
 #import "ZToolManager.h"
-#import "ZMediaCallVideoView.h"
+#import "MediaZZCallVideoView.h"
 
 @interface ZCallFloatView () <ZCallManagerDelegate>
 @property (nonatomic, strong) UIView *viewContent;
@@ -16,7 +16,7 @@
 @property (nonatomic, strong) UIImageView *ivCallState;
 @property (nonatomic, strong) UILabel *lblCallTip;
 
-@property (nonatomic, strong) ZMediaCallVideoView *viewVideo;
+@property (nonatomic, strong) MediaZZCallVideoView *viewVideo;
 
 @end
 
@@ -90,7 +90,7 @@
         make.top.equalTo(_ivCallState.mas_bottom).offset(DWScale(11));
     }];
     
-    _viewVideo = [ZMediaCallVideoView new];
+    _viewVideo = [MediaZZCallVideoView new];
     [_viewVideo updateHeaderSizeWith:DWScale(38)];
     [_viewContent addSubview:_viewVideo];
     [_viewVideo mas_makeConstraints:^(MASConstraintMaker *make) {

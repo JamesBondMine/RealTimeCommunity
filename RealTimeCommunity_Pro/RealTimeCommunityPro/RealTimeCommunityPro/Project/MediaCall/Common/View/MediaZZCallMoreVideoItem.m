@@ -1,18 +1,18 @@
 //
-//  ZMediaCallMoreVideoItem.m
+//  MediaZZCallMoreVideoItem.m
 //  CIMKit
 //
 //  Created by cusPro on 2023/2/6.
 //
 
-#import "ZMediaCallMoreVideoItem.h"
+#import "MediaZZCallMoreVideoItem.h"
 #import "ZToolManager.h"
 
-@interface ZMediaCallMoreVideoItem ()
+@interface MediaZZCallMoreVideoItem ()
 
 @end
 
-@implementation ZMediaCallMoreVideoItem
+@implementation MediaZZCallMoreVideoItem
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -25,7 +25,7 @@
     WeakSelf
     
     self.contentView.tkThemebackgroundColors = @[COLOR_00, COLOR_00_DARK];
-    _viewContent = [ZMediaCallMoreContentView new];
+    _viewContent = [MediaZZCallMoreContentView new];
     [self.contentView addSubview:_viewContent];
     [_viewContent mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.leading.equalTo(self.contentView).offset(DWScale(2));

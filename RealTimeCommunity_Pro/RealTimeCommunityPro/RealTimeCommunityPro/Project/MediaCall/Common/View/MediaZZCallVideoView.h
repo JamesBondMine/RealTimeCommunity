@@ -1,5 +1,5 @@
 //
-//  ZMediaCallVideoView.h
+//  MediaZZCallVideoView.h
 //  CIMKit
 //
 //  Created by cusPro on 2023/1/29.
@@ -7,14 +7,14 @@
 
 #import <UIKit/UIKit.h>
 #import "BBBaseImageView.h"
-#import "ZMediaCallSampleVideoView.h"
+#import "MediaZZCallSampleVideoView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ZMediaCallVideoView : UIView
+@interface MediaZZCallVideoView : UIView
 
 @property (nonatomic, strong) VideoView *viewVideo;//视频通话渲染 LiveKit
-@property (nonatomic, strong) ZMediaCallSampleVideoView *sampleViewVideo;//视频通话 视频轨道渲染
+@property (nonatomic, strong) MediaZZCallSampleVideoView *sampleViewVideo;//视频通话 视频轨道渲染
 
 @property (nonatomic, strong) BBBaseImageView *ivHeader;
 

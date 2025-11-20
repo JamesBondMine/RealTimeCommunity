@@ -1,5 +1,5 @@
 //
-//  ZMediaCallMoreContentView.h
+//  MediaZZCallMoreContentView.h
 //  CIMKit
 //
 //  Created by cusPro on 2023/2/15.
@@ -8,7 +8,7 @@
 // 多人音视频通话 展示 VideoView + 用户头像 的内容View
 
 #import <UIKit/UIKit.h>
-#import "ZMediaCallSampleVideoView.h"
+#import "MediaZZCallSampleVideoView.h"
 #import "MCMediaCallGroupMemberModel.h"
 #import "ZToolManager.h"
 
@@ -17,8 +17,8 @@ typedef void (^MediaCallMoreContentBlock)(void);
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ZMediaCallMoreContentView : UIView
-@property (nonatomic, strong) ZMediaCallSampleVideoView *sampleViewVideo;//视频通话 视频轨道渲染
+@interface MediaZZCallMoreContentView : UIView
+@property (nonatomic, strong) MediaZZCallSampleVideoView *sampleViewVideo;//视频通话 视频轨道渲染
 @property (nonatomic, strong) UIView *viewAlpha;//透明背景
 @property (nonatomic, strong) UIImageView *ivHeader;//头像
 @property (nonatomic, strong) UILabel *lblNickname;//昵称
