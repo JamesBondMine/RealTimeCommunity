@@ -7,7 +7,7 @@
 
 #import "ZCallGroupVC.h"
 #import "SyncMutableArray.h"
-#import "ZMediaCallShimmerView.h"
+#import "MediaZZCallShimmerView.h"
 #import "ZMediaCallMoreVideoItem.h"
 #import "ZMediaCallMoreInviteVC.h"
 #import "MCMediaCallGroupMemberModel.h"
@@ -27,7 +27,7 @@
 @property (nonatomic, strong) BBBaseImageView *ivHeader;//对方头像
 @property (nonatomic, strong) UILabel *lblNickname;//对方昵称
 @property (nonatomic, strong) UILabel *lblCallTip;//会话提示
-@property (nonatomic, strong) ZMediaCallShimmerView *viewShimmer;//闪光效果
+@property (nonatomic, strong) MediaZZCallShimmerView *viewShimmer;//闪光效果
 
 //群聊 接通后 / 我是 群聊 发起者 UI
 @property (nonatomic, strong) UIView *viewCallBg;//通话UI
@@ -141,7 +141,7 @@
     }];
     
     //闪光效果
-    _viewShimmer = [ZMediaCallShimmerView new];
+    _viewShimmer = [MediaZZCallShimmerView new];
     [_viewBaseBg addSubview:_viewShimmer];
     [_viewShimmer mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.trailing.equalTo(_viewBaseBg);

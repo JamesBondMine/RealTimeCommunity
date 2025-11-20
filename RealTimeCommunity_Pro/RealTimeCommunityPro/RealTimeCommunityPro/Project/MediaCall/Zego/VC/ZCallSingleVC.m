@@ -131,7 +131,7 @@
     }];
     
     //闪光效果
-    _viewShimmer = [ZMediaCallShimmerView new];
+    _viewShimmer = [MediaZZCallShimmerView new];
     [_viewBaseBg addSubview:_viewShimmer];
     [_viewShimmer mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.trailing.equalTo(_viewBaseBg);

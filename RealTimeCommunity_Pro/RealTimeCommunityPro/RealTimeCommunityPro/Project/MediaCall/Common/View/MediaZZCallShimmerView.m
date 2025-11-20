@@ -1,15 +1,15 @@
 //
-//  ZMediaCallShimmerView.m
+//  MediaZZCallShimmerView.m
 //  CIMKit
 //
 //  Created by cusPro on 2023/2/7.
 //
 
-#import "ZMediaCallShimmerView.h"
+#import "MediaZZCallShimmerView.h"
 #import "FBShimmeringView.h"
 
 
-@implementation ZMediaCallShimmerView
+@implementation MediaZZCallShimmerView
 {
     FBShimmeringView *_viewShimmer;
     UILabel *_lblPoint;

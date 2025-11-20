@@ -1,5 +1,5 @@
 //
-//  ZMediaCallShimmerView.h
+//  MediaZZCallShimmerView.h
 //  CIMKit
 //
 //  Created by cusPro on 2023/2/7.
@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ZMediaCallShimmerView : UIView
+@interface MediaZZCallShimmerView : UIView
 
 @end
 

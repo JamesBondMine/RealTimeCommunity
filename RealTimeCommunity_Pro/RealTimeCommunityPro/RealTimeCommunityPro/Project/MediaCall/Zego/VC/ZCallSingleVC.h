@@ -8,7 +8,7 @@
 // 即构 单聊 音视频通话 VC
 
 #import "ZCallVC.h"
-#import "ZMediaCallShimmerView.h"
+#import "MediaZZCallShimmerView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) BBBaseImageView *ivHeader;//对方头像
 @property (nonatomic, strong) UILabel *lblNickname;//对方昵称
 @property (nonatomic, strong) UILabel *lblCallTip;//会话提示
-@property (nonatomic, strong) ZMediaCallShimmerView *viewShimmer;//闪光效果
+@property (nonatomic, strong) MediaZZCallShimmerView *viewShimmer;//闪光效果
 
 @end
 

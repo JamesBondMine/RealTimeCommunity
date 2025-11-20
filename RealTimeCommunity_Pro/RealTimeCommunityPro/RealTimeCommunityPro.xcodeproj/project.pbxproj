@@ -139,7 +139,7 @@
 		043D2D5028D1C70D00DF6A83 /* NFGlobalSearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 043D2D4F28D1C70D00DF6A83 /* NFGlobalSearchVC.m */; };
 		043D2D6328D1D5F700DF6A83 /* CNGlobalSearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 043D2D6228D1D5F700DF6A83 /* CNGlobalSearchCell.m */; };
 		043F7EEC290A6BC6006E0E25 /* ZMessageSystemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 043F7EEB290A6BC6006E0E25 /* ZMessageSystemCell.m */; };
-		0444E83429BF29E500DB6293 /* ZMediaCallShimmerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0444E83329BF29E400DB6293 /* ZMediaCallShimmerView.m */; };
+		0444E83429BF29E500DB6293 /* MediaZZCallShimmerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0444E83329BF29E400DB6293 /* MediaZZCallShimmerView.m */; };
 		0445816A2AA9B9E800DBB474 /* NTTeamHomeHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 044581692AA9B9E800DBB474 /* NTTeamHomeHeaderView.m */; };
 		0445816D2AA9BA2900DBB474 /* NTTeamHeaderCollectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0445816C2AA9BA2900DBB474 /* NTTeamHeaderCollectCell.m */; };
 		044581702AA9D1FE00DBB474 /* ZTeamCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0445816E2AA9D1FE00DBB474 /* ZTeamCell.m */; };
@@ -1050,8 +1050,8 @@
 		043D2D6228D1D5F700DF6A83 /* CNGlobalSearchCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CNGlobalSearchCell.m; sourceTree = "<group>"; };
 		043F7EEA290A6BC6006E0E25 /* ZMessageSystemCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZMessageSystemCell.h; sourceTree = "<group>"; };
 		043F7EEB290A6BC6006E0E25 /* ZMessageSystemCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZMessageSystemCell.m; sourceTree = "<group>"; };
-		0444E83229BF29E400DB6293 /* ZMediaCallShimmerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZMediaCallShimmerView.h; sourceTree = "<group>"; };
-		0444E83329BF29E400DB6293 /* ZMediaCallShimmerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZMediaCallShimmerView.m; sourceTree = "<group>"; };
+		0444E83229BF29E400DB6293 /* MediaZZCallShimmerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaZZCallShimmerView.h; sourceTree = "<group>"; };
+		0444E83329BF29E400DB6293 /* MediaZZCallShimmerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaZZCallShimmerView.m; sourceTree = "<group>"; };
 		044581682AA9B9E800DBB474 /* NTTeamHomeHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NTTeamHomeHeaderView.h; sourceTree = "<group>"; };
 		044581692AA9B9E800DBB474 /* NTTeamHomeHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NTTeamHomeHeaderView.m; sourceTree = "<group>"; };
 		0445816B2AA9BA2900DBB474 /* NTTeamHeaderCollectCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NTTeamHeaderCollectCell.h; sourceTree = "<group>"; };
@@ -3606,8 +3606,8 @@
 			children = (
 				0400A352296BA82F001BA200 /* ZWindowFloatView.h */,
 				0400A353296BA82F001BA200 /* ZWindowFloatView.m */,
-				0444E83229BF29E400DB6293 /* ZMediaCallShimmerView.h */,
-				0444E83329BF29E400DB6293 /* ZMediaCallShimmerView.m */,
+				0444E83229BF29E400DB6293 /* MediaZZCallShimmerView.h */,
+				0444E83329BF29E400DB6293 /* MediaZZCallShimmerView.m */,
 				048824B02986227800FC58CB /* ZMediaCallVideoView.h */,
 				048824B12986227800FC58CB /* ZMediaCallVideoView.m */,
 				046A29FA299C8766008A5BE7 /* ZMediaCallMoreContentView.h */,
@@ -6416,7 +6416,7 @@
 				1863DAD92A94AC23005351F6 /* ZRuleViewController.m in Sources */,
 				04A0BFCE2B9C439B0009C9F7 /* ZFileDownloadTask.m in Sources */,
 				04B044802A0B871F00E0E3E1 /* LingIMGroup.m in Sources */,
-				0444E83429BF29E500DB6293 /* ZMediaCallShimmerView.m in Sources */,
+				0444E83429BF29E500DB6293 /* MediaZZCallShimmerView.m in Sources */,
 				04A1DADA29F4C18700519A5A /* UIImageView+Addition.m in Sources */,
 				04B1386C2BBAA4E00096987F /* CGFloat+Extension.swift in Sources */,
 				0483EE0A2AC19E3D001324EE /* UIButton+Gradient.m in Sources */,
