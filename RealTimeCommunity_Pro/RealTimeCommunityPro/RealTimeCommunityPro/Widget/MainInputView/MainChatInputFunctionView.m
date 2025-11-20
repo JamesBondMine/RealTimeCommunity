@@ -78,7 +78,7 @@
         NSDictionary *translate = @{
             @"actionTitle" : MultilingualTranslation(@"翻译"),
             @"actionImage" : @"c_input_translate_n",
-            @"actionImage_dark" : @"c_input_translate_n_dark",
+            @"actionImage_dark" : @"xx_inxput_trxanslate_n_dark",
             @"actionType"  : @(ZChatInputActionTypeTranslate)
         };
         
@@ -177,7 +177,7 @@
     NSDictionary *translate = @{
         @"actionTitle" : MultilingualTranslation(@"翻译"),
         @"actionImage" : @"c_input_translate_n",
-        @"actionImage_dark" : @"c_input_translate_n_dark",
+        @"actionImage_dark" : @"xx_inxput_trxanslate_n_dark",
         @"actionType"  : @(ZChatInputActionTypeTranslate)
     };
     
@@ -266,7 +266,7 @@
         if (translateIndex == NSNotFound) {
             NSDictionary *translate = @{ @"actionTitle" : MultilingualTranslation(@"翻译"),
                                           @"actionImage" : @"c_input_translate_n",
-                                          @"actionImage_dark" : @"c_input_translate_n_dark",
+                                          @"actionImage_dark" : @"xx_inxput_trxanslate_n_dark",
                                           @"actionType"  : @(ZChatInputActionTypeTranslate) };
             [_actionList addObject:translate];
         }
@@ -541,7 +541,7 @@
 
             } else {
                 [dict setObjectSafe:@"c_input_translate_n" forKey:@"actionImage"];
-                [dict setObjectSafe:@"c_input_translate_n_dark" forKey:@"actionImage_dark"];
+                [dict setObjectSafe:@"xx_inxput_trxanslate_n_dark" forKey:@"actionImage_dark"];
             }
             [_actionList replaceObjectAtIndex:i withObject:dict];
             [self.actionCollectionView reloadData];
