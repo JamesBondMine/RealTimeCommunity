@@ -83,8 +83,8 @@
 		042D7F1E291657D700D2BB59 /* ZChatGroupSetVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F1D291657D700D2BB59 /* ZChatGroupSetVC.m */; };
 		042D7F2229165A6900D2BB59 /* ZChatSetGroupInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F2129165A6900D2BB59 /* ZChatSetGroupInfoCell.m */; };
 		042D7F252916642300D2BB59 /* GroupGMMemberHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F242916642300D2BB59 /* GroupGMMemberHeaderCell.m */; };
-		042D7F28291665D200D2BB59 /* ZChatSetGroupNoteCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F27291665D200D2BB59 /* ZChatSetGroupNoteCell.m */; };
-		042D7F2B29166A7100D2BB59 /* ZChatSetGroupCommonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F2A29166A7100D2BB59 /* ZChatSetGroupCommonCell.m */; };
+		042D7F28291665D200D2BB59 /* NNChatCSSetGroupNoteCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F27291665D200D2BB59 /* NNChatCSSetGroupNoteCell.m */; };
+		042D7F2B29166A7100D2BB59 /* CCChatCSSetGroupCommonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F2A29166A7100D2BB59 /* CCChatCSSetGroupCommonCell.m */; };
 		042D7F4B291E38D700D2BB59 /* ZSureCancelTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F4A291E38D700D2BB59 /* ZSureCancelTipView.m */; };
 		042D7F4E291E6C2600D2BB59 /* HomeGroupMyNicknameVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F4D291E6C2600D2BB59 /* HomeGroupMyNicknameVC.m */; };
 		042D7F51291E84CB00D2BB59 /* ZChatHistoryVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F50291E84CB00D2BB59 /* ZChatHistoryVC.m */; };
@@ -336,7 +336,7 @@
 		04A239E92B3AD323006FF4AB /* ZTranslateSettingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A239E82B3AD323006FF4AB /* ZTranslateSettingVC.m */; };
 		04A239F12B3AD615006FF4AB /* HomeChannelLanguageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A239F02B3AD615006FF4AB /* HomeChannelLanguageCell.m */; };
 		04A239F42B3AD62C006FF4AB /* HomeTranslateSettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A239F32B3AD62C006FF4AB /* HomeTranslateSettingCell.m */; };
-		04A2DE772B85D799007655BA /* ZNoticeTranslateEditView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A2DE762B85D799007655BA /* ZNoticeTranslateEditView.m */; };
+		04A2DE772B85D799007655BA /* EENoticeNTTranslateEditView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A2DE762B85D799007655BA /* EENoticeNTTranslateEditView.m */; };
 		04A5144B2A484B3300884078 /* ZCompanyConfigSetVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A5144A2A484B3300884078 /* ZCompanyConfigSetVC.m */; };
 		04A5144E2A49285900884078 /* ZMineInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A5144D2A49285900884078 /* ZMineInfoView.m */; };
 		04A517B92CCA31120050026E /* ZNodePreferTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A517B82CCA31120050026E /* ZNodePreferTools.m */; };
@@ -472,7 +472,7 @@
 		04CDB507291CF6F100EFEABA /* ZGroupRemoveFriendVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB506291CF6F100EFEABA /* ZGroupRemoveFriendVC.m */; };
 		04CDB50A291E531F00EFEABA /* ZGroupModifyNoticeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB509291E531F00EFEABA /* ZGroupModifyNoticeVC.m */; };
 		04CDB50D2922182200EFEABA /* ZGroupManageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB50C2922182200EFEABA /* ZGroupManageVC.m */; };
-		04CDB51029221D6300EFEABA /* ZGroupManageCommonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB50F29221D6300EFEABA /* ZGroupManageCommonCell.m */; };
+		04CDB51029221D6300EFEABA /* CCGroupGMManageCommonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB50F29221D6300EFEABA /* CCGroupGMManageCommonCell.m */; };
 		04CDB51329221DA700EFEABA /* MMGroupGMManageMemberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB51229221DA700EFEABA /* MMGroupGMManageMemberCell.m */; };
 		04CDB51629233CFA00EFEABA /* ZGroupSetManagerOwnerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB51529233CFA00EFEABA /* ZGroupSetManagerOwnerVC.m */; };
 		04CDB51929233DF100EFEABA /* GroupGMManageManagerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB51829233DF100EFEABA /* GroupGMManageManagerCell.m */; };
@@ -742,8 +742,8 @@
 		C397B4F12E97612F00A030CA /* ZDraftStore.m in Sources */ = {isa = PBXBuildFile; fileRef = C397B4EF2E97612F00A030CA /* ZDraftStore.m */; };
 		C3BDAACD2E49942200CD6FD3 /* ZGroupNoticeListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BDAACC2E49942200CD6FD3 /* ZGroupNoticeListVC.m */; };
 		C3BDAAD02E49947E00CD6FD3 /* GGNBroupNoticeListDataHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BDAACF2E49947E00CD6FD3 /* GGNBroupNoticeListDataHandle.m */; };
-		C3BDAAD32E49949200CD6FD3 /* ZGroupNoticeListView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BDAAD22E49949200CD6FD3 /* ZGroupNoticeListView.m */; };
-		C3BDAAD62E49A84B00CD6FD3 /* ZGroupNoticeListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BDAAD52E49A84B00CD6FD3 /* ZGroupNoticeListCell.m */; };
+		C3BDAAD32E49949200CD6FD3 /* LLGroupGNNoticeListView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BDAAD22E49949200CD6FD3 /* LLGroupGNNoticeListView.m */; };
+		C3BDAAD62E49A84B00CD6FD3 /* LLGroupGNNoticeListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C3BDAAD52E49A84B00CD6FD3 /* LLGroupGNNoticeListCell.m */; };
 		C3C434272E2E45CF003D6185 /* ZTeamListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C3C434262E2E45CF003D6185 /* ZTeamListCell.m */; };
 		C3C4342D2E2E937B003D6185 /* IVTTeamCreateDataHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = C3C4342C2E2E937B003D6185 /* IVTTeamCreateDataHandle.m */; };
 		C3C434302E2E9395003D6185 /* ZTeamCreateView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3C4342F2E2E9395003D6185 /* ZTeamCreateView.m */; };
@@ -940,10 +940,10 @@
 		042D7F2129165A6900D2BB59 /* ZChatSetGroupInfoCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZChatSetGroupInfoCell.m; sourceTree = "<group>"; };
 		042D7F232916642300D2BB59 /* GroupGMMemberHeaderCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GroupGMMemberHeaderCell.h; sourceTree = "<group>"; };
 		042D7F242916642300D2BB59 /* GroupGMMemberHeaderCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupGMMemberHeaderCell.m; sourceTree = "<group>"; };
-		042D7F26291665D200D2BB59 /* ZChatSetGroupNoteCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZChatSetGroupNoteCell.h; sourceTree = "<group>"; };
-		042D7F27291665D200D2BB59 /* ZChatSetGroupNoteCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZChatSetGroupNoteCell.m; sourceTree = "<group>"; };
-		042D7F2929166A7100D2BB59 /* ZChatSetGroupCommonCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZChatSetGroupCommonCell.h; sourceTree = "<group>"; };
-		042D7F2A29166A7100D2BB59 /* ZChatSetGroupCommonCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZChatSetGroupCommonCell.m; sourceTree = "<group>"; };
+		042D7F26291665D200D2BB59 /* NNChatCSSetGroupNoteCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NNChatCSSetGroupNoteCell.h; sourceTree = "<group>"; };
+		042D7F27291665D200D2BB59 /* NNChatCSSetGroupNoteCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NNChatCSSetGroupNoteCell.m; sourceTree = "<group>"; };
+		042D7F2929166A7100D2BB59 /* CCChatCSSetGroupCommonCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCChatCSSetGroupCommonCell.h; sourceTree = "<group>"; };
+		042D7F2A29166A7100D2BB59 /* CCChatCSSetGroupCommonCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCChatCSSetGroupCommonCell.m; sourceTree = "<group>"; };
 		042D7F49291E38D700D2BB59 /* ZSureCancelTipView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZSureCancelTipView.h; sourceTree = "<group>"; };
 		042D7F4A291E38D700D2BB59 /* ZSureCancelTipView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZSureCancelTipView.m; sourceTree = "<group>"; };
 		042D7F4C291E6C2600D2BB59 /* HomeGroupMyNicknameVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeGroupMyNicknameVC.h; sourceTree = "<group>"; };
@@ -1467,8 +1467,8 @@
 		04A239F02B3AD615006FF4AB /* HomeChannelLanguageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeChannelLanguageCell.m; sourceTree = "<group>"; };
 		04A239F22B3AD62C006FF4AB /* HomeTranslateSettingCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeTranslateSettingCell.h; sourceTree = "<group>"; };
 		04A239F32B3AD62C006FF4AB /* HomeTranslateSettingCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeTranslateSettingCell.m; sourceTree = "<group>"; };
-		04A2DE752B85D799007655BA /* ZNoticeTranslateEditView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZNoticeTranslateEditView.h; sourceTree = "<group>"; };
-		04A2DE762B85D799007655BA /* ZNoticeTranslateEditView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZNoticeTranslateEditView.m; sourceTree = "<group>"; };
+		04A2DE752B85D799007655BA /* EENoticeNTTranslateEditView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EENoticeNTTranslateEditView.h; sourceTree = "<group>"; };
+		04A2DE762B85D799007655BA /* EENoticeNTTranslateEditView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EENoticeNTTranslateEditView.m; sourceTree = "<group>"; };
 		04A514492A484B3300884078 /* ZCompanyConfigSetVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZCompanyConfigSetVC.h; sourceTree = "<group>"; };
 		04A5144A2A484B3300884078 /* ZCompanyConfigSetVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZCompanyConfigSetVC.m; sourceTree = "<group>"; };
 		04A5144C2A49285900884078 /* ZMineInfoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZMineInfoView.h; sourceTree = "<group>"; };
@@ -1728,8 +1728,8 @@
 		04CDB509291E531F00EFEABA /* ZGroupModifyNoticeVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupModifyNoticeVC.m; sourceTree = "<group>"; };
 		04CDB50B2922182200EFEABA /* ZGroupManageVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupManageVC.h; sourceTree = "<group>"; };
 		04CDB50C2922182200EFEABA /* ZGroupManageVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupManageVC.m; sourceTree = "<group>"; };
-		04CDB50E29221D6300EFEABA /* ZGroupManageCommonCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupManageCommonCell.h; sourceTree = "<group>"; };
-		04CDB50F29221D6300EFEABA /* ZGroupManageCommonCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupManageCommonCell.m; sourceTree = "<group>"; };
+		04CDB50E29221D6300EFEABA /* CCGroupGMManageCommonCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCGroupGMManageCommonCell.h; sourceTree = "<group>"; };
+		04CDB50F29221D6300EFEABA /* CCGroupGMManageCommonCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCGroupGMManageCommonCell.m; sourceTree = "<group>"; };
 		04CDB51129221DA700EFEABA /* MMGroupGMManageMemberCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMGroupGMManageMemberCell.h; sourceTree = "<group>"; };
 		04CDB51229221DA700EFEABA /* MMGroupGMManageMemberCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMGroupGMManageMemberCell.m; sourceTree = "<group>"; };
 		04CDB51429233CFA00EFEABA /* ZGroupSetManagerOwnerVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupSetManagerOwnerVC.h; sourceTree = "<group>"; };
@@ -2271,10 +2271,10 @@
 		C3BDAACC2E49942200CD6FD3 /* ZGroupNoticeListVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupNoticeListVC.m; sourceTree = "<group>"; };
 		C3BDAACE2E49947E00CD6FD3 /* GGNBroupNoticeListDataHandle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GGNBroupNoticeListDataHandle.h; sourceTree = "<group>"; };
 		C3BDAACF2E49947E00CD6FD3 /* GGNBroupNoticeListDataHandle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GGNBroupNoticeListDataHandle.m; sourceTree = "<group>"; };
-		C3BDAAD12E49949200CD6FD3 /* ZGroupNoticeListView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupNoticeListView.h; sourceTree = "<group>"; };
-		C3BDAAD22E49949200CD6FD3 /* ZGroupNoticeListView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupNoticeListView.m; sourceTree = "<group>"; };
-		C3BDAAD42E49A84B00CD6FD3 /* ZGroupNoticeListCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupNoticeListCell.h; sourceTree = "<group>"; };
-		C3BDAAD52E49A84B00CD6FD3 /* ZGroupNoticeListCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupNoticeListCell.m; sourceTree = "<group>"; };
+		C3BDAAD12E49949200CD6FD3 /* LLGroupGNNoticeListView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LLGroupGNNoticeListView.h; sourceTree = "<group>"; };
+		C3BDAAD22E49949200CD6FD3 /* LLGroupGNNoticeListView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LLGroupGNNoticeListView.m; sourceTree = "<group>"; };
+		C3BDAAD42E49A84B00CD6FD3 /* LLGroupGNNoticeListCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LLGroupGNNoticeListCell.h; sourceTree = "<group>"; };
+		C3BDAAD52E49A84B00CD6FD3 /* LLGroupGNNoticeListCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LLGroupGNNoticeListCell.m; sourceTree = "<group>"; };
 		C3C434252E2E45CF003D6185 /* ZTeamListCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZTeamListCell.h; sourceTree = "<group>"; };
 		C3C434262E2E45CF003D6185 /* ZTeamListCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZTeamListCell.m; sourceTree = "<group>"; };
 		C3C4342B2E2E937B003D6185 /* IVTTeamCreateDataHandle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IVTTeamCreateDataHandle.h; sourceTree = "<group>"; };
@@ -2627,18 +2627,18 @@
 				042D7F2129165A6900D2BB59 /* ZChatSetGroupInfoCell.m */,
 				042D7F232916642300D2BB59 /* GroupGMMemberHeaderCell.h */,
 				042D7F242916642300D2BB59 /* GroupGMMemberHeaderCell.m */,
-				042D7F26291665D200D2BB59 /* ZChatSetGroupNoteCell.h */,
-				042D7F27291665D200D2BB59 /* ZChatSetGroupNoteCell.m */,
-				042D7F2929166A7100D2BB59 /* ZChatSetGroupCommonCell.h */,
-				042D7F2A29166A7100D2BB59 /* ZChatSetGroupCommonCell.m */,
+				042D7F26291665D200D2BB59 /* NNChatCSSetGroupNoteCell.h */,
+				042D7F27291665D200D2BB59 /* NNChatCSSetGroupNoteCell.m */,
+				042D7F2929166A7100D2BB59 /* CCChatCSSetGroupCommonCell.h */,
+				042D7F2A29166A7100D2BB59 /* CCChatCSSetGroupCommonCell.m */,
 				045DDC0B2918FFB90031F7F5 /* ZGroupSetBasicInfoCell.h */,
 				045DDC0C2918FFB90031F7F5 /* ZGroupSetBasicInfoCell.m */,
 				04CDB4FC291BD0A000EFEABA /* ZGroupMemberListCell.h */,
 				04CDB4FD291BD0A000EFEABA /* ZGroupMemberListCell.m */,
 				04CDB502291BE04F00EFEABA /* GpInviteAndRemoveFriendCell.h */,
 				04CDB503291BE04F00EFEABA /* GpInviteAndRemoveFriendCell.m */,
-				04CDB50E29221D6300EFEABA /* ZGroupManageCommonCell.h */,
-				04CDB50F29221D6300EFEABA /* ZGroupManageCommonCell.m */,
+				04CDB50E29221D6300EFEABA /* CCGroupGMManageCommonCell.h */,
+				04CDB50F29221D6300EFEABA /* CCGroupGMManageCommonCell.m */,
 				041EEBAC29F7AECC00CDCC1A /* ZGroupManageContentCell.h */,
 				041EEBAD29F7AECC00CDCC1A /* ZGroupManageContentCell.m */,
 				04CDB51129221DA700EFEABA /* MMGroupGMManageMemberCell.h */,
@@ -2653,12 +2653,12 @@
 				04B967052B80AE9800DBD76A /* groupSetDorpView.m */,
 				04B0255F2B82FB4A005A0AD5 /* ZNoticeTranslateCell.h */,
 				04B025602B82FB4A005A0AD5 /* ZNoticeTranslateCell.m */,
-				04A2DE752B85D799007655BA /* ZNoticeTranslateEditView.h */,
-				04A2DE762B85D799007655BA /* ZNoticeTranslateEditView.m */,
-				C3BDAAD12E49949200CD6FD3 /* ZGroupNoticeListView.h */,
-				C3BDAAD22E49949200CD6FD3 /* ZGroupNoticeListView.m */,
-				C3BDAAD42E49A84B00CD6FD3 /* ZGroupNoticeListCell.h */,
-				C3BDAAD52E49A84B00CD6FD3 /* ZGroupNoticeListCell.m */,
+				04A2DE752B85D799007655BA /* EENoticeNTTranslateEditView.h */,
+				04A2DE762B85D799007655BA /* EENoticeNTTranslateEditView.m */,
+				C3BDAAD12E49949200CD6FD3 /* LLGroupGNNoticeListView.h */,
+				C3BDAAD22E49949200CD6FD3 /* LLGroupGNNoticeListView.m */,
+				C3BDAAD42E49A84B00CD6FD3 /* LLGroupGNNoticeListCell.h */,
+				C3BDAAD52E49A84B00CD6FD3 /* LLGroupGNNoticeListCell.m */,
 			);
 			path = GroupSet;
 			sourceTree = "<group>";
@@ -6171,7 +6171,7 @@
 				04840B1128C9FA0300936BFA /* SCIndexViewConfiguration.m in Sources */,
 				045F1EEE28DEF2DA003D2818 /* ZBaseVideoPlayerVC.m in Sources */,
 				04AF820928C33CF200927514 /* BBBaseViewController.m in Sources */,
-				04CDB51029221D6300EFEABA /* ZGroupManageCommonCell.m in Sources */,
+				04CDB51029221D6300EFEABA /* CCGroupGMManageCommonCell.m in Sources */,
 				04EBB86628C201000022FC22 /* UILabel+Addition.m in Sources */,
 				04516C3E2B510D59009B6A78 /* NSMassMessageSelectModel.m in Sources */,
 				04D9F01229D57ECB00B10169 /* UpgradeVersionView.m in Sources */,
@@ -6182,7 +6182,7 @@
 				043481F62920D72700456FD0 /* NMBlackListViewController.m in Sources */,
 				04D030C128DDA262006EE276 /* NHChatViewController.m in Sources */,
 				0459D1C62A29E43E009148AE /* ZCallInfoModel.m in Sources */,
-				C3BDAAD32E49949200CD6FD3 /* ZGroupNoticeListView.m in Sources */,
+				C3BDAAD32E49949200CD6FD3 /* LLGroupGNNoticeListView.m in Sources */,
 				C3EDD56A2E33551B0023D49E /* TeamTeamInviteEditTeamNameVC.m in Sources */,
 				045F1EE428DEE3DA003D2818 /* MImageBrowserModel.m in Sources */,
 				042741832AA5C6B7000EB6B2 /* NSMassMessageGroupSelectedTopView.m in Sources */,
@@ -6289,7 +6289,7 @@
 				04CDB52B2930A81E00EFEABA /* UIImage+YYImageHelper.m in Sources */,
 				08B3F8202DB627C400CE0DE4 /* InitializationSubModules.m in Sources */,
 				184043E22B0C54E400E575B0 /* YYTextLayout.m in Sources */,
-				C3BDAAD62E49A84B00CD6FD3 /* ZGroupNoticeListCell.m in Sources */,
+				C3BDAAD62E49A84B00CD6FD3 /* LLGroupGNNoticeListCell.m in Sources */,
 				043F7EEC290A6BC6006E0E25 /* ZMessageSystemCell.m in Sources */,
 				08B3F81A2DB6246400CE0DE4 /* ErrorModules.m in Sources */,
 				0420B3A12923CA430065BE23 /* NSString+SessionLatestMessage.m in Sources */,
@@ -6553,7 +6553,7 @@
 				04C321F62A4ADB4800EDCC0F /* VICacheManager.m in Sources */,
 				184043F32B0C54E400E575B0 /* YYTextAsyncLayer.m in Sources */,
 				184043E92B0C54E400E575B0 /* YYTextParser.m in Sources */,
-				042D7F28291665D200D2BB59 /* ZChatSetGroupNoteCell.m in Sources */,
+				042D7F28291665D200D2BB59 /* NNChatCSSetGroupNoteCell.m in Sources */,
 				0468558428CB2CEF00853098 /* NFAddFriendVC.m in Sources */,
 				1863DAE82A94AF93005351F6 /* KLSignInTool.m in Sources */,
 				049F6A462BBBA40000E0C75B /* ZChatEmojiContentCell.m in Sources */,
@@ -6608,7 +6608,7 @@
 				042D7F0729129D2100D2BB59 /* NSSessionHeaderView.m in Sources */,
 				0488250C298C999800FC58CB /* KNPhotoBrowserNumView.m in Sources */,
 				0459D1C32A29D09D009148AE /* ZCallGroupFloatView.m in Sources */,
-				04A2DE772B85D799007655BA /* ZNoticeTranslateEditView.m in Sources */,
+				04A2DE772B85D799007655BA /* EENoticeNTTranslateEditView.m in Sources */,
 				04F6F3372990E58A0021D136 /* MediaZZCallMoreInviteCell.m in Sources */,
 				0430E1C529EFD8930071B489 /* ZMyCollectionModel.m in Sources */,
 				2D7B4B002E9FD4C100E71727 /* ZNetworkDetectionSectionHeaderView.m in Sources */,
@@ -6648,7 +6648,7 @@
 				04C321FC2A4ADB4800EDCC0F /* VIMediaDownloader.m in Sources */,
 				04AA729628F80CE800985862 /* HomeChatTopView.m in Sources */,
 				04B9D9572C6313A4006D4C9E /* MeTranslateChannelLanguageModel.m in Sources */,
-				042D7F2B29166A7100D2BB59 /* ZChatSetGroupCommonCell.m in Sources */,
+				042D7F2B29166A7100D2BB59 /* CCChatCSSetGroupCommonCell.m in Sources */,
 				184043F22B0C54E400E575B0 /* UIView+YYText.m in Sources */,
 				04A99FC82B96EF2900DFD946 /* ZFileUploadTools.m in Sources */,
 				042D7F252916642300D2BB59 /* GroupGMMemberHeaderCell.m in Sources */,

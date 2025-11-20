@@ -1,17 +1,17 @@
 //
-//  ZGroupNoticeListView.m
+//  LLGroupGNNoticeListView.m
 //  CIMKit
 //
 //  Created by phl on 2025/8/11.
 //
 
-#import "ZGroupNoticeListView.h"
+#import "LLGroupGNNoticeListView.h"
 #import "GGNBroupNoticeListDataHandle.h"
 #import <DZNEmptyDataSet/UIScrollView+EmptyDataSet.h>
-#import "ZGroupNoticeListCell.h"
+#import "LLGroupGNNoticeListCell.h"
 #import "GNoteLocalUserNameModel.h"
 
-@interface ZGroupNoticeListView()<UITableViewDelegate, UITableViewDataSource, DZNEmptyDataSetSource,DZNEmptyDataSetDelegate>
+@interface LLGroupGNNoticeListView()<UITableViewDelegate, UITableViewDataSource, DZNEmptyDataSetSource,DZNEmptyDataSetDelegate>
 
 /// 下拉刷新
 @property (nonatomic, strong) MJRefreshNormalHeader *refreshHeader;
@@ -27,7 +27,7 @@
 
 @end
 
-@implementation ZGroupNoticeListView
+@implementation LLGroupGNNoticeListView
 
 - (void)dealloc {
     CIMLog(@"%@ dealloc", [self class]);
@@ -171,9 +171,9 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ZGroupNoticeListCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([ZGroupNoticeListCell class])];
+    LLGroupGNNoticeListCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([LLGroupGNNoticeListCell class])];
     if (!cell) {
-        cell = [[ZGroupNoticeListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:NSStringFromClass([ZGroupNoticeListCell class])];
+        cell = [[LLGroupGNNoticeListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:NSStringFromClass([LLGroupGNNoticeListCell class])];
     }
     
     // 赋值

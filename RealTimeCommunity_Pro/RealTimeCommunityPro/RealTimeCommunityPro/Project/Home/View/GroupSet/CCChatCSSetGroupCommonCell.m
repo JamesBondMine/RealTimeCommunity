@@ -1,19 +1,19 @@
 //
-//  ZChatSetGroupCommonCell.m
+//  CCChatCSSetGroupCommonCell.m
 //  CIMKit
 //
 //  Created by cusPro on 2022/11/5.
 //
 
-#import "ZChatSetGroupCommonCell.h"
+#import "CCChatCSSetGroupCommonCell.h"
 #import "UIView+Addition.h"
 
-@interface ZChatSetGroupCommonCell ()
+@interface CCChatCSSetGroupCommonCell ()
 @property (nonatomic, strong) NSArray *titleArr;
 @property (nonatomic, strong) LingIMGroup *model;
 @end
 
-@implementation ZChatSetGroupCommonCell
+@implementation CCChatCSSetGroupCommonCell
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {

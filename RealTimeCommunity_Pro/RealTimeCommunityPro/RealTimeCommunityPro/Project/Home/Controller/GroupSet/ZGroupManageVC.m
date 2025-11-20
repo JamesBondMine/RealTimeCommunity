@@ -6,10 +6,10 @@
 //
 
 #import "ZGroupManageVC.h"
-#import "ZGroupManageCommonCell.h"
+#import "CCGroupGMManageCommonCell.h"
 #import "MMGroupGMManageMemberCell.h"
 #import "ZGroupManageContentCell.h"
-#import "ZChatSetGroupCommonCell.h"
+#import "CCChatCSSetGroupCommonCell.h"
 #import "ZGroupSetManagerOwnerVC.h"
 #import "ZGroupSetNotalkMemberVC.h"
 #import "ZMessageAlertView.h"
@@ -325,10 +325,10 @@
     self.baseTableView.dataSource = self;
     self.baseTableView.delegate = self;
     self.baseTableView.delaysContentTouches = NO;
-    [self.baseTableView registerClass:[ZGroupManageCommonCell class] forCellReuseIdentifier:[ZGroupManageCommonCell cellIdentifier]];
+    [self.baseTableView registerClass:[CCGroupGMManageCommonCell class] forCellReuseIdentifier:[CCGroupGMManageCommonCell cellIdentifier]];
     [self.baseTableView registerClass:[MMGroupGMManageMemberCell class] forCellReuseIdentifier:[MMGroupGMManageMemberCell cellIdentifier]];
     [self.baseTableView registerClass:[ZGroupManageContentCell class] forCellReuseIdentifier:[ZGroupManageContentCell cellIdentifier]];
-    [self.baseTableView registerClass:[ZChatSetGroupCommonCell class] forCellReuseIdentifier:[ZChatSetGroupCommonCell cellIdentifier]];
+    [self.baseTableView registerClass:[CCChatCSSetGroupCommonCell class] forCellReuseIdentifier:[CCChatCSSetGroupCommonCell cellIdentifier]];
 }
 
 #pragma mark - ZBaseCellDelegate
@@ -640,7 +640,7 @@
         //管理员
         if (indexPath.section == 0) {
             //群机器人
-            ZChatSetGroupCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZChatSetGroupCommonCell cellIdentifier] forIndexPath:indexPath];
+            CCChatCSSetGroupCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCChatCSSetGroupCommonCell cellIdentifier] forIndexPath:indexPath];
             cell.baseCellIndexPath = indexPath;
             cell.baseDelegate = self;
             [cell cellConfigWithTitle:MultilingualTranslation(@"群机器人") model:_groupInfoModel];
@@ -650,7 +650,7 @@
             
             if (indexPath.row == 0) {
                 
-                ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                 [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"全员禁言") model:self.groupInfoModel];
                 cell.viewLine.hidden = NO;
                 cell.baseCellIndexPath = indexPath;
@@ -661,7 +661,7 @@
                 
             }else if (indexPath.row == 1){
                 
-                ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                 cell.baseCellIndexPath = indexPath;
                 cell.baseDelegate = self;
                 [cell cellConfigWith:GroupManageCellCommon itemStr:MultilingualTranslation(@"单人禁言") model:self.groupInfoModel];
@@ -694,7 +694,7 @@
             
         } else if (indexPath.section == 2) {
             //群活跃等级
-            ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+            CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
             [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"群活跃等级") model:self.groupInfoModel];
             cell.viewLine.hidden = YES;
             cell.baseCellIndexPath = indexPath;
@@ -726,7 +726,7 @@
                 if (self.groupInfoModel.isNeedVerify) {
                     if (indexPath.row == 2) {
                         //邀请进群申请
-                        ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                        CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                         cell.baseCellIndexPath = indexPath;
                         cell.baseDelegate = self;
                         [cell setCornerRadiusWithIsShow:NO location:CornerRadiusLocationBottom];
@@ -735,7 +735,7 @@
                         return cell;
                     } else {
                         //新成员可查看历史记录
-                        ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                        CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                         [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"新成员可查看历史记录") model:self.groupInfoModel];
                         cell.baseCellIndexPath = indexPath;
                         cell.baseDelegate = self;
@@ -746,7 +746,7 @@
                     }
                 } else {
                     //新成员可查看历史记录
-                    ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                    CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                     [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"新成员可查看历史记录") model:self.groupInfoModel];
                     cell.baseCellIndexPath = indexPath;
                     cell.baseDelegate = self;
@@ -760,7 +760,7 @@
         } else {
             if (indexPath.row == 0) {
                 //关闭群提示
-                ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                 [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"关闭群提示") model:self.groupInfoModel];
                 cell.viewLine.hidden = NO;
                 cell.baseCellIndexPath = indexPath;
@@ -772,7 +772,7 @@
             if ([ZHostTool.appSysSetModel.enableAudioAndVideoCalls isEqualToString:@"1"]) {
                 if (indexPath.row == 1) {
                     //关闭音视频
-                    ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                    CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                     [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"关闭音视频") model:self.groupInfoModel];
                     cell.viewLine.hidden = NO;
                     cell.baseCellIndexPath = indexPath;
@@ -782,7 +782,7 @@
                     return cell;
                 } else {
                     //关闭群二维码
-                    ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                    CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                     [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"关闭群二维码") model:self.groupInfoModel];
                     cell.viewLine.hidden = YES;
                     cell.baseCellIndexPath = indexPath;
@@ -794,7 +794,7 @@
                 
             } else {
                 //关闭群二维码
-                ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                 [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"关闭群二维码") model:self.groupInfoModel];
                 cell.viewLine.hidden = YES;
                 cell.baseCellIndexPath = indexPath;
@@ -810,7 +810,7 @@
             switch (indexPath.section) {
                 case 0:
                 {
-                    ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                    CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                     cell.baseCellIndexPath = indexPath;
                     cell.baseDelegate = self;
                     [cell cellConfigWith:GroupManageCellCommon itemStr:MultilingualTranslation(@"设置群主/管理员") model:self.groupInfoModel];
@@ -822,7 +822,7 @@
                 case 1:
                 {
                     //群机器人
-                    ZChatSetGroupCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZChatSetGroupCommonCell cellIdentifier] forIndexPath:indexPath];
+                    CCChatCSSetGroupCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCChatCSSetGroupCommonCell cellIdentifier] forIndexPath:indexPath];
                     cell.baseCellIndexPath = indexPath;
                     cell.baseDelegate = self;
                     [cell cellConfigWithTitle:MultilingualTranslation(@"群机器人") model:_groupInfoModel];
@@ -832,7 +832,7 @@
                 case 2:
                 {
                     if (indexPath.row == 0) {
-                        ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                        CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                         cell.baseCellIndexPath = indexPath;
                         cell.baseDelegate = self;
                         [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"全员禁言") model:self.groupInfoModel];
@@ -841,7 +841,7 @@
                         cell.btnAction.selected = self.isOpenAllMenmberNotalk;
                         return cell;
                     }else if(indexPath.row == 1){
-                        ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                        CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                         cell.baseCellIndexPath = indexPath;
                         cell.baseDelegate = self;
                         [cell cellConfigWith:GroupManageCellCommon itemStr:MultilingualTranslation(@"单人禁言") model:self.groupInfoModel];
@@ -874,7 +874,7 @@
                 case 3:
                 {
                     //群活跃等级
-                    ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                    CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                     [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"群活跃等级") model:self.groupInfoModel];
                     cell.viewLine.hidden = YES;
                     cell.baseCellIndexPath = indexPath;
@@ -907,7 +907,7 @@
                         if (self.groupInfoModel.isNeedVerify) {
                             if (indexPath.row == 2) {
                                 //邀请进群申请
-                                ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                                CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                                 cell.baseCellIndexPath = indexPath;
                                 cell.baseDelegate = self;
                                 [cell setCornerRadiusWithIsShow:NO location:CornerRadiusLocationBottom];
@@ -916,7 +916,7 @@
                                 return cell;
                             } else {
                                 //新成员可查看历史记录
-                                ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                                CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                                 [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"新成员可查看历史记录") model:self.groupInfoModel];
                                 cell.baseCellIndexPath = indexPath;
                                 cell.baseDelegate = self;
@@ -927,7 +927,7 @@
                             }
                         } else {
                             //新成员可查看历史记录
-                            ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                            CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                             [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"新成员可查看历史记录") model:self.groupInfoModel];
                             cell.baseCellIndexPath = indexPath;
                             cell.baseDelegate = self;
@@ -944,7 +944,7 @@
                 {
                     if (indexPath.row == 0) {
                         //关闭群提示
-                        ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                        CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                         [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"关闭群提示") model:self.groupInfoModel];
                         cell.viewLine.hidden = NO;
                         cell.baseCellIndexPath = indexPath;
@@ -956,7 +956,7 @@
                     if ([ZHostTool.appSysSetModel.enableAudioAndVideoCalls isEqualToString:@"1"]) {
                         if (indexPath.row == 1) {
                             //关闭音视频
-                            ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                            CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                             [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"关闭音视频") model:self.groupInfoModel];
                             cell.viewLine.hidden = NO;
                             cell.baseCellIndexPath = indexPath;
@@ -966,7 +966,7 @@
                             return cell;
                         } else {
                             //关闭群二维码
-                            ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                            CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                             [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"关闭群二维码") model:self.groupInfoModel];
                             cell.viewLine.hidden = YES;
                             cell.baseCellIndexPath = indexPath;
@@ -977,7 +977,7 @@
                         }
                     } else {
                         //关闭群二维码
-                        ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                        CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                         [cell cellConfigWith:GroupManageCellSelect itemStr:MultilingualTranslation(@"关闭群二维码") model:self.groupInfoModel];
                         cell.viewLine.hidden = YES;
                         cell.baseCellIndexPath = indexPath;
@@ -989,7 +989,7 @@
                     break;
                 case 6:
                 {
-                    ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                    CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                     cell.baseCellIndexPath = indexPath;
                     cell.baseDelegate = self;
                     [cell cellConfigWith:GroupManageCellButton itemStr:MultilingualTranslation(@"解散群组") model:self.groupInfoModel];
@@ -1012,17 +1012,17 @@
     if (self.groupInfoModel.userGroupRole == 1) {
         //管理员
         if (indexPath.section == 0) {
-            return [ZChatSetGroupCommonCell defaultCellHeight];
+            return [CCChatCSSetGroupCommonCell defaultCellHeight];
         } else if (indexPath.section == 1) {
             
             if (indexPath.row > 1) {
                 return [MMGroupGMManageMemberCell defaultCellHeight];
             }else{
-                return [ZGroupManageCommonCell defaultCellHeight];
+                return [CCGroupGMManageCommonCell defaultCellHeight];
             }
             
         } else if (indexPath.section == 2) {
-            return [ZGroupManageCommonCell defaultCellHeight];
+            return [CCGroupGMManageCommonCell defaultCellHeight];
         } else if (indexPath.section == 3) {
             
             if (indexPath.row == 0) {
@@ -1030,36 +1030,36 @@
             }else if (indexPath.row == 1) {
                 return DWScale(80);
             }else {
-                return [ZGroupManageCommonCell defaultCellHeight];
+                return [CCGroupGMManageCommonCell defaultCellHeight];
             }
         } else {
-            return [ZGroupManageCommonCell defaultCellHeight];
+            return [CCGroupGMManageCommonCell defaultCellHeight];
         }
         
     } else if (self.groupInfoModel.userGroupRole == 2) {
         //群主
         if (indexPath.section == 0) {
-            return [ZGroupManageCommonCell defaultCellHeight];
+            return [CCGroupGMManageCommonCell defaultCellHeight];
         } else if (indexPath.section == 1) {
-            return [ZChatSetGroupCommonCell defaultCellHeight];
+            return [CCChatCSSetGroupCommonCell defaultCellHeight];
         }else if (indexPath.section == 2) {
             if (indexPath.row > 1) {
                 return [MMGroupGMManageMemberCell defaultCellHeight];
             }else{
-                return [ZGroupManageCommonCell defaultCellHeight];
+                return [CCGroupGMManageCommonCell defaultCellHeight];
             }
         } else if (indexPath.section == 3) {
-            return [ZGroupManageCommonCell defaultCellHeight];
+            return [CCGroupGMManageCommonCell defaultCellHeight];
         } else if (indexPath.section == 4) {
             if (indexPath.row == 0) {
                 return DWScale(80);
             }else if (indexPath.row == 1) {
                 return DWScale(80);
             }else {
-                return [ZGroupManageCommonCell defaultCellHeight];
+                return [CCGroupGMManageCommonCell defaultCellHeight];
             }
         } else {
-            return [ZGroupManageCommonCell defaultCellHeight];
+            return [CCGroupGMManageCommonCell defaultCellHeight];
         }
     }
     

@@ -1,5 +1,5 @@
 //
-//  ZGroupNoticeListView.h
+//  LLGroupGNNoticeListView.h
 //  CIMKit
 //
 //  Created by phl on 2025/8/11.
@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 @class GGNBroupNoticeListDataHandle;
-@interface ZGroupNoticeListView : UIView
+@interface LLGroupGNNoticeListView : UIView
 
 /// 初始化群公告列表
 /// - Parameters:

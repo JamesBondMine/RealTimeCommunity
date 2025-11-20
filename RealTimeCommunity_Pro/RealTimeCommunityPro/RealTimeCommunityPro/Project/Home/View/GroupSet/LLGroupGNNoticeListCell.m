@@ -1,14 +1,14 @@
 //
-//  ZGroupNoticeListCell.m
+//  LLGroupGNNoticeListCell.m
 //  CIMKit
 //
 //  Created by phl on 2025/8/11.
 //
 
-#import "ZGroupNoticeListCell.h"
+#import "LLGroupGNNoticeListCell.h"
 #import "GNoteLocalUserNameModel.h"
 
-@interface ZGroupNoticeListCell()
+@interface LLGroupGNNoticeListCell()
 
 @property (nonatomic, strong) UIView *bgView;
 
@@ -26,7 +26,7 @@
 
 @end
 
-@implementation ZGroupNoticeListCell
+@implementation LLGroupGNNoticeListCell
 
 - (void)setGroupModel:(GNoteLocalUserNameModel *)groupModel {
     if (!groupModel) {

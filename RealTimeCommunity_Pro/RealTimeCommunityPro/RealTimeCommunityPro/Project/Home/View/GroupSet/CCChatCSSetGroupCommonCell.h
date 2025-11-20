@@ -1,5 +1,5 @@
 //
-//  ZChatSetGroupCommonCell.h
+//  CCChatCSSetGroupCommonCell.h
 //  CIMKit
 //
 //  Created by cusPro on 2022/11/5.
@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ZChatSetGroupCommonCell : ZBaseCell
+@interface CCChatCSSetGroupCommonCell : ZBaseCell
 @property (nonatomic, strong) UIButton *viewBg;
 @property (nonatomic, strong) UILabel *lblTitle;
 @property (nonatomic, strong) UILabel *lblContent;

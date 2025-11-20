@@ -8,7 +8,7 @@
 #import "ZBaseCell.h"
 #import "BBBaseImageView.h"
 #import <NoaChatSDKCore/LingIMGroupMemberModel.h>
-#import "ZGroupManageCommonCell.h"
+#import "CCGroupGMManageCommonCell.h"
 
 NS_ASSUME_NONNULL_BEGIN
 typedef void(^TapCancelManagerBlock)(LingIMGroupMemberModel * model);

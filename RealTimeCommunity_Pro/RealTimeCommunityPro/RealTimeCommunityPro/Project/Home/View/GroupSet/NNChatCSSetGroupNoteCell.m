@@ -1,20 +1,20 @@
 //
-//  ZChatSetGroupNoteCell.m
+//  NNChatCSSetGroupNoteCell.m
 //  CIMKit
 //
 //  Created by cusPro on 2022/11/5.
 //
 
-#import "ZChatSetGroupNoteCell.h"
+#import "NNChatCSSetGroupNoteCell.h"
 
-@interface ZChatSetGroupNoteCell ()
+@interface NNChatCSSetGroupNoteCell ()
 //@property (nonatomic, strong) UILabel *lblGroupNote
 @property (nonatomic, strong) UIView *lineView;
 @property (nonatomic, strong) UIButton * viewBg;
 @property (nonatomic, strong) UILabel *lblNote;
 @end
 
-@implementation ZChatSetGroupNoteCell
+@implementation NNChatCSSetGroupNoteCell
 static UILabel *_lblGroupNote = nil;
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {

@@ -1,17 +1,17 @@
 //
-//  ZGroupManageCommonCell.m
+//  CCGroupGMManageCommonCell.m
 //  CIMKit
 //
 //  Created by cusPro on 2022/11/14.
 //
 
-#import "ZGroupManageCommonCell.h"
-@interface ZGroupManageCommonCell ()
+#import "CCGroupGMManageCommonCell.h"
+@interface CCGroupGMManageCommonCell ()
 //@property (nonatomic, strong) NSArray *titleArr;
 @property (nonatomic, strong) LingIMGroup *model;
 @end
 
-@implementation ZGroupManageCommonCell
+@implementation CCGroupGMManageCommonCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];

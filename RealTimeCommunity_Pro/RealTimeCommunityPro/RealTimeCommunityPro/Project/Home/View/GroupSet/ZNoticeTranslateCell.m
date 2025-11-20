@@ -7,9 +7,9 @@
 
 #import "ZNoticeTranslateCell.h"
 #import "UIButton+Gradient.h"
-#import "ZNoticeTranslateEditView.h"
+#import "EENoticeNTTranslateEditView.h"
 
-@interface ZNoticeTranslateCell () <ZNoticeTranslateEditViewDelegate>
+@interface ZNoticeTranslateCell () <EENoticeNTTranslateEditViewDelegate>
 
 @property (nonatomic, strong) UILabel *translateTitleLbl;
 @property (nonatomic, strong) UILabel *translateContentLbl;
@@ -214,7 +214,7 @@
         return;
     }
     
-    ZNoticeTranslateEditView *editTranslateView = [[ZNoticeTranslateEditView alloc] init];
+    EENoticeNTTranslateEditView *editTranslateView = [[EENoticeNTTranslateEditView alloc] init];
     editTranslateView.delegate = self;
     editTranslateView.editTitelStr = _model.languageName;
     editTranslateView.editContentStr = _model.translateNotice;
@@ -230,7 +230,7 @@
     [editTranslateView editViewShow];
 }
 
-#pragma mark - ZNoticeTranslateEditViewDelegate
+#pragma mark - EENoticeNTTranslateEditViewDelegate
 - (void)editContentFinish:(NSString *)contentStr {
     _model.translateStatus = 2;
     _model.translateNotice = contentStr;

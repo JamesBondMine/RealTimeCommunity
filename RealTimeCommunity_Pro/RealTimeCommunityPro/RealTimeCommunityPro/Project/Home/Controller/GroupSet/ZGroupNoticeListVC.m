@@ -6,7 +6,7 @@
 //
 
 #import "ZGroupNoticeListVC.h"
-#import "ZGroupNoticeListView.h"
+#import "LLGroupGNNoticeListView.h"
 #import "GGNBroupNoticeListDataHandle.h"
 #import "ZGroupModifyNoticeVC.h"
 #import "ZGroupNoticeDetailVC.h"
@@ -14,7 +14,7 @@
 @interface ZGroupNoticeListVC ()
 
 /// 列表展示
-@property (nonatomic, strong) ZGroupNoticeListView *listView;
+@property (nonatomic, strong) LLGroupGNNoticeListView *listView;
 
 /// 数据处理类
 @property (nonatomic, strong) GGNBroupNoticeListDataHandle *dataHandle;
@@ -23,9 +23,9 @@
 
 @implementation ZGroupNoticeListVC
 
-- (ZGroupNoticeListView *)listView {
+- (LLGroupGNNoticeListView *)listView {
     if (!_listView) {
-        _listView = [[ZGroupNoticeListView alloc] initWithFrame:CGRectZero GroupNoticeListDataHandle:self.dataHandle];
+        _listView = [[LLGroupGNNoticeListView alloc] initWithFrame:CGRectZero GroupNoticeListDataHandle:self.dataHandle];
     }
     return _listView;
 }

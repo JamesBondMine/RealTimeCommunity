@@ -1,5 +1,5 @@
 //
-//  ZChatSetGroupNoteCell.h
+//  NNChatCSSetGroupNoteCell.h
 //  CIMKit
 //
 //  Created by cusPro on 2022/11/5.
@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ZChatSetGroupNoteCell : ZBaseCell
+@interface NNChatCSSetGroupNoteCell : ZBaseCell
 @property (nonatomic, strong) LingIMGroup *groupModel;
 
 @property (nonatomic, assign) BOOL isShowLine;

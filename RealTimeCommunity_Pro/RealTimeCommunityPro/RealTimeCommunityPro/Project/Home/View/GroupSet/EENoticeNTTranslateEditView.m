@@ -1,13 +1,13 @@
 //
-//  ZNoticeTranslateEditView.m
+//  EENoticeNTTranslateEditView.m
 //  CIMKit
 //
 //  Created by cusPro on 2024/2/21.
 //
 
-#import "ZNoticeTranslateEditView.h"
+#import "EENoticeNTTranslateEditView.h"
 
-@interface ZNoticeTranslateEditView ()
+@interface EENoticeNTTranslateEditView ()
 
 @property (nonatomic, strong) UIView *viewBg;
 @property (nonatomic, strong) UILabel *editTitleLbl;
@@ -20,7 +20,7 @@
 @end
 
 
-@implementation ZNoticeTranslateEditView
+@implementation EENoticeNTTranslateEditView
 
 - (instancetype)init {
     self = [super init];

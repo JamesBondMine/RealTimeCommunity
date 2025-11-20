@@ -6,7 +6,7 @@
 //
 
 #import "ZGroupSetManagerOwnerVC.h"
-#import "ZGroupManageCommonCell.h"
+#import "CCGroupGMManageCommonCell.h"
 #import "GroupGMManageManagerCell.h"
 #import "ZGroupChangeOwnerVC.h"
 #import "ZGroupSetGroupManagerVC.h"
@@ -44,7 +44,7 @@
     self.baseTableView.dataSource = self;
     self.baseTableView.delegate = self;
     self.baseTableView.delaysContentTouches = NO;
-    [self.baseTableView registerClass:[ZGroupManageCommonCell class] forCellReuseIdentifier:[ZGroupManageCommonCell cellIdentifier]];
+    [self.baseTableView registerClass:[CCGroupGMManageCommonCell class] forCellReuseIdentifier:[CCGroupGMManageCommonCell cellIdentifier]];
     [self.baseTableView registerClass:[GroupGMManageManagerCell class] forCellReuseIdentifier:[GroupGMManageManagerCell cellIdentifier]];
 }
 
@@ -142,7 +142,7 @@
     switch (indexPath.section) {
         case 0:
         {
-            ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+            CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
             [cell cellConfigWith:GroupManageCellCommon itemStr:MultilingualTranslation(@"移交群主") model:self.groupInfoModel];
             [cell setCornerRadiusWithIsShow:YES location:CornerRadiusLocationAll];
             cell.baseCellIndexPath = indexPath;
@@ -154,7 +154,7 @@
         case 1:
         {
             if (indexPath.row == 0) {
-                ZGroupManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageCommonCell cellIdentifier] forIndexPath:indexPath];
+                CCGroupGMManageCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCGroupGMManageCommonCell cellIdentifier] forIndexPath:indexPath];
                 [cell cellConfigWith:GroupManageCellCommon itemStr:MultilingualTranslation(@"管理员") model:self.groupInfoModel];
                 if (self.managerListArr.count > 0) {
                     [cell setCornerRadiusWithIsShow:YES location:CornerRadiusLocationTop];
@@ -208,23 +208,23 @@
     switch (indexPath.section) {
         case 0:
         {
-            return [ZGroupManageCommonCell defaultCellHeight];
+            return [CCGroupGMManageCommonCell defaultCellHeight];
         }
             break;
         case 1:
         {
             if (indexPath.row == 0) {
-                return [ZGroupManageCommonCell defaultCellHeight];
+                return [CCGroupGMManageCommonCell defaultCellHeight];
             }else{
                 return [GroupGMManageManagerCell defaultCellHeight];
             }
         }
             break;
         default:
-            return [ZGroupManageCommonCell defaultCellHeight];
+            return [CCGroupGMManageCommonCell defaultCellHeight];
             break;
     }
-    return [ZGroupManageCommonCell defaultCellHeight];
+    return [CCGroupGMManageCommonCell defaultCellHeight];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

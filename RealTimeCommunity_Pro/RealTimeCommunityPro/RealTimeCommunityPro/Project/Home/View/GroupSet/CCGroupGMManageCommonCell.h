@@ -1,5 +1,5 @@
 //
-//  ZGroupManageCommonCell.h
+//  CCGroupGMManageCommonCell.h
 //  CIMKit
 //
 //  Created by cusPro on 2022/11/14.
@@ -24,7 +24,7 @@ typedef NS_ENUM(NSUInteger, CornerRadiusLocationType) {
 };
 
 
-@interface ZGroupManageCommonCell : ZBaseCell
+@interface CCGroupGMManageCommonCell : ZBaseCell
 @property (nonatomic, strong) UIButton *viewBg;
 @property (nonatomic, strong) UILabel *lblTitle;
 @property (nonatomic, strong) UIImageView *ivArrow;

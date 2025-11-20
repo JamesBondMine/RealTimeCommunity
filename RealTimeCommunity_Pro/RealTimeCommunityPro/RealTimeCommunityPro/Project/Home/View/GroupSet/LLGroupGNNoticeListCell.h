@@ -1,5 +1,5 @@
 //
-//  ZGroupNoticeListCell.h
+//  LLGroupGNNoticeListCell.h
 //  CIMKit
 //
 //  Created by phl on 2025/8/11.
@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 @class GNoteLocalUserNameModel;
-@interface ZGroupNoticeListCell : UITableViewCell
+@interface LLGroupGNNoticeListCell : UITableViewCell
 
 /// 团队信息模型
 @property (nonatomic, strong) GNoteLocalUserNameModel *groupModel;

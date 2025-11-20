@@ -1,5 +1,5 @@
 //
-//  ZNoticeTranslateEditView.h
+//  EENoticeNTTranslateEditView.h
 //  CIMKit
 //
 //  Created by cusPro on 2024/2/21.
@@ -10,18 +10,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ZNoticeTranslateEditViewDelegate <NSObject>
+@protocol EENoticeNTTranslateEditViewDelegate <NSObject>
 
 - (void)editContentFinish:(NSString *)contentStr;
 
 @end
 
-@interface ZNoticeTranslateEditView : UIView
+@interface EENoticeNTTranslateEditView : UIView
 
 @property (nonatomic, assign) NSInteger maxContentNum;
 @property (nonatomic, copy) NSString *editTitelStr;
 @property (nonatomic, copy) NSString *editContentStr;
-@property (nonatomic, weak) id<ZNoticeTranslateEditViewDelegate>delegate;
+@property (nonatomic, weak) id<EENoticeNTTranslateEditViewDelegate>delegate;
 
 - (void)editViewShow;
 

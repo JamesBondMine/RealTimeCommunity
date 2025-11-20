@@ -8,8 +8,8 @@
 #import "ZChatGroupSetVC.h"
 #import "ZChatSetGroupInfoCell.h"
 #import "ZGroupSetBasicInfoCell.h"
-#import "ZChatSetGroupNoteCell.h"
-#import "ZChatSetGroupCommonCell.h"
+#import "NNChatCSSetGroupNoteCell.h"
+#import "CCChatCSSetGroupCommonCell.h"
 #import "LingIMGroup.h"
 #import "ZMessageTools.h"
 
@@ -73,8 +73,8 @@
     self.baseTableView.delaysContentTouches = NO;
     [self.baseTableView registerClass:[ZChatSetGroupInfoCell class] forCellReuseIdentifier:[ZChatSetGroupInfoCell cellIdentifier]];
     [self.baseTableView registerClass:[ZGroupSetBasicInfoCell class] forCellReuseIdentifier:[ZGroupSetBasicInfoCell cellIdentifier]];
-    [self.baseTableView registerClass:[ZChatSetGroupNoteCell class] forCellReuseIdentifier:[ZChatSetGroupNoteCell cellIdentifier]];
-    [self.baseTableView registerClass:[ZChatSetGroupCommonCell class] forCellReuseIdentifier:[ZChatSetGroupCommonCell cellIdentifier]];
+    [self.baseTableView registerClass:[NNChatCSSetGroupNoteCell class] forCellReuseIdentifier:[NNChatCSSetGroupNoteCell cellIdentifier]];
+    [self.baseTableView registerClass:[CCChatCSSetGroupCommonCell class] forCellReuseIdentifier:[CCChatCSSetGroupCommonCell cellIdentifier]];
 }
 
 #pragma mark - 查询群组详情 数据请求
@@ -364,7 +364,7 @@
         {
             if (self.groupInfoModel.isShowQrCode == 0) {
                 //群公告
-                ZChatSetGroupNoteCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZChatSetGroupNoteCell cellIdentifier] forIndexPath:indexPath];
+                NNChatCSSetGroupNoteCell *cell = [tableView dequeueReusableCellWithIdentifier:[NNChatCSSetGroupNoteCell cellIdentifier] forIndexPath:indexPath];
                 cell.baseCellIndexPath = indexPath;
                 cell.baseDelegate = self;
                 cell.groupModel = self.groupInfoModel;
@@ -380,7 +380,7 @@
                     return cell;
                 } else if (indexPath.row == 1) {
                     //群公告
-                    ZChatSetGroupNoteCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZChatSetGroupNoteCell cellIdentifier] forIndexPath:indexPath];
+                    NNChatCSSetGroupNoteCell *cell = [tableView dequeueReusableCellWithIdentifier:[NNChatCSSetGroupNoteCell cellIdentifier] forIndexPath:indexPath];
                     cell.baseCellIndexPath = indexPath;
                     cell.baseDelegate = self;
                     cell.groupModel = self.groupInfoModel;
@@ -399,7 +399,7 @@
         case 5://投诉
         case 6://退出群聊
         {
-            ZChatSetGroupCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZChatSetGroupCommonCell cellIdentifier] forIndexPath:indexPath];
+            CCChatCSSetGroupCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[CCChatCSSetGroupCommonCell cellIdentifier] forIndexPath:indexPath];
             cell.baseCellIndexPath = indexPath;
             cell.baseDelegate = self;
             if (indexPath.section == 2) {
@@ -445,14 +445,14 @@
         case 1:
             if (self.groupInfoModel.isShowQrCode == 0) {
                 //群公告
-                return [ZChatSetGroupNoteCell defaultCellHeight];
+                return [NNChatCSSetGroupNoteCell defaultCellHeight];
             } else {
                 if (indexPath.row == 0) {
                     //群二维码
                     return [ZGroupSetBasicInfoCell defaultCellHeight];
                 } else if (indexPath.row == 1) {
                     //群公告
-                    return [ZChatSetGroupNoteCell defaultCellHeight];
+                    return [NNChatCSSetGroupNoteCell defaultCellHeight];
                 } else {
                     return CGFLOAT_MIN;
                 }
@@ -464,7 +464,7 @@
         case 4:
         case 5:
         case 6:
-            return [ZChatSetGroupCommonCell defaultCellHeight];
+            return [CCChatCSSetGroupCommonCell defaultCellHeight];
             break;
             
         default:
