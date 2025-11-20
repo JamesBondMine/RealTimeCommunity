@@ -10,14 +10,14 @@
 #import "ZChatHistoryMediaCell.h"
 #import "ZToolManager.h"
 #import "KNPhotoBrowser.h"//图片+视频的浏览器
-#import "ZChatHistoryHeaderView.h"
+#import "ChatHHHistoryHeaderView.h"
 #import "HomeChatHistoryChoiceUserVC.h"
 
-@interface HomeChatHistoryMediaVC () <UICollectionViewDataSource,UICollectionViewDelegate,DZNEmptyDataSetSource,DZNEmptyDataSetDelegate,KNPhotoBrowserDelegate, ZChatHistoryHeaderViewDelegate, ZChatHistoryChoiceUserDelegate>
+@interface HomeChatHistoryMediaVC () <UICollectionViewDataSource,UICollectionViewDelegate,DZNEmptyDataSetSource,DZNEmptyDataSetDelegate,KNPhotoBrowserDelegate, ChatHHHistoryHeaderViewDelegate, ZChatHistoryChoiceUserDelegate>
 
 @property (nonatomic, strong) NSMutableArray *historyList;
 @property (nonatomic, strong) UICollectionView *collectionView;
-@property (nonatomic, strong) ZChatHistoryHeaderView *selectHeadView;
+@property (nonatomic, strong) ChatHHHistoryHeaderView *selectHeadView;
 
 @end
 
@@ -35,7 +35,7 @@
 
 #pragma mark - 界面布局
 - (void)setupUI {
-    self.selectHeadView = [[ZChatHistoryHeaderView alloc] init];
+    self.selectHeadView = [[ChatHHHistoryHeaderView alloc] init];
     self.selectHeadView.delegate = self;
     [self.view addSubview:self.selectHeadView];
     [self.selectHeadView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -83,7 +83,7 @@
     }
 }
 
-#pragma mark - ZChatHistoryHeaderViewDelegate
+#pragma mark - ChatHHHistoryHeaderViewDelegate
 - (void)headerClickAction {
     HomeChatHistoryChoiceUserVC *vc = [[HomeChatHistoryChoiceUserVC alloc] init];
     vc.choicedList = self.selectHeadView.userInfoList;

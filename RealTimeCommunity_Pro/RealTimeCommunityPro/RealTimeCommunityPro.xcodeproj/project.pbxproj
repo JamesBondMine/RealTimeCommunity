@@ -362,7 +362,7 @@
 		04A6BCE32A690F7D000A818D /* ZTeamCreateVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A6BCE22A690F7D000A818D /* ZTeamCreateVC.m */; };
 		04A6BCE62A6916C4000A818D /* ZTeamManagerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A6BCE52A6916C4000A818D /* ZTeamManagerVC.m */; };
 		04A6BCE92A6917A4000A818D /* ZTeamManagerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A6BCE82A6917A4000A818D /* ZTeamManagerCell.m */; };
-		04A6D9C22C69BB3800FD7521 /* ZChatHistoryHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A6D9C12C69BB3800FD7521 /* ZChatHistoryHeaderView.m */; };
+		04A6D9C22C69BB3800FD7521 /* ChatHHHistoryHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A6D9C12C69BB3800FD7521 /* ChatHHHistoryHeaderView.m */; };
 		04A6D9C52C6A0B6F00FD7521 /* HomeChatHistoryChoiceUserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A6D9C42C6A0B6F00FD7521 /* HomeChatHistoryChoiceUserVC.m */; };
 		04A6D9C82C6A0F0800FD7521 /* ZHistoryChoiceUserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A6D9C72C6A0F0800FD7521 /* ZHistoryChoiceUserCell.m */; };
 		04A6D9CB2C6A0F2C00FD7521 /* ZHistoryChoiceUseredTopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A6D9CA2C6A0F2C00FD7521 /* ZHistoryChoiceUseredTopView.m */; };
@@ -1519,8 +1519,8 @@
 		04A6BCE52A6916C4000A818D /* ZTeamManagerVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZTeamManagerVC.m; sourceTree = "<group>"; };
 		04A6BCE72A6917A4000A818D /* ZTeamManagerCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZTeamManagerCell.h; sourceTree = "<group>"; };
 		04A6BCE82A6917A4000A818D /* ZTeamManagerCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZTeamManagerCell.m; sourceTree = "<group>"; };
-		04A6D9C02C69BB3800FD7521 /* ZChatHistoryHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZChatHistoryHeaderView.h; sourceTree = "<group>"; };
-		04A6D9C12C69BB3800FD7521 /* ZChatHistoryHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZChatHistoryHeaderView.m; sourceTree = "<group>"; };
+		04A6D9C02C69BB3800FD7521 /* ChatHHHistoryHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatHHHistoryHeaderView.h; sourceTree = "<group>"; };
+		04A6D9C12C69BB3800FD7521 /* ChatHHHistoryHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatHHHistoryHeaderView.m; sourceTree = "<group>"; };
 		04A6D9C32C6A0B6F00FD7521 /* HomeChatHistoryChoiceUserVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeChatHistoryChoiceUserVC.h; sourceTree = "<group>"; };
 		04A6D9C42C6A0B6F00FD7521 /* HomeChatHistoryChoiceUserVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeChatHistoryChoiceUserVC.m; sourceTree = "<group>"; };
 		04A6D9C62C6A0F0800FD7521 /* ZHistoryChoiceUserCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZHistoryChoiceUserCell.h; sourceTree = "<group>"; };
@@ -2558,8 +2558,8 @@
 		0420B3882922170A0065BE23 /* ChatHistory */ = {
 			isa = PBXGroup;
 			children = (
-				04A6D9C02C69BB3800FD7521 /* ZChatHistoryHeaderView.h */,
-				04A6D9C12C69BB3800FD7521 /* ZChatHistoryHeaderView.m */,
+				04A6D9C02C69BB3800FD7521 /* ChatHHHistoryHeaderView.h */,
+				04A6D9C12C69BB3800FD7521 /* ChatHHHistoryHeaderView.m */,
 				0420B389292217300065BE23 /* ZChatHistoryTextCell.h */,
 				0420B38A292217300065BE23 /* ZChatHistoryTextCell.m */,
 				0420B38C292217510065BE23 /* ZChatHistoryMediaCell.h */,
@@ -6551,7 +6551,7 @@
 				042D7F2229165A6900D2BB59 /* ZChatSetGroupInfoCell.m in Sources */,
 				04CDB507291CF6F100EFEABA /* ZGroupRemoveFriendVC.m in Sources */,
 				045F1ECB28DEA492003D2818 /* UITabBar+Badge.m in Sources */,
-				04A6D9C22C69BB3800FD7521 /* ZChatHistoryHeaderView.m in Sources */,
+				04A6D9C22C69BB3800FD7521 /* ChatHHHistoryHeaderView.m in Sources */,
 				045F1EE828DEE765003D2818 /* ZVideoPlayerManager.m in Sources */,
 				0400A360296CFBA5001BA200 /* BBBaseCollectionView.m in Sources */,
 				0430E1CD29EFE74D0071B489 /* ZCollectionImageCell.m in Sources */,

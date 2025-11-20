@@ -1,5 +1,5 @@
 //
-//  ZChatHistoryHeaderView.h
+//  ChatHHHistoryHeaderView.h
 //  CIMKit
 //
 //  Created by cusPro on 2024/8/12.
@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ZChatHistoryHeaderViewDelegate <NSObject>
+@protocol ChatHHHistoryHeaderViewDelegate <NSObject>
 //点击
 - (void)headerClickAction;
 //重置
@@ -17,10 +17,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface ZChatHistoryHeaderView : UIView
+@interface ChatHHHistoryHeaderView : UIView
 
 @property (nonatomic, strong) NSMutableArray *userInfoList;
-@property (nonatomic, weak) id <ZChatHistoryHeaderViewDelegate> delegate;
+@property (nonatomic, weak) id <ChatHHHistoryHeaderViewDelegate> delegate;
 
 @end
 

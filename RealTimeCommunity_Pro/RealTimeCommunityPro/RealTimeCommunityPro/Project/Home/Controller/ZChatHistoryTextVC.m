@@ -8,13 +8,13 @@
 #import "ZChatHistoryTextVC.h"
 #import "MainSearchView.h"
 #import <DZNEmptyDataSet/UIScrollView+EmptyDataSet.h>
-#import "ZChatHistoryHeaderView.h"
+#import "ChatHHHistoryHeaderView.h"
 #import "ZChatHistoryTextCell.h"
 #import "HomeChatHistoryChoiceUserVC.h"
 
-@interface ZChatHistoryTextVC () <MainSearchViewDelegate,UITableViewDataSource,UITableViewDelegate,DZNEmptyDataSetSource,DZNEmptyDataSetDelegate,ZBaseCellDelegate, ZChatHistoryHeaderViewDelegate, ZChatHistoryChoiceUserDelegate>
+@interface ZChatHistoryTextVC () <MainSearchViewDelegate,UITableViewDataSource,UITableViewDelegate,DZNEmptyDataSetSource,DZNEmptyDataSetDelegate,ZBaseCellDelegate, ChatHHHistoryHeaderViewDelegate, ZChatHistoryChoiceUserDelegate>
 
-@property (nonatomic, strong) ZChatHistoryHeaderView *selectHeadView;
+@property (nonatomic, strong) ChatHHHistoryHeaderView *selectHeadView;
 @property (nonatomic, strong) NSMutableArray *historyList;
 @property (nonatomic, copy) NSString *searchStr;
 
@@ -42,7 +42,7 @@
     viewSearch.returnKeyType = UIReturnKeyDefault;
     [self.view addSubview:viewSearch];
     
-    self.selectHeadView = [[ZChatHistoryHeaderView alloc] init];
+    self.selectHeadView = [[ChatHHHistoryHeaderView alloc] init];
     self.selectHeadView.delegate = self;
     [self.view addSubview:self.selectHeadView];
     [self.selectHeadView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -115,7 +115,7 @@
     }
 }
 
-#pragma mark - ZChatHistoryHeaderViewDelegate
+#pragma mark - ChatHHHistoryHeaderViewDelegate
 - (void)headerClickAction {
     HomeChatHistoryChoiceUserVC *vc = [[HomeChatHistoryChoiceUserVC alloc] init];
     vc.choicedList = self.selectHeadView.userInfoList;

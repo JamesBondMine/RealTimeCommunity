@@ -1,14 +1,14 @@
 //
-//  ZChatHistoryHeaderView.m
+//  ChatHHHistoryHeaderView.m
 //  CIMKit
 //
 //  Created by cusPro on 2024/8/12.
 //
 
-#import "ZChatHistoryHeaderView.h"
+#import "ChatHHHistoryHeaderView.h"
 #import "ZBaseUserModel.h"
 
-@interface ZChatHistoryHeaderView ()
+@interface ChatHHHistoryHeaderView ()
 
 @property (nonatomic, strong) UIStackView *backStack;
 @property (nonatomic, strong) UILabel *fromTitleLbl;
@@ -19,7 +19,7 @@
 
 @end
 
-@implementation ZChatHistoryHeaderView
+@implementation ChatHHHistoryHeaderView
 
 - (instancetype)init {
     self = [super init];

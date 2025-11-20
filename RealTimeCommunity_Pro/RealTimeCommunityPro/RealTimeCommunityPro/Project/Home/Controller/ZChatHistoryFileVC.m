@@ -12,16 +12,16 @@
 #import "ZMessageModel.h"
 #import <DZNEmptyDataSet/UIScrollView+EmptyDataSet.h>
 #import "NHChatFileDetailViewController.h"
-#import "ZChatHistoryHeaderView.h"
+#import "ChatHHHistoryHeaderView.h"
 #import "HomeChatHistoryChoiceUserVC.h"
 
-@interface ZChatHistoryFileVC ()<MainSearchViewDelegate,UITableViewDelegate,UITableViewDataSource,MGSwipeTableCellDelegate,TalkCellChatHistoryFileCellDelegate,DZNEmptyDataSetSource,DZNEmptyDataSetDelegate, ZChatHistoryHeaderViewDelegate, ZChatHistoryChoiceUserDelegate>
+@interface ZChatHistoryFileVC ()<MainSearchViewDelegate,UITableViewDelegate,UITableViewDataSource,MGSwipeTableCellDelegate,TalkCellChatHistoryFileCellDelegate,DZNEmptyDataSetSource,DZNEmptyDataSetDelegate, ChatHHHistoryHeaderViewDelegate, ZChatHistoryChoiceUserDelegate>
 
 @property (nonatomic, strong) NSMutableArray *reqHistoryList;//从后台请求下来的数据集合
 @property (nonatomic, strong) NSMutableArray *showHistoryList;//展示的好友列表
 @property (nonatomic, strong) MainSearchView *viewSearch;
 @property (nonatomic, copy) NSString *searchStr;
-@property (nonatomic, strong) ZChatHistoryHeaderView *selectHeadView;
+@property (nonatomic, strong) ChatHHHistoryHeaderView *selectHeadView;
 
 @end
 
@@ -51,7 +51,7 @@
     _viewSearch.delegate = self;
     [self.view addSubview:_viewSearch];
     
-    self.selectHeadView = [[ZChatHistoryHeaderView alloc] init];
+    self.selectHeadView = [[ChatHHHistoryHeaderView alloc] init];
     self.selectHeadView.delegate = self;
     [self.view addSubview:self.selectHeadView];
     [self.selectHeadView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -99,7 +99,7 @@
     [self checkLocalDBData];
 }
 
-#pragma mark - ZChatHistoryHeaderViewDelegate
+#pragma mark - ChatHHHistoryHeaderViewDelegate
 - (void)headerClickAction {
     HomeChatHistoryChoiceUserVC *vc = [[HomeChatHistoryChoiceUserVC alloc] init];
     vc.choicedList = self.selectHeadView.userInfoList;
