@@ -7,7 +7,7 @@
 
 #import "ZGroupManageVC.h"
 #import "ZGroupManageCommonCell.h"
-#import "ZGroupManageMemberCell.h"
+#import "MMGroupGMManageMemberCell.h"
 #import "ZGroupManageContentCell.h"
 #import "ZChatSetGroupCommonCell.h"
 #import "ZGroupSetManagerOwnerVC.h"
@@ -326,7 +326,7 @@
     self.baseTableView.delegate = self;
     self.baseTableView.delaysContentTouches = NO;
     [self.baseTableView registerClass:[ZGroupManageCommonCell class] forCellReuseIdentifier:[ZGroupManageCommonCell cellIdentifier]];
-    [self.baseTableView registerClass:[ZGroupManageMemberCell class] forCellReuseIdentifier:[ZGroupManageMemberCell cellIdentifier]];
+    [self.baseTableView registerClass:[MMGroupGMManageMemberCell class] forCellReuseIdentifier:[MMGroupGMManageMemberCell cellIdentifier]];
     [self.baseTableView registerClass:[ZGroupManageContentCell class] forCellReuseIdentifier:[ZGroupManageContentCell cellIdentifier]];
     [self.baseTableView registerClass:[ZChatSetGroupCommonCell class] forCellReuseIdentifier:[ZChatSetGroupCommonCell cellIdentifier]];
 }
@@ -677,7 +677,7 @@
             }else{
                 
                 WeakSelf;
-                ZGroupManageMemberCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageMemberCell cellIdentifier] forIndexPath:indexPath];
+                MMGroupGMManageMemberCell *cell = [tableView dequeueReusableCellWithIdentifier:[MMGroupGMManageMemberCell cellIdentifier] forIndexPath:indexPath];
                 [cell cellConfigWithmodel:self.notalkListArr[indexPath.row-2]];
                 if ((indexPath.row-2+1) == self.notalkListArr.count) {
                     cell.viewLine.hidden = YES;
@@ -855,7 +855,7 @@
                         return cell;
                     }else{
                         WeakSelf;
-                        ZGroupManageMemberCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageMemberCell cellIdentifier] forIndexPath:indexPath];
+                        MMGroupGMManageMemberCell *cell = [tableView dequeueReusableCellWithIdentifier:[MMGroupGMManageMemberCell cellIdentifier] forIndexPath:indexPath];
                         [cell cellConfigWithmodel:self.notalkListArr[indexPath.row-2]];
                         if ((indexPath.row-2+1) == self.notalkListArr.count) {
                             cell.viewLine.hidden = YES;
@@ -1016,7 +1016,7 @@
         } else if (indexPath.section == 1) {
             
             if (indexPath.row > 1) {
-                return [ZGroupManageMemberCell defaultCellHeight];
+                return [MMGroupGMManageMemberCell defaultCellHeight];
             }else{
                 return [ZGroupManageCommonCell defaultCellHeight];
             }
@@ -1044,7 +1044,7 @@
             return [ZChatSetGroupCommonCell defaultCellHeight];
         }else if (indexPath.section == 2) {
             if (indexPath.row > 1) {
-                return [ZGroupManageMemberCell defaultCellHeight];
+                return [MMGroupGMManageMemberCell defaultCellHeight];
             }else{
                 return [ZGroupManageCommonCell defaultCellHeight];
             }

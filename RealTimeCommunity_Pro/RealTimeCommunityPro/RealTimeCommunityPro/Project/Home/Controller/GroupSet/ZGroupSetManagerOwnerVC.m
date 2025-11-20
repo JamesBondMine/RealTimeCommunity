@@ -7,7 +7,7 @@
 
 #import "ZGroupSetManagerOwnerVC.h"
 #import "ZGroupManageCommonCell.h"
-#import "ZGroupManageManagerCell.h"
+#import "GroupGMManageManagerCell.h"
 #import "ZGroupChangeOwnerVC.h"
 #import "ZGroupSetGroupManagerVC.h"
 #import "ZMessageAlertView.h"
@@ -45,7 +45,7 @@
     self.baseTableView.delegate = self;
     self.baseTableView.delaysContentTouches = NO;
     [self.baseTableView registerClass:[ZGroupManageCommonCell class] forCellReuseIdentifier:[ZGroupManageCommonCell cellIdentifier]];
-    [self.baseTableView registerClass:[ZGroupManageManagerCell class] forCellReuseIdentifier:[ZGroupManageManagerCell cellIdentifier]];
+    [self.baseTableView registerClass:[GroupGMManageManagerCell class] forCellReuseIdentifier:[GroupGMManageManagerCell cellIdentifier]];
 }
 
 - (void)getGroupManagerListReq{
@@ -168,7 +168,7 @@
                 return cell;
             }else{
                 WeakSelf;
-                ZGroupManageManagerCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZGroupManageManagerCell cellIdentifier] forIndexPath:indexPath];
+                GroupGMManageManagerCell *cell = [tableView dequeueReusableCellWithIdentifier:[GroupGMManageManagerCell cellIdentifier] forIndexPath:indexPath];
                 if ((indexPath.row-1+1) == self.managerListArr.count) {
                     cell.viewLine.hidden = YES;
                     [cell setCornerRadiusWithIsShow:YES location:CornerRadiusLocationBottom];
@@ -216,7 +216,7 @@
             if (indexPath.row == 0) {
                 return [ZGroupManageCommonCell defaultCellHeight];
             }else{
-                return [ZGroupManageManagerCell defaultCellHeight];
+                return [GroupGMManageManagerCell defaultCellHeight];
             }
         }
             break;

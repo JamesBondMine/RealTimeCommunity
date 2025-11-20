@@ -1,16 +1,16 @@
 //
-//  ZGroupManageManagerCell.m
+//  GroupGMManageManagerCell.m
 //  CIMKit
 //
 //  Created by cusPro on 2022/11/15.
 //
 
-#import "ZGroupManageManagerCell.h"
-@interface ZGroupManageManagerCell ()
+#import "GroupGMManageManagerCell.h"
+@interface GroupGMManageManagerCell ()
 //@property (nonatomic, strong) NSArray *titleArr;
 @property (nonatomic, strong) LingIMGroupMemberModel *model;
 @end
-@implementation ZGroupManageManagerCell
+@implementation GroupGMManageManagerCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -24,7 +24,7 @@
 #pragma mark - 界面布局
 - (void)setupUI {
     
-    _viewBg = [[UIView alloc] initWithFrame:CGRectMake(DWScale(16), 0, DScreenWidth - DWScale(32), [ZGroupManageManagerCell defaultCellHeight])];
+    _viewBg = [[UIView alloc] initWithFrame:CGRectMake(DWScale(16), 0, DScreenWidth - DWScale(32), [GroupGMManageManagerCell defaultCellHeight])];
     _viewBg.tkThemebackgroundColors = @[COLORWHITE, COLOR_EEEEEE_DARK];
     [self.contentView addSubview:_viewBg];
     

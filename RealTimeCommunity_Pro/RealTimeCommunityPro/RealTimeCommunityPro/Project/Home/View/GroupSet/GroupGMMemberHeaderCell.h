@@ -1,5 +1,5 @@
 //
-//  ZGroupMemberHeaderCell.h
+//  GroupGMMemberHeaderCell.h
 //  CIMKit
 //
 //  Created by cusPro on 2022/11/5.
@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ZGroupMemberHeaderCell : UICollectionViewCell
+@interface GroupGMMemberHeaderCell : UICollectionViewCell
 /// 配置群成员信息
 /// @param memberModel 群成员
 /// @param addMember 添加或删除群成员

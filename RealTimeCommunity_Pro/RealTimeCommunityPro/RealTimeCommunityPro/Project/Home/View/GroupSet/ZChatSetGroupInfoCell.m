@@ -7,7 +7,7 @@
 
 #import "ZChatSetGroupInfoCell.h"
 #import "BBBaseImageView.h"
-#import "ZGroupMemberHeaderCell.h"
+#import "GroupGMMemberHeaderCell.h"
 
 @interface ZChatSetGroupInfoCell () <UICollectionViewDataSource,UICollectionViewDelegate>
 @property (nonatomic, strong) BBBaseImageView *ivGroup;
@@ -166,7 +166,7 @@
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
     _collectionView.tkThemebackgroundColors = @[[UIColor clearColor],[UIColor clearColor]];
-    [_collectionView registerClass:[ZGroupMemberHeaderCell class] forCellWithReuseIdentifier:NSStringFromClass([ZGroupMemberHeaderCell class])];
+    [_collectionView registerClass:[GroupGMMemberHeaderCell class] forCellWithReuseIdentifier:NSStringFromClass([GroupGMMemberHeaderCell class])];
     [viewBg addSubview:_collectionView];
     [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(viewBg).offset(DWScale(16));
@@ -237,7 +237,7 @@
     }
 }
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    ZGroupMemberHeaderCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([ZGroupMemberHeaderCell class]) forIndexPath:indexPath];
+    GroupGMMemberHeaderCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([GroupGMMemberHeaderCell class]) forIndexPath:indexPath];
     LingIMGroupMemberModel *memberModel = [_memberList objectAtIndexSafe:indexPath.row];
     if (memberModel) {
         [cell configCellWith:memberModel action:YES];

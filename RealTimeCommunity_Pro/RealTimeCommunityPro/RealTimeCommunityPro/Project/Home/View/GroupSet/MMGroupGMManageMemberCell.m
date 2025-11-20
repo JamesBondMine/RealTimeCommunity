@@ -1,18 +1,18 @@
 //
-//  ZGroupManageMemberCell.m
+//  MMGroupGMManageMemberCell.m
 //  CIMKit
 //
 //  Created by cusPro on 2022/11/14.
 //
 
-#import "ZGroupManageMemberCell.h"
+#import "MMGroupGMManageMemberCell.h"
 #import "NSDate+Addition.h"
-@interface ZGroupManageMemberCell ()
+@interface MMGroupGMManageMemberCell ()
 //@property (nonatomic, strong) NSArray *titleArr;
 @property (nonatomic, strong) HomeGroupNotalkMemberModel *model;
 @end
 
-@implementation ZGroupManageMemberCell
+@implementation MMGroupGMManageMemberCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -29,7 +29,7 @@
 #pragma mark - 界面布局
 - (void)setupUI {
     
-    _viewBg = [[UIView alloc] initWithFrame:CGRectMake(DWScale(16), 0, DScreenWidth - DWScale(32), [ZGroupManageMemberCell defaultCellHeight])];
+    _viewBg = [[UIView alloc] initWithFrame:CGRectMake(DWScale(16), 0, DScreenWidth - DWScale(32), [MMGroupGMManageMemberCell defaultCellHeight])];
     _viewBg.tkThemebackgroundColors = @[COLORWHITE, COLOR_EEEEEE_DARK];
     [self.contentView addSubview:_viewBg];
     

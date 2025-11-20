@@ -1,5 +1,5 @@
 //
-//  ZGroupManageMemberCell.h
+//  MMGroupGMManageMemberCell.h
 //  CIMKit
 //
 //  Created by cusPro on 2022/11/14.
@@ -13,7 +13,7 @@
 NS_ASSUME_NONNULL_BEGIN
 typedef void(^TapCancelNotalkBlock)(HomeGroupNotalkMemberModel * model);
 
-@interface ZGroupManageMemberCell : ZBaseCell
+@interface MMGroupGMManageMemberCell : ZBaseCell
 @property (nonatomic, strong) UIView *viewBg;
 @property (nonatomic, strong) UILabel *lblUserName;
 @property (nonatomic, strong) BBBaseImageView *ivHeader;

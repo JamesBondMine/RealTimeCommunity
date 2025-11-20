@@ -1,5 +1,5 @@
 //
-//  ZGroupManageManagerCell.h
+//  GroupGMManageManagerCell.h
 //  CIMKit
 //
 //  Created by cusPro on 2022/11/15.
@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 typedef void(^TapCancelManagerBlock)(LingIMGroupMemberModel * model);
-@interface ZGroupManageManagerCell : ZBaseCell
+@interface GroupGMManageManagerCell : ZBaseCell
 @property (nonatomic, strong) UIView *viewBg;
 @property (nonatomic, strong) UILabel *lblUserName;
 @property (nonatomic, strong) BBBaseImageView *ivHeader;

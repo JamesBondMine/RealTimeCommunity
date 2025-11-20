@@ -82,7 +82,7 @@
 		042D7F172915089500D2BB59 /* ZChatSingleSetVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F162915089500D2BB59 /* ZChatSingleSetVC.m */; };
 		042D7F1E291657D700D2BB59 /* ZChatGroupSetVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F1D291657D700D2BB59 /* ZChatGroupSetVC.m */; };
 		042D7F2229165A6900D2BB59 /* ZChatSetGroupInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F2129165A6900D2BB59 /* ZChatSetGroupInfoCell.m */; };
-		042D7F252916642300D2BB59 /* ZGroupMemberHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F242916642300D2BB59 /* ZGroupMemberHeaderCell.m */; };
+		042D7F252916642300D2BB59 /* GroupGMMemberHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F242916642300D2BB59 /* GroupGMMemberHeaderCell.m */; };
 		042D7F28291665D200D2BB59 /* ZChatSetGroupNoteCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F27291665D200D2BB59 /* ZChatSetGroupNoteCell.m */; };
 		042D7F2B29166A7100D2BB59 /* ZChatSetGroupCommonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F2A29166A7100D2BB59 /* ZChatSetGroupCommonCell.m */; };
 		042D7F4B291E38D700D2BB59 /* ZSureCancelTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 042D7F4A291E38D700D2BB59 /* ZSureCancelTipView.m */; };
@@ -366,7 +366,6 @@
 		04A6D9C52C6A0B6F00FD7521 /* HomeChatHistoryChoiceUserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A6D9C42C6A0B6F00FD7521 /* HomeChatHistoryChoiceUserVC.m */; };
 		04A6D9C82C6A0F0800FD7521 /* ZHistoryChoiceUserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A6D9C72C6A0F0800FD7521 /* ZHistoryChoiceUserCell.m */; };
 		04A6D9CB2C6A0F2C00FD7521 /* ZHistoryChoiceUseredTopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A6D9CA2C6A0F2C00FD7521 /* ZHistoryChoiceUseredTopView.m */; };
-		04A79D8E2942D48A00FF324A /* ZGroupMemberPageInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A79D8D2942D48A00FF324A /* ZGroupMemberPageInfoCell.m */; };
 		04A99FC82B96EF2900DFD946 /* ZFileUploadTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A99FC72B96EF2900DFD946 /* ZFileUploadTools.m */; };
 		04A9FCF82A19F1E700960096 /* CMFriendModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A9FCF72A19F1E700960096 /* CMFriendModel.m */; };
 		04AA729628F80CE800985862 /* HomeChatTopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AA729528F80CE800985862 /* HomeChatTopView.m */; };
@@ -474,9 +473,9 @@
 		04CDB50A291E531F00EFEABA /* ZGroupModifyNoticeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB509291E531F00EFEABA /* ZGroupModifyNoticeVC.m */; };
 		04CDB50D2922182200EFEABA /* ZGroupManageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB50C2922182200EFEABA /* ZGroupManageVC.m */; };
 		04CDB51029221D6300EFEABA /* ZGroupManageCommonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB50F29221D6300EFEABA /* ZGroupManageCommonCell.m */; };
-		04CDB51329221DA700EFEABA /* ZGroupManageMemberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB51229221DA700EFEABA /* ZGroupManageMemberCell.m */; };
+		04CDB51329221DA700EFEABA /* MMGroupGMManageMemberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB51229221DA700EFEABA /* MMGroupGMManageMemberCell.m */; };
 		04CDB51629233CFA00EFEABA /* ZGroupSetManagerOwnerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB51529233CFA00EFEABA /* ZGroupSetManagerOwnerVC.m */; };
-		04CDB51929233DF100EFEABA /* ZGroupManageManagerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB51829233DF100EFEABA /* ZGroupManageManagerCell.m */; };
+		04CDB51929233DF100EFEABA /* GroupGMManageManagerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB51829233DF100EFEABA /* GroupGMManageManagerCell.m */; };
 		04CDB51C292368C800EFEABA /* ZGroupSetNotalkMemberVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB51B292368C800EFEABA /* ZGroupSetNotalkMemberVC.m */; };
 		04CDB51F29247C1E00EFEABA /* ZSheetCustomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB51E29247C1E00EFEABA /* ZSheetCustomView.m */; };
 		04CDB52229248E7C00EFEABA /* ZGroupChangeOwnerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CDB52129248E7C00EFEABA /* ZGroupChangeOwnerVC.m */; };
@@ -939,8 +938,8 @@
 		042D7F1D291657D700D2BB59 /* ZChatGroupSetVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZChatGroupSetVC.m; sourceTree = "<group>"; };
 		042D7F2029165A6900D2BB59 /* ZChatSetGroupInfoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZChatSetGroupInfoCell.h; sourceTree = "<group>"; };
 		042D7F2129165A6900D2BB59 /* ZChatSetGroupInfoCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZChatSetGroupInfoCell.m; sourceTree = "<group>"; };
-		042D7F232916642300D2BB59 /* ZGroupMemberHeaderCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupMemberHeaderCell.h; sourceTree = "<group>"; };
-		042D7F242916642300D2BB59 /* ZGroupMemberHeaderCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupMemberHeaderCell.m; sourceTree = "<group>"; };
+		042D7F232916642300D2BB59 /* GroupGMMemberHeaderCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GroupGMMemberHeaderCell.h; sourceTree = "<group>"; };
+		042D7F242916642300D2BB59 /* GroupGMMemberHeaderCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupGMMemberHeaderCell.m; sourceTree = "<group>"; };
 		042D7F26291665D200D2BB59 /* ZChatSetGroupNoteCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZChatSetGroupNoteCell.h; sourceTree = "<group>"; };
 		042D7F27291665D200D2BB59 /* ZChatSetGroupNoteCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZChatSetGroupNoteCell.m; sourceTree = "<group>"; };
 		042D7F2929166A7100D2BB59 /* ZChatSetGroupCommonCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZChatSetGroupCommonCell.h; sourceTree = "<group>"; };
@@ -1527,8 +1526,6 @@
 		04A6D9C72C6A0F0800FD7521 /* ZHistoryChoiceUserCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZHistoryChoiceUserCell.m; sourceTree = "<group>"; };
 		04A6D9C92C6A0F2C00FD7521 /* ZHistoryChoiceUseredTopView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZHistoryChoiceUseredTopView.h; sourceTree = "<group>"; };
 		04A6D9CA2C6A0F2C00FD7521 /* ZHistoryChoiceUseredTopView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZHistoryChoiceUseredTopView.m; sourceTree = "<group>"; };
-		04A79D8C2942D48A00FF324A /* ZGroupMemberPageInfoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupMemberPageInfoCell.h; sourceTree = "<group>"; };
-		04A79D8D2942D48A00FF324A /* ZGroupMemberPageInfoCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupMemberPageInfoCell.m; sourceTree = "<group>"; };
 		04A99FC62B96EF2900DFD946 /* ZFileUploadTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZFileUploadTools.h; sourceTree = "<group>"; };
 		04A99FC72B96EF2900DFD946 /* ZFileUploadTools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZFileUploadTools.m; sourceTree = "<group>"; };
 		04A9FCF62A19F1E700960096 /* CMFriendModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMFriendModel.h; sourceTree = "<group>"; };
@@ -1733,12 +1730,12 @@
 		04CDB50C2922182200EFEABA /* ZGroupManageVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupManageVC.m; sourceTree = "<group>"; };
 		04CDB50E29221D6300EFEABA /* ZGroupManageCommonCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupManageCommonCell.h; sourceTree = "<group>"; };
 		04CDB50F29221D6300EFEABA /* ZGroupManageCommonCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupManageCommonCell.m; sourceTree = "<group>"; };
-		04CDB51129221DA700EFEABA /* ZGroupManageMemberCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupManageMemberCell.h; sourceTree = "<group>"; };
-		04CDB51229221DA700EFEABA /* ZGroupManageMemberCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupManageMemberCell.m; sourceTree = "<group>"; };
+		04CDB51129221DA700EFEABA /* MMGroupGMManageMemberCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMGroupGMManageMemberCell.h; sourceTree = "<group>"; };
+		04CDB51229221DA700EFEABA /* MMGroupGMManageMemberCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMGroupGMManageMemberCell.m; sourceTree = "<group>"; };
 		04CDB51429233CFA00EFEABA /* ZGroupSetManagerOwnerVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupSetManagerOwnerVC.h; sourceTree = "<group>"; };
 		04CDB51529233CFA00EFEABA /* ZGroupSetManagerOwnerVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupSetManagerOwnerVC.m; sourceTree = "<group>"; };
-		04CDB51729233DF100EFEABA /* ZGroupManageManagerCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupManageManagerCell.h; sourceTree = "<group>"; };
-		04CDB51829233DF100EFEABA /* ZGroupManageManagerCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupManageManagerCell.m; sourceTree = "<group>"; };
+		04CDB51729233DF100EFEABA /* GroupGMManageManagerCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GroupGMManageManagerCell.h; sourceTree = "<group>"; };
+		04CDB51829233DF100EFEABA /* GroupGMManageManagerCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupGMManageManagerCell.m; sourceTree = "<group>"; };
 		04CDB51A292368C800EFEABA /* ZGroupSetNotalkMemberVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupSetNotalkMemberVC.h; sourceTree = "<group>"; };
 		04CDB51B292368C800EFEABA /* ZGroupSetNotalkMemberVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupSetNotalkMemberVC.m; sourceTree = "<group>"; };
 		04CDB51D29247C1E00EFEABA /* ZSheetCustomView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZSheetCustomView.h; sourceTree = "<group>"; };
@@ -2628,8 +2625,8 @@
 			children = (
 				042D7F2029165A6900D2BB59 /* ZChatSetGroupInfoCell.h */,
 				042D7F2129165A6900D2BB59 /* ZChatSetGroupInfoCell.m */,
-				042D7F232916642300D2BB59 /* ZGroupMemberHeaderCell.h */,
-				042D7F242916642300D2BB59 /* ZGroupMemberHeaderCell.m */,
+				042D7F232916642300D2BB59 /* GroupGMMemberHeaderCell.h */,
+				042D7F242916642300D2BB59 /* GroupGMMemberHeaderCell.m */,
 				042D7F26291665D200D2BB59 /* ZChatSetGroupNoteCell.h */,
 				042D7F27291665D200D2BB59 /* ZChatSetGroupNoteCell.m */,
 				042D7F2929166A7100D2BB59 /* ZChatSetGroupCommonCell.h */,
@@ -2644,12 +2641,10 @@
 				04CDB50F29221D6300EFEABA /* ZGroupManageCommonCell.m */,
 				041EEBAC29F7AECC00CDCC1A /* ZGroupManageContentCell.h */,
 				041EEBAD29F7AECC00CDCC1A /* ZGroupManageContentCell.m */,
-				04CDB51129221DA700EFEABA /* ZGroupManageMemberCell.h */,
-				04CDB51229221DA700EFEABA /* ZGroupManageMemberCell.m */,
-				04CDB51729233DF100EFEABA /* ZGroupManageManagerCell.h */,
-				04CDB51829233DF100EFEABA /* ZGroupManageManagerCell.m */,
-				04A79D8C2942D48A00FF324A /* ZGroupMemberPageInfoCell.h */,
-				04A79D8D2942D48A00FF324A /* ZGroupMemberPageInfoCell.m */,
+				04CDB51129221DA700EFEABA /* MMGroupGMManageMemberCell.h */,
+				04CDB51229221DA700EFEABA /* MMGroupGMManageMemberCell.m */,
+				04CDB51729233DF100EFEABA /* GroupGMManageManagerCell.h */,
+				04CDB51829233DF100EFEABA /* GroupGMManageManagerCell.m */,
 				18420EA42AC15B420077E479 /* ZRobotListTableViewCell.h */,
 				18420EA52AC15B420077E479 /* ZRobotListTableViewCell.m */,
 				04942A2D2B81CFA300109695 /* noticeTranslateItemView.h */,
@@ -6169,7 +6164,6 @@
 				045F1EE228DEE3DA003D2818 /* MImageBrowserGestureHandle.m in Sources */,
 				049EE2672D2638AE00E5D211 /* ZSafeSettingTools.m in Sources */,
 				04B82D8028CAEC21001196E1 /* NGGroupListVC.m in Sources */,
-				04A79D8E2942D48A00FF324A /* ZGroupMemberPageInfoCell.m in Sources */,
 				04D21EE92A668F36000B4572 /* TalkCellChatLinkSetViewCell.m in Sources */,
 				04CDB51F29247C1E00EFEABA /* ZSheetCustomView.m in Sources */,
 				041EEB9929F66BB200CDCC1A /* MGGestureLockCheckAccountPasswordView.m in Sources */,
@@ -6334,7 +6328,7 @@
 				04516C3B2B50D4E7009B6A78 /* NSExcursionSelectCell.m in Sources */,
 				0400A35A296CF5EA001BA200 /* BBBaseCollectionCell.m in Sources */,
 				044C4BB529651C57008CBC01 /* ZFilePickerVC.m in Sources */,
-				04CDB51929233DF100EFEABA /* ZGroupManageManagerCell.m in Sources */,
+				04CDB51929233DF100EFEABA /* GroupGMManageManagerCell.m in Sources */,
 				0420B38E292217510065BE23 /* ZChatHistoryMediaCell.m in Sources */,
 				047777BA29DECB440005496B /* ZApplyJoinGroupViewController.m in Sources */,
 				08B3F7F52DAF82F600CE0DE4 /* ZProxySettings.m in Sources */,
@@ -6347,7 +6341,7 @@
 				04DF65C12940A28500D77C52 /* HomeMessageForwardTipView.m in Sources */,
 				04C8B1102C3FB94D001A68E6 /* ZGraphCodeView.m in Sources */,
 				04741B3E298B4A57009F7F02 /* TalkCellChatHistoryFileCell.m in Sources */,
-				04CDB51329221DA700EFEABA /* ZGroupManageMemberCell.m in Sources */,
+				04CDB51329221DA700EFEABA /* MMGroupGMManageMemberCell.m in Sources */,
 				04A5144E2A49285900884078 /* ZMineInfoView.m in Sources */,
 				C3C434302E2E9395003D6185 /* ZTeamCreateView.m in Sources */,
 				04DDB73629DAD2BC00B7C446 /* ZAuthPCloginViewController.m in Sources */,
@@ -6657,7 +6651,7 @@
 				042D7F2B29166A7100D2BB59 /* ZChatSetGroupCommonCell.m in Sources */,
 				184043F22B0C54E400E575B0 /* UIView+YYText.m in Sources */,
 				04A99FC82B96EF2900DFD946 /* ZFileUploadTools.m in Sources */,
-				042D7F252916642300D2BB59 /* ZGroupMemberHeaderCell.m in Sources */,
+				042D7F252916642300D2BB59 /* GroupGMMemberHeaderCell.m in Sources */,
 				044C4BBE29655E86008CBC01 /* ZFilePickerCell.m in Sources */,
 				04F36B602984F486006E38A2 /* RecordManager.m in Sources */,
 				184043E72B0C54E400E575B0 /* YYLabel.m in Sources */,
