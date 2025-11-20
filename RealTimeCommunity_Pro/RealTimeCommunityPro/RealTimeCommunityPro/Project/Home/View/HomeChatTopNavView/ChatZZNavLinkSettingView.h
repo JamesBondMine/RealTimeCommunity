@@ -1,5 +1,5 @@
 //
-//  ZChatNavLinkSettingView.h
+//  ChatZZNavLinkSettingView.h
 //  CIMKit
 //
 //  Created by cusPro on 2023/7/18.
@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface ZChatNavLinkSettingView : UIView
+@interface ChatZZNavLinkSettingView : UIView
 
 @property (nonatomic, weak) id<ZChatNavLinkSettingDelegate>delegate;
 

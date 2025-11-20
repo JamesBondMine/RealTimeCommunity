@@ -1,5 +1,5 @@
 //
-//  ZTeamInviteDetailView.h
+//  TeamZZInviteDetailView.h
 //  CIMKit
 //
 //  Created by phl on 2025/7/24.
@@ -10,12 +10,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class IVTTeamInviteDetailDataHandle;
-@interface ZTeamInviteDetailView : UIView
+@interface TeamZZInviteDetailView : UIView
 
 /// 点击修改团队名称
 @property (nonatomic, strong) RACSubject *editTeamNameSubject;
 
-/// 初始化ZTeamInviteDetailView
+/// 初始化TeamZZInviteDetailView
 /// - Parameters:
 ///   - frame: frame
 ///   - dataHandle: 数据处理类

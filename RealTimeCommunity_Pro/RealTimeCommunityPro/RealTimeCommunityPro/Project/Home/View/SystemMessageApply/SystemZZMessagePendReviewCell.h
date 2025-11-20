@@ -1,5 +1,5 @@
 //
-//  ZSystemMessageAllReviewCell.h
+//  SystemZZMessagePendReviewCell.h
 //  CIMKit
 //
 //  Created by cusPro on 2023/5/10.
@@ -10,21 +10,19 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ZSystemMessageAllReviewCellDelegate <NSObject>
+@protocol SystemZZMessagePendReviewCellDelegate <NSObject>
 
 @optional
 
 - (void)systemMessageCellClickNickNameAction:(NSString *)userUid;
-- (void)refuseSystemMessageAllReviewAction:(NSIndexPath *)indexPath;
-- (void)agreeSystemMessageAllReviewAgreeAction:(NSIndexPath *)indexPath;
 
 @end
 
-@interface ZSystemMessageAllReviewCell : ZBaseCell
+@interface SystemZZMessagePendReviewCell : ZBaseCell
 
 @property (nonatomic, assign) ZGroupHelperFormType fromType;
 @property (nonatomic, strong) MSSSMessageModel *model;
-@property (nonatomic, weak) id<ZSystemMessageAllReviewCellDelegate>delegate;
+@property (nonatomic, weak) id<SystemZZMessagePendReviewCellDelegate>delegate;
 
 @end
 

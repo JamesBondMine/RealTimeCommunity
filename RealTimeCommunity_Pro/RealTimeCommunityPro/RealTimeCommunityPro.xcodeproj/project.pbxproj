@@ -219,7 +219,7 @@
 		046F14D8290521A900B50C0C /* ZMessageTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 046F14D7290521A900B50C0C /* ZMessageTools.m */; };
 		047047A929598C7A001FDB90 /* repicker_image_picker_select_yes@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 047047A829598C7A001FDB90 /* repicker_image_picker_select_yes@3x.png */; };
 		047047AD295D2DF4001FDB90 /* ZChatSingleSetInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 047047AC295D2DF3001FDB90 /* ZChatSingleSetInfoCell.m */; };
-		047047B0295D2E23001FDB90 /* ZChatSingleSetCommonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 047047AF295D2E23001FDB90 /* ZChatSingleSetCommonCell.m */; };
+		047047B0295D2E23001FDB90 /* ChatZZSingleSetCommonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 047047AF295D2E23001FDB90 /* ChatZZSingleSetCommonCell.m */; };
 		0471E92D291FC541008A8830 /* ZMineCenterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0471E92C291FC541008A8830 /* ZMineCenterCell.m */; };
 		0471E930291FE3F0008A8830 /* ZMineUserInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0471E92F291FE3F0008A8830 /* ZMineUserInfoCell.m */; };
 		0471E933291FE8A4008A8830 /* NMUserInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0471E932291FE8A4008A8830 /* NMUserInfoViewController.m */; };
@@ -388,8 +388,8 @@
 		04B025612B82FB4A005A0AD5 /* ZNoticeTranslateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B025602B82FB4A005A0AD5 /* ZNoticeTranslateCell.m */; };
 		04B044622A0B2EC000E0E3E1 /* HOmeSystemMessageAllVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B044612A0B2EC000E0E3E1 /* HOmeSystemMessageAllVC.m */; };
 		04B044652A0B2EED00E0E3E1 /* HomeSystemMessagePendReviewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B044642A0B2EED00E0E3E1 /* HomeSystemMessagePendReviewVC.m */; };
-		04B0446A2A0B32D700E0E3E1 /* ZSystemMessageAllReviewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B044692A0B32D700E0E3E1 /* ZSystemMessageAllReviewCell.m */; };
-		04B0446D2A0B32EB00E0E3E1 /* ZSystemMessagePendReviewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B0446C2A0B32EB00E0E3E1 /* ZSystemMessagePendReviewCell.m */; };
+		04B0446A2A0B32D700E0E3E1 /* SystemZZMessageAllReviewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B044692A0B32D700E0E3E1 /* SystemZZMessageAllReviewCell.m */; };
+		04B0446D2A0B32EB00E0E3E1 /* SystemZZMessagePendReviewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B0446C2A0B32EB00E0E3E1 /* SystemZZMessagePendReviewCell.m */; };
 		04B044702A0B3C9200E0E3E1 /* MSSSMessageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B0446F2A0B3C9200E0E3E1 /* MSSSMessageModel.m */; };
 		04B044802A0B871F00E0E3E1 /* LingIMGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B044722A0B871F00E0E3E1 /* LingIMGroup.m */; };
 		04B044812A0B871F00E0E3E1 /* ZFileUploadModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04B044732A0B871F00E0E3E1 /* ZFileUploadModel.m */; };
@@ -504,7 +504,7 @@
 		04D18CA729B877C1003684EE /* HomeChatGroupNoticeTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D18CA629B877C1003684EE /* HomeChatGroupNoticeTipView.m */; };
 		04D21EDD2A66659C000B4572 /* ZChatLinkCollectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D21EDC2A66659C000B4572 /* ZChatLinkCollectCell.m */; };
 		04D21EE02A667B6E000B4572 /* ZChatNavLinkAddView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D21EDF2A667B6E000B4572 /* ZChatNavLinkAddView.m */; };
-		04D21EE32A6688E0000B4572 /* ZChatNavLinkSettingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D21EE22A6688E0000B4572 /* ZChatNavLinkSettingView.m */; };
+		04D21EE32A6688E0000B4572 /* ChatZZNavLinkSettingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D21EE22A6688E0000B4572 /* ChatZZNavLinkSettingView.m */; };
 		04D21EE92A668F36000B4572 /* TalkCellChatLinkSetViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D21EE82A668F36000B4572 /* TalkCellChatLinkSetViewCell.m */; };
 		04D4C4DB2A15C38D0086BCDC /* ZAppStartErrorDefaultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D4C4DA2A15C38D0086BCDC /* ZAppStartErrorDefaultViewController.m */; };
 		04D6792028E137D100EB3967 /* ZCommonProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D6791F28E137D100EB3967 /* ZCommonProgressView.m */; };
@@ -732,7 +732,7 @@
 		6CEFA8D62E49955A00D872DC /* ZGroupNoticeDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CEFA8D52E49955A00D872DC /* ZGroupNoticeDetailVC.m */; };
 		C31AEEBA2E31E3ED00870262 /* TeamTeamInviteDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C31AEEB92E31E3ED00870262 /* TeamTeamInviteDetailVC.m */; };
 		C31AEEBD2E31E40100870262 /* IVTTeamInviteDetailDataHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = C31AEEBC2E31E40100870262 /* IVTTeamInviteDetailDataHandle.m */; };
-		C31AEEC02E31FF1D00870262 /* ZTeamInviteDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = C31AEEBF2E31FF1D00870262 /* ZTeamInviteDetailView.m */; };
+		C31AEEC02E31FF1D00870262 /* TeamZZInviteDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = C31AEEBF2E31FF1D00870262 /* TeamZZInviteDetailView.m */; };
 		C31CA47B2E98E34E00AD93F4 /* WCDBObjc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C31CA4792E98E33D00AD93F4 /* WCDBObjc.framework */; };
 		C31CA47C2E98E34E00AD93F4 /* WCDBObjc.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C31CA4792E98E33D00AD93F4 /* WCDBObjc.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C3610F182E2DDB74005BEF12 /* TeamTeamListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C3610F172E2DDB74005BEF12 /* TeamTeamListVC.m */; };
@@ -1213,8 +1213,8 @@
 		047047A829598C7A001FDB90 /* repicker_image_picker_select_yes@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "repicker_image_picker_select_yes@3x.png"; sourceTree = "<group>"; };
 		047047AB295D2DF3001FDB90 /* ZChatSingleSetInfoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZChatSingleSetInfoCell.h; sourceTree = "<group>"; };
 		047047AC295D2DF3001FDB90 /* ZChatSingleSetInfoCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZChatSingleSetInfoCell.m; sourceTree = "<group>"; };
-		047047AE295D2E23001FDB90 /* ZChatSingleSetCommonCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZChatSingleSetCommonCell.h; sourceTree = "<group>"; };
-		047047AF295D2E23001FDB90 /* ZChatSingleSetCommonCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZChatSingleSetCommonCell.m; sourceTree = "<group>"; };
+		047047AE295D2E23001FDB90 /* ChatZZSingleSetCommonCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatZZSingleSetCommonCell.h; sourceTree = "<group>"; };
+		047047AF295D2E23001FDB90 /* ChatZZSingleSetCommonCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatZZSingleSetCommonCell.m; sourceTree = "<group>"; };
 		0471E92B291FC541008A8830 /* ZMineCenterCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZMineCenterCell.h; sourceTree = "<group>"; };
 		0471E92C291FC541008A8830 /* ZMineCenterCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZMineCenterCell.m; sourceTree = "<group>"; };
 		0471E92E291FE3F0008A8830 /* ZMineUserInfoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZMineUserInfoCell.h; sourceTree = "<group>"; };
@@ -1568,10 +1568,10 @@
 		04B044612A0B2EC000E0E3E1 /* HOmeSystemMessageAllVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HOmeSystemMessageAllVC.m; sourceTree = "<group>"; };
 		04B044632A0B2EED00E0E3E1 /* HomeSystemMessagePendReviewVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeSystemMessagePendReviewVC.h; sourceTree = "<group>"; };
 		04B044642A0B2EED00E0E3E1 /* HomeSystemMessagePendReviewVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeSystemMessagePendReviewVC.m; sourceTree = "<group>"; };
-		04B044682A0B32D700E0E3E1 /* ZSystemMessageAllReviewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZSystemMessageAllReviewCell.h; sourceTree = "<group>"; };
-		04B044692A0B32D700E0E3E1 /* ZSystemMessageAllReviewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZSystemMessageAllReviewCell.m; sourceTree = "<group>"; };
-		04B0446B2A0B32EB00E0E3E1 /* ZSystemMessagePendReviewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZSystemMessagePendReviewCell.h; sourceTree = "<group>"; };
-		04B0446C2A0B32EB00E0E3E1 /* ZSystemMessagePendReviewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZSystemMessagePendReviewCell.m; sourceTree = "<group>"; };
+		04B044682A0B32D700E0E3E1 /* SystemZZMessageAllReviewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SystemZZMessageAllReviewCell.h; sourceTree = "<group>"; };
+		04B044692A0B32D700E0E3E1 /* SystemZZMessageAllReviewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SystemZZMessageAllReviewCell.m; sourceTree = "<group>"; };
+		04B0446B2A0B32EB00E0E3E1 /* SystemZZMessagePendReviewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SystemZZMessagePendReviewCell.h; sourceTree = "<group>"; };
+		04B0446C2A0B32EB00E0E3E1 /* SystemZZMessagePendReviewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SystemZZMessagePendReviewCell.m; sourceTree = "<group>"; };
 		04B0446E2A0B3C9200E0E3E1 /* MSSSMessageModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSSSMessageModel.h; sourceTree = "<group>"; };
 		04B0446F2A0B3C9200E0E3E1 /* MSSSMessageModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MSSSMessageModel.m; sourceTree = "<group>"; };
 		04B044722A0B871F00E0E3E1 /* LingIMGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LingIMGroup.m; sourceTree = "<group>"; };
@@ -1793,8 +1793,8 @@
 		04D21EDC2A66659C000B4572 /* ZChatLinkCollectCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZChatLinkCollectCell.m; sourceTree = "<group>"; };
 		04D21EDE2A667B6E000B4572 /* ZChatNavLinkAddView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZChatNavLinkAddView.h; sourceTree = "<group>"; };
 		04D21EDF2A667B6E000B4572 /* ZChatNavLinkAddView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZChatNavLinkAddView.m; sourceTree = "<group>"; };
-		04D21EE12A6688E0000B4572 /* ZChatNavLinkSettingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZChatNavLinkSettingView.h; sourceTree = "<group>"; };
-		04D21EE22A6688E0000B4572 /* ZChatNavLinkSettingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZChatNavLinkSettingView.m; sourceTree = "<group>"; };
+		04D21EE12A6688E0000B4572 /* ChatZZNavLinkSettingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatZZNavLinkSettingView.h; sourceTree = "<group>"; };
+		04D21EE22A6688E0000B4572 /* ChatZZNavLinkSettingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatZZNavLinkSettingView.m; sourceTree = "<group>"; };
 		04D21EE72A668F36000B4572 /* TalkCellChatLinkSetViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TalkCellChatLinkSetViewCell.h; sourceTree = "<group>"; };
 		04D21EE82A668F36000B4572 /* TalkCellChatLinkSetViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TalkCellChatLinkSetViewCell.m; sourceTree = "<group>"; };
 		04D4C4D92A15C38D0086BCDC /* ZAppStartErrorDefaultViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZAppStartErrorDefaultViewController.h; sourceTree = "<group>"; };
@@ -2255,8 +2255,8 @@
 		C31AEEB92E31E3ED00870262 /* TeamTeamInviteDetailVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TeamTeamInviteDetailVC.m; sourceTree = "<group>"; };
 		C31AEEBB2E31E40100870262 /* IVTTeamInviteDetailDataHandle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IVTTeamInviteDetailDataHandle.h; sourceTree = "<group>"; };
 		C31AEEBC2E31E40100870262 /* IVTTeamInviteDetailDataHandle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IVTTeamInviteDetailDataHandle.m; sourceTree = "<group>"; };
-		C31AEEBE2E31FF1D00870262 /* ZTeamInviteDetailView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZTeamInviteDetailView.h; sourceTree = "<group>"; };
-		C31AEEBF2E31FF1D00870262 /* ZTeamInviteDetailView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZTeamInviteDetailView.m; sourceTree = "<group>"; };
+		C31AEEBE2E31FF1D00870262 /* TeamZZInviteDetailView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TeamZZInviteDetailView.h; sourceTree = "<group>"; };
+		C31AEEBF2E31FF1D00870262 /* TeamZZInviteDetailView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TeamZZInviteDetailView.m; sourceTree = "<group>"; };
 		C31CA4792E98E33D00AD93F4 /* WCDBObjc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WCDBObjc.framework; sourceTree = "<group>"; };
 		C3610F162E2DDB74005BEF12 /* TeamTeamListVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TeamTeamListVC.h; sourceTree = "<group>"; };
 		C3610F172E2DDB74005BEF12 /* TeamTeamListVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TeamTeamListVC.m; sourceTree = "<group>"; };
@@ -3471,8 +3471,8 @@
 			children = (
 				047047AB295D2DF3001FDB90 /* ZChatSingleSetInfoCell.h */,
 				047047AC295D2DF3001FDB90 /* ZChatSingleSetInfoCell.m */,
-				047047AE295D2E23001FDB90 /* ZChatSingleSetCommonCell.h */,
-				047047AF295D2E23001FDB90 /* ZChatSingleSetCommonCell.m */,
+				047047AE295D2E23001FDB90 /* ChatZZSingleSetCommonCell.h */,
+				047047AF295D2E23001FDB90 /* ChatZZSingleSetCommonCell.m */,
 			);
 			path = ChatSingleSet;
 			sourceTree = "<group>";
@@ -4389,10 +4389,10 @@
 		04B044892A0B894000E0E3E1 /* SystemMessageApply */ = {
 			isa = PBXGroup;
 			children = (
-				04B044682A0B32D700E0E3E1 /* ZSystemMessageAllReviewCell.h */,
-				04B044692A0B32D700E0E3E1 /* ZSystemMessageAllReviewCell.m */,
-				04B0446B2A0B32EB00E0E3E1 /* ZSystemMessagePendReviewCell.h */,
-				04B0446C2A0B32EB00E0E3E1 /* ZSystemMessagePendReviewCell.m */,
+				04B044682A0B32D700E0E3E1 /* SystemZZMessageAllReviewCell.h */,
+				04B044692A0B32D700E0E3E1 /* SystemZZMessageAllReviewCell.m */,
+				04B0446B2A0B32EB00E0E3E1 /* SystemZZMessagePendReviewCell.h */,
+				04B0446C2A0B32EB00E0E3E1 /* SystemZZMessagePendReviewCell.m */,
 				04C39F472A037ACE00CA4BC8 /* ZGroupApplyBottomView.h */,
 				04C39F482A037ACE00CA4BC8 /* ZGroupApplyBottomView.m */,
 			);
@@ -4746,8 +4746,8 @@
 				04D21EDC2A66659C000B4572 /* ZChatLinkCollectCell.m */,
 				04D21EDE2A667B6E000B4572 /* ZChatNavLinkAddView.h */,
 				04D21EDF2A667B6E000B4572 /* ZChatNavLinkAddView.m */,
-				04D21EE12A6688E0000B4572 /* ZChatNavLinkSettingView.h */,
-				04D21EE22A6688E0000B4572 /* ZChatNavLinkSettingView.m */,
+				04D21EE12A6688E0000B4572 /* ChatZZNavLinkSettingView.h */,
+				04D21EE22A6688E0000B4572 /* ChatZZNavLinkSettingView.m */,
 				04D21EE72A668F36000B4572 /* TalkCellChatLinkSetViewCell.h */,
 				04D21EE82A668F36000B4572 /* TalkCellChatLinkSetViewCell.m */,
 				0453621C2A6CCD7900BF5713 /* ZChatTextUrlListView.h */,
@@ -5721,8 +5721,8 @@
 				C3C434262E2E45CF003D6185 /* ZTeamListCell.m */,
 				C3C4342E2E2E9395003D6185 /* ZTeamCreateView.h */,
 				C3C4342F2E2E9395003D6185 /* ZTeamCreateView.m */,
-				C31AEEBE2E31FF1D00870262 /* ZTeamInviteDetailView.h */,
-				C31AEEBF2E31FF1D00870262 /* ZTeamInviteDetailView.m */,
+				C31AEEBE2E31FF1D00870262 /* TeamZZInviteDetailView.h */,
+				C31AEEBF2E31FF1D00870262 /* TeamZZInviteDetailView.m */,
 				C3EDD56E2E3358CE0023D49E /* NameTeamInviteEditTeamNameView.h */,
 				C3EDD56F2E3358CE0023D49E /* NameTeamInviteEditTeamNameView.m */,
 			);
@@ -6044,7 +6044,7 @@
 				04CDB51C292368C800EFEABA /* ZGroupSetNotalkMemberVC.m in Sources */,
 				045EE90428D06DB400CC9AC3 /* NSDictionary+Addition.m in Sources */,
 				045F1EB828DDAAD8003D2818 /* MainImageTitleContentArrowCell.m in Sources */,
-				04D21EE32A6688E0000B4572 /* ZChatNavLinkSettingView.m in Sources */,
+				04D21EE32A6688E0000B4572 /* ChatZZNavLinkSettingView.m in Sources */,
 				048824B22986227800FC58CB /* MediaZZCallVideoView.m in Sources */,
 				045DDC0D2918FFB90031F7F5 /* ZGroupSetBasicInfoCell.m in Sources */,
 				04882508298C999800FC58CB /* KNPhotoAVPlayerView.m in Sources */,
@@ -6197,7 +6197,7 @@
 				18420EA92AC188020077E479 /* ZRobotModel.m in Sources */,
 				C3610F1B2E2DEA68005BEF12 /* IVTTeamListDataHandle.m in Sources */,
 				048EFD222BEF48F5000756EB /* ZRaceCheckErrorModel.m in Sources */,
-				04B0446A2A0B32D700E0E3E1 /* ZSystemMessageAllReviewCell.m in Sources */,
+				04B0446A2A0B32D700E0E3E1 /* SystemZZMessageAllReviewCell.m in Sources */,
 				04F4029228D853A100F38108 /* ZPasswordViewController.m in Sources */,
 				047D9BC228C09856001230A3 /* NSDate+Addition.m in Sources */,
 				049F6A512BBBA40000E0C75B /* EMChatPackageInEmojiView.m in Sources */,
@@ -6254,7 +6254,7 @@
 				C3EDD56D2E3358BD0023D49E /* IVTTeamInviteEditTeamNameDataHandle.m in Sources */,
 				5B885ADF2C43B81A00903813 /* ZImgVerCodeInputView.m in Sources */,
 				04882505298C999800FC58CB /* KNPhotoBrowserConfig.m in Sources */,
-				C31AEEC02E31FF1D00870262 /* ZTeamInviteDetailView.m in Sources */,
+				C31AEEC02E31FF1D00870262 /* TeamZZInviteDetailView.m in Sources */,
 				04C321F72A4ADB4800EDCC0F /* VICacheAction.m in Sources */,
 				5DC2ECB32E9C8FAC005C8DC5 /* ZWeakPwdCheckTool.m in Sources */,
 				04F6F3442991E1050021D136 /* FBShimmeringLayer.m in Sources */,
@@ -6309,7 +6309,7 @@
 				0400A354296BA82F001BA200 /* ZWindowFloatView.m in Sources */,
 				041EEB6829F2377500CDCC1A /* NSMassMessageUserModel.m in Sources */,
 				042D7F002912653100D2BB59 /* MGSwipeTableCell.m in Sources */,
-				047047B0295D2E23001FDB90 /* ZChatSingleSetCommonCell.m in Sources */,
+				047047B0295D2E23001FDB90 /* ChatZZSingleSetCommonCell.m in Sources */,
 				184043F42B0C54E400E575B0 /* YYTextWeakProxy.m in Sources */,
 				042D7EFF2912653100D2BB59 /* MGSwipeButton.m in Sources */,
 				04E8911128C8A5D300272A35 /* UIImage+Addition.m in Sources */,
@@ -6410,7 +6410,7 @@
 				042240392A8E00D500350D31 /* ZChatInputView.m in Sources */,
 				046A28E72999CEF1008A5BE7 /* ZMediaCallMoreLayout.m in Sources */,
 				0430E1D029EFE75B0071B489 /* ZCollectionVideoCell.m in Sources */,
-				04B0446D2A0B32EB00E0E3E1 /* ZSystemMessagePendReviewCell.m in Sources */,
+				04B0446D2A0B32EB00E0E3E1 /* SystemZZMessagePendReviewCell.m in Sources */,
 				04BD6BDD29D2882A0021750F /* ZCountryCodeViewController.m in Sources */,
 				04ECDB062BB2C1B200F7EE1F /* UIButton+Extension.swift in Sources */,
 				1863DAD92A94AC23005351F6 /* ZRuleViewController.m in Sources */,

@@ -1,16 +1,17 @@
 //
-//  ZSystemMessageAllReviewCell.m
+//  SystemZZMessagePendReviewCell.m
 //  CIMKit
 //
 //  Created by cusPro on 2023/5/10.
 //
 
-#import "ZSystemMessageAllReviewCell.h"
+#import "SystemZZMessagePendReviewCell.h"
 //#import <YYText/NSAttributedString+YYText.h>
 //#import <YYText/YYLabel.h>
 
-@interface ZSystemMessageAllReviewCell()
+@interface SystemZZMessagePendReviewCell()
 
+@property (nonatomic, strong)UIImageView *selectImgView;
 @property (nonatomic, strong)UIView *bgView;
 @property (nonatomic, strong)UIImageView *profileImgView;
 @property (nonatomic, strong)UILabel *userRoleName;//用户角色名称
@@ -18,14 +19,10 @@
 @property (nonatomic, strong)UILabel *groupInfoLbl;
 @property (nonatomic, strong)UIView *postscriptBgView;
 @property (nonatomic, strong)UILabel *postscriptLbl;
-@property (nonatomic, strong)UIButton *refuseBtn;
-@property (nonatomic, strong)UIButton *agreeBtn;
-@property (nonatomic, strong)UILabel *statusLbl;
 
 @end
 
-
-@implementation ZSystemMessageAllReviewCell
+@implementation SystemZZMessagePendReviewCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -38,10 +35,18 @@
 }
 #pragma mark - UI
 - (void)setupUI {
+    [self.contentView addSubview:self.selectImgView];
+    [self.selectImgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentView).offset(DWScale(35));
+        make.leading.equalTo(self.contentView).offset(DWScale(16));
+        make.width.mas_equalTo(DWScale(18));
+        make.height.mas_equalTo(DWScale(18));
+    }];
+    
     [self.contentView addSubview:self.bgView];
     [self.bgView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.contentView).offset(DWScale(16));
-        make.leading.equalTo(self.contentView).offset(DWScale(16));
+        make.leading.equalTo(self.selectImgView.mas_trailing).offset(DWScale(10));
         make.trailing.equalTo(self.contentView).offset(DWScale(-16));
         make.bottom.equalTo(self.contentView);
     }];
@@ -79,7 +84,7 @@
         make.top.equalTo(self.profileImgView.mas_bottom).offset(DWScale(9));
         make.leading.equalTo(self.profileImgView);
         make.trailing.equalTo(self.contentLbl);
-        make.bottom.equalTo(self.bgView).offset(DWScale(-51));
+        make.bottom.equalTo(self.bgView).offset(DWScale(-15));
     }];
     
     [self.postscriptBgView addSubview:self.postscriptLbl];
@@ -88,30 +93,6 @@
         make.leading.equalTo(self.postscriptBgView).offset(DWScale(10));
         make.trailing.equalTo(self.postscriptBgView).offset(DWScale(-10));
         make.bottom.equalTo(self.postscriptBgView).offset(DWScale(-10));
-    }];
-    
-    [self.bgView addSubview:self.statusLbl];
-    [self.statusLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.trailing.equalTo(self.bgView).offset(DWScale(-19));
-        make.top.equalTo(self.postscriptBgView.mas_bottom).offset(DWScale(12));
-        make.width.mas_equalTo(DWScale(44));
-        make.height.mas_equalTo(DWScale(20));
-    }];
-    
-    [self.bgView addSubview:self.agreeBtn];
-    [self.agreeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.trailing.equalTo(self.bgView).offset(DWScale(-19));
-        make.top.equalTo(self.postscriptBgView.mas_bottom).offset(DWScale(13));
-        make.width.mas_equalTo(DWScale(44));
-        make.height.mas_equalTo(DWScale(25));
-    }];
-    
-    [self.bgView addSubview:self.refuseBtn];
-    [self.refuseBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.trailing.equalTo(self.agreeBtn.mas_leading).offset(DWScale(-12));
-        make.centerY.equalTo(self.agreeBtn);
-        make.width.mas_equalTo(DWScale(44));
-        make.height.mas_equalTo(DWScale(25));
     }];
 }
 
@@ -147,9 +128,15 @@
 - (void)setModel:(MSSSMessageModel *)model {
     _model = model;
     
+    if (_model.beStatus == 1) {
+        //申请中
+        self.selectImgView.image = _model.selectedStatus ? ImgNamed(@"com_c_select_yes") : ImgNamed(@"com_c_select_no");
+    }
+    
     //头像
-    [self.profileImgView sd_setImageWithURL:[_model.beUserAvatarFileName getImageFullUrl] placeholderImage:DefaultAvatar options:SDWebImageAllowInvalidSSLCertificates];    
-    NSString *roleName = [UserManager matchUserRoleConfigInfo:model.roleId disableStatus:0];
+    [self.profileImgView sd_setImageWithURL:[_model.beUserAvatarFileName getImageFullUrl] placeholderImage:DefaultAvatar options:SDWebImageAllowInvalidSSLCertificates];
+    
+    NSString *roleName = [UserManager matchUserRoleConfigInfo:_model.roleId disableStatus:0];
     if ([NSString isNil:roleName]) {
         self.userRoleName.hidden = YES;
     } else {
@@ -207,6 +194,7 @@
         [groupInfoAtt configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:groupInfoContent appointStr:groupName];
         self.groupInfoLbl.attributedText = groupInfoAtt;
     }
+    
     //附言
     if ([NSString isNil:_model.beDesc]) {
         self.postscriptBgView.hidden = YES;
@@ -227,44 +215,6 @@
         }];
         self.postscriptLbl.text = [NSString stringWithFormat:MultilingualTranslation(@"附言:%@"), ![NSString isNil:_model.beDesc] ? _model.beDesc : @""];
     }
-    
-    //状态  1：申请  4:已进群  5:已拒绝
-    switch (_model.beStatus) {
-        case 1: //申请
-        {
-            self.statusLbl.hidden = YES;
-            self.refuseBtn.hidden = NO;
-            self.agreeBtn.hidden = NO;
-        }
-            break;
-        case 4: //已进群（已同意）
-        {
-            self.statusLbl.hidden = NO;
-            self.statusLbl.text = MultilingualTranslation(@"已同意");
-            self.statusLbl.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF];
-            self.refuseBtn.hidden = YES;
-            self.agreeBtn.hidden = YES;
-        }
-            break;
-        case 5: //已拒绝
-        {
-            self.statusLbl.hidden = NO;
-            self.statusLbl.text = MultilingualTranslation(@"已拒绝");
-            self.statusLbl.tkThemetextColors = @[COLOR_99, COLOR_99_DARK];
-            self.refuseBtn.hidden = YES;
-            self.agreeBtn.hidden = YES;
-        }
-            break;
-            
-        default:
-            //未知
-            self.statusLbl.hidden = NO;
-            self.statusLbl.text = MultilingualTranslation(@"未知");
-            self.statusLbl.tkThemetextColors = @[COLOR_99, COLOR_99_DARK];
-            self.refuseBtn.hidden = YES;
-            self.agreeBtn.hidden = YES;
-            break;
-    }
 }
 
 #pragma mark - Action
@@ -274,19 +224,15 @@
     }
 }
 
-- (void)refuseBtnAction {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(refuseSystemMessageAllReviewAction:)]) {
-        [self.delegate refuseSystemMessageAllReviewAction:self.baseCellIndexPath];
-    }
-}
-
-- (void)agreeBtnAction {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(agreeSystemMessageAllReviewAgreeAction:)]) {
-        [self.delegate agreeSystemMessageAllReviewAgreeAction:self.baseCellIndexPath];
-    }
-}
-
 #pragma amrk - Lazy
+- (UIImageView *)selectImgView {
+    if (!_selectImgView) {
+        _selectImgView = [[UIImageView alloc] init];
+        _selectImgView.image = ImgNamed(@"com_c_select_no");
+    }
+    return _selectImgView;
+}
+
 - (UIView *)bgView {
     if (!_bgView) {
         _bgView = [[UIView alloc] init];
@@ -367,49 +313,6 @@
         _postscriptLbl.tkThemetextColors = @[COLOR_66, COLOR_66_DARK];
     }
     return _postscriptLbl;
-}
-
-- (UILabel *)statusLbl {
-    if (!_statusLbl) {
-        _statusLbl = [[UILabel alloc] init];
-        _statusLbl.text = @"";
-        _statusLbl.font = FONTN(12);
-        _statusLbl.textAlignment = NSTextAlignmentCenter;
-        _statusLbl.tkThemetextColors = @[COLOR_99, COLOR_99_DARK];
-    }
-    return _statusLbl;
-}
-
-- (UIButton *)refuseBtn {
-    if (!_refuseBtn) {
-        _refuseBtn = [[UIButton alloc] init];
-        [_refuseBtn setTitle:MultilingualTranslation(@"拒绝") forState:UIControlStateNormal];
-        [_refuseBtn setTkThemeTitleColor:@[COLOR_99, COLOR_99_DARK] forState:UIControlStateNormal];
-        _refuseBtn.tkThemebackgroundColors = @[COLORWHITE, COLORWHITE_DARK];
-        UIColor *boardColor;
-        if ([TKThemeManager config].themeIndex == 0) {
-            boardColor = COLOR_99;
-        } else {
-            boardColor = COLOR_99_DARK;
-        }
-        [_refuseBtn rounded:DWScale(25)/2 width:1 color:boardColor];
-        _refuseBtn.titleLabel.font = FONTN(12);
-        [_refuseBtn addTarget:self action:@selector(refuseBtnAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _refuseBtn;
-}
-
-- (UIButton *)agreeBtn {
-    if (!_agreeBtn) {
-        _agreeBtn = [[UIButton alloc] init];
-        [_agreeBtn setTitle:MultilingualTranslation(@"确认") forState:UIControlStateNormal];
-        [_agreeBtn setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-        _agreeBtn.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
-        [_agreeBtn rounded:DWScale(25)/2];
-        _agreeBtn.titleLabel.font = FONTN(12);
-        [_agreeBtn addTarget:self action:@selector(agreeBtnAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _agreeBtn;
 }
 
 #pragma mark - Other

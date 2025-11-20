@@ -1,16 +1,16 @@
 //
-//  ZChatSingleSetCommonCell.m
+//  ChatZZSingleSetCommonCell.m
 //  CIMKit
 //
 //  Created by cusPro on 2022/12/29.
 //
 
-#import "ZChatSingleSetCommonCell.h"
-@interface ZChatSingleSetCommonCell ()
+#import "ChatZZSingleSetCommonCell.h"
+@interface ChatZZSingleSetCommonCell ()
 @property (nonatomic, strong) LingIMFriendModel *model;
 @end
 
-@implementation ZChatSingleSetCommonCell
+@implementation ChatZZSingleSetCommonCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];

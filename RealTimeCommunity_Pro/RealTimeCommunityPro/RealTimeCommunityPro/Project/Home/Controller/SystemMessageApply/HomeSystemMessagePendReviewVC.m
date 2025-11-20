@@ -8,13 +8,13 @@
 #import "HomeSystemMessagePendReviewVC.h"
 #import <DZNEmptyDataSet/UIScrollView+EmptyDataSet.h>
 #import "MSSSMessageModel.h"
-#import "ZSystemMessagePendReviewCell.h"
+#import "SystemZZMessagePendReviewCell.h"
 #import "NFUserHomePageVC.h"
 #import "ZGroupApplyBottomView.h"
 #import "SyncMutableArray.h"
 #import "ZMessageAlertView.h"
 
-@interface HomeSystemMessagePendReviewVC ()  <UITableViewDataSource,UITableViewDelegate, DZNEmptyDataSetSource,DZNEmptyDataSetDelegate, ZSystemMessagePendReviewCellDelegate, ZGroupApplyBottomViewDelegate>
+@interface HomeSystemMessagePendReviewVC ()  <UITableViewDataSource,UITableViewDelegate, DZNEmptyDataSetSource,DZNEmptyDataSetDelegate, SystemZZMessagePendReviewCellDelegate, ZGroupApplyBottomViewDelegate>
 
 //底部操作栏
 @property (nonatomic, strong) ZGroupApplyBottomView *bottomView;
@@ -63,7 +63,7 @@
     self.baseTableView.mj_footer = self.refreshFooter;
     
     //cell
-    [self.baseTableView registerClass:[ZSystemMessagePendReviewCell class] forCellReuseIdentifier:NSStringFromClass([ZSystemMessagePendReviewCell class])];
+    [self.baseTableView registerClass:[SystemZZMessagePendReviewCell class] forCellReuseIdentifier:NSStringFromClass([SystemZZMessagePendReviewCell class])];
 }
 
 - (void)footerRefreshData {
@@ -246,7 +246,7 @@
     //model
     MSSSMessageModel *model = (MSSSMessageModel *)[self.systemRecordList objectAtIndex:indexPath.row];
     //cell
-    ZSystemMessagePendReviewCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([ZSystemMessagePendReviewCell class]) forIndexPath:indexPath];
+    SystemZZMessagePendReviewCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([SystemZZMessagePendReviewCell class]) forIndexPath:indexPath];
     cell.baseCellIndexPath = indexPath;
     cell.fromType = self.groupHelperType;
     cell.delegate = self;//设置代理

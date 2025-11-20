@@ -1,16 +1,16 @@
 //
-//  ZChatNavLinkSettingView.m
+//  ChatZZNavLinkSettingView.m
 //  CIMKit
 //
 //  Created by cusPro on 2023/7/18.
 //
 
-#import "ZChatNavLinkSettingView.h"
+#import "ChatZZNavLinkSettingView.h"
 #import "ZToolManager.h"
 #import "TalkCellChatLinkSetViewCell.h"
 #import "ZChatTagModel.h"
 
-@interface ZChatNavLinkSettingView () <UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate, TalkCellChatLinkSetViewCellDelegate>
+@interface ChatZZNavLinkSettingView () <UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate, TalkCellChatLinkSetViewCellDelegate>
 
 @property (nonatomic, strong)UIView *viewBg;
 @property (nonatomic, strong)SyncMutableArray *linkList;
@@ -19,7 +19,7 @@
 @end
 
 
-@implementation ZChatNavLinkSettingView
+@implementation ChatZZNavLinkSettingView
 
 - (instancetype)init {
     self = [super init];

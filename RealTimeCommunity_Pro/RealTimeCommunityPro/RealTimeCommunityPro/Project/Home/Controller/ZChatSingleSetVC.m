@@ -14,7 +14,7 @@
 #import "ZMessageTools.h"
 #import "NFUserHomePageVC.h"
 #import "ZChatSingleSetInfoCell.h"
-#import "ZChatSingleSetCommonCell.h"
+#import "ChatZZSingleSetCommonCell.h"
 #import "ZComplainVC.h"//投诉与支持
 
 @interface ZChatSingleSetVC ()<UITableViewDelegate,UITableViewDataSource,ZBaseCellDelegate>
@@ -48,7 +48,7 @@
     self.baseTableView.delegate = self;
     self.baseTableView.delaysContentTouches = NO;
     [self.baseTableView registerClass:[ZChatSingleSetInfoCell class] forCellReuseIdentifier:[ZChatSingleSetInfoCell cellIdentifier]];
-    [self.baseTableView registerClass:[ZChatSingleSetCommonCell class] forCellReuseIdentifier:[ZChatSingleSetCommonCell cellIdentifier]];
+    [self.baseTableView registerClass:[ChatZZSingleSetCommonCell class] forCellReuseIdentifier:[ChatZZSingleSetCommonCell cellIdentifier]];
 }
 
 #pragma mark - 数据请求
@@ -205,7 +205,7 @@
         switch (indexPath.row) {
             case 0:
                 {
-                    ZChatSingleSetCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZChatSingleSetCommonCell cellIdentifier] forIndexPath:indexPath];
+                    ChatZZSingleSetCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ChatZZSingleSetCommonCell cellIdentifier] forIndexPath:indexPath];
                     [cell cellConfigWith:ChatSingleSetCellTypeCommon itemStr:MultilingualTranslation(@"查看聊天记录") model:self.friendModel];
                     cell.baseDelegate = self;
                     cell.viewLine.hidden = NO;
@@ -216,7 +216,7 @@
                 break;
             case 1:
                 {
-                    ZChatSingleSetCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZChatSingleSetCommonCell cellIdentifier] forIndexPath:indexPath];
+                    ChatZZSingleSetCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ChatZZSingleSetCommonCell cellIdentifier] forIndexPath:indexPath];
                     [cell cellConfigWith:ChatSingleSetCellTypeSelect itemStr:MultilingualTranslation(@"消息置顶") model:self.friendModel];
                     cell.baseDelegate = self;
                     cell.viewLine.hidden = NO;
@@ -227,7 +227,7 @@
                 break;
             case 2:
                 {
-                    ZChatSingleSetCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZChatSingleSetCommonCell cellIdentifier] forIndexPath:indexPath];
+                    ChatZZSingleSetCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ChatZZSingleSetCommonCell cellIdentifier] forIndexPath:indexPath];
                     [cell cellConfigWith:ChatSingleSetCellTypeSelect itemStr:MultilingualTranslation(@"消息免打扰") model:self.friendModel];
                     cell.baseDelegate = self;
                     cell.viewLine.hidden = YES;
@@ -242,7 +242,7 @@
                 break;
         }
     }else if (indexPath.section == 2) {
-        ZChatSingleSetCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZChatSingleSetCommonCell cellIdentifier] forIndexPath:indexPath];
+        ChatZZSingleSetCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ChatZZSingleSetCommonCell cellIdentifier] forIndexPath:indexPath];
         [cell cellConfigWith:ChatSingleSetCellTypeCommon itemStr:MultilingualTranslation(@"清空聊天记录") model:self.friendModel];
         cell.viewLine.hidden = YES;
         cell.baseDelegate = self;
@@ -251,7 +251,7 @@
         cell.ivArrow.hidden = YES;
         return cell;
     }else if (indexPath.section == 3) {
-        ZChatSingleSetCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZChatSingleSetCommonCell cellIdentifier] forIndexPath:indexPath];
+        ChatZZSingleSetCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ChatZZSingleSetCommonCell cellIdentifier] forIndexPath:indexPath];
         [cell cellConfigWith:ChatSingleSetCellTypeCommon itemStr:MultilingualTranslation(@"投诉与支持") model:self.friendModel];
         cell.baseDelegate = self;
         cell.viewLine.hidden = YES;
@@ -347,7 +347,7 @@
         case 1:
         case 2:
         case 3:
-            return [ZChatSingleSetCommonCell defaultCellHeight];
+            return [ChatZZSingleSetCommonCell defaultCellHeight];
             break;
         default:
             return CGFLOAT_MIN;

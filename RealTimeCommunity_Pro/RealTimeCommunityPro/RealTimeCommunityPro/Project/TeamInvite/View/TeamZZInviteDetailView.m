@@ -1,11 +1,11 @@
 //
-//  ZTeamInviteDetailView.m
+//  TeamZZInviteDetailView.m
 //  CIMKit
 //
 //  Created by phl on 2025/7/24.
 //
 
-#import "ZTeamInviteDetailView.h"
+#import "TeamZZInviteDetailView.h"
 #import "WidgetTeamListHeaderView.h"
 #import "IVTTeamInviteDetailDataHandle.h"
 #import "IVTTeamDetailModel.h"
@@ -519,7 +519,7 @@ typedef void(^LongPressQRImageViewActionBlock)(UIImage *image);
 
 @end
 
-@interface ZTeamInviteDetailView()
+@interface TeamZZInviteDetailView()
 
 /// scrollView
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -556,7 +556,7 @@ typedef void(^LongPressQRImageViewActionBlock)(UIImage *image);
 
 @end
 
-@implementation ZTeamInviteDetailView
+@implementation TeamZZInviteDetailView
 
 - (void)dealloc {
     CIMLog(@"%@ dealloc", [self class]);

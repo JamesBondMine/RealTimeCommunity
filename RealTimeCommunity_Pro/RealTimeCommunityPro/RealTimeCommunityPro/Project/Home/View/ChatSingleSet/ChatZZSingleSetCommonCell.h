@@ -1,5 +1,5 @@
 //
-//  ZChatSingleSetCommonCell.h
+//  ChatZZSingleSetCommonCell.h
 //  CIMKit
 //
 //  Created by cusPro on 2022/12/29.
@@ -21,7 +21,7 @@ typedef NS_ENUM(NSUInteger, CornerRadiusLocationType) {
     CornerRadiusLocationBottom = 3,  //下边两个角是
 };
 
-@interface ZChatSingleSetCommonCell : ZBaseCell
+@interface ChatZZSingleSetCommonCell : ZBaseCell
 @property (nonatomic, strong) UIButton *viewBg;
 @property (nonatomic, strong) UILabel *lblTitle;//标题
 @property (nonatomic, strong) UIImageView *ivArrow;

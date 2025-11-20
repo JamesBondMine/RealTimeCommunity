@@ -7,13 +7,13 @@
 
 #import "TeamTeamInviteDetailVC.h"
 #import "IVTTeamInviteDetailDataHandle.h"
-#import "ZTeamInviteDetailView.h"
+#import "TeamZZInviteDetailView.h"
 #import "TeamTeamInviteEditTeamNameVC.h"
 #import "TeamTeamTotalNumberListVC.h"
 
 @interface TeamTeamInviteDetailVC ()
 
-@property (nonatomic, strong) ZTeamInviteDetailView *teamDetailView;
+@property (nonatomic, strong) TeamZZInviteDetailView *teamDetailView;
 
 @property (nonatomic, strong) IVTTeamInviteDetailDataHandle *teamDetailDataHandle;
 
@@ -25,9 +25,9 @@
     CIMLog(@"%@ dealloc", [self class]);
 }
 
-- (ZTeamInviteDetailView *)teamDetailView {
+- (TeamZZInviteDetailView *)teamDetailView {
     if (!_teamDetailView) {
-        _teamDetailView = [[ZTeamInviteDetailView alloc] initWithFrame:CGRectZero
+        _teamDetailView = [[TeamZZInviteDetailView alloc] initWithFrame:CGRectZero
                                             TeamInviteDetailDataHandle:self.teamDetailDataHandle];
     }
     return _teamDetailView;

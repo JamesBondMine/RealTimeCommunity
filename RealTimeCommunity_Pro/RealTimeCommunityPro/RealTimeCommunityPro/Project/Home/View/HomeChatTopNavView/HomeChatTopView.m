@@ -8,7 +8,7 @@
 #import "HomeChatTopView.h"
 #import "ZChatLinkCollectCell.h"
 #import "ZChatNavLinkAddView.h" //群链接addView
-#import "ZChatNavLinkSettingView.h" //群链接SettingView
+#import "ChatZZNavLinkSettingView.h" //群链接SettingView
 #import "ZMessageAlertView.h"
 #import "LingIMGroup.h"
 
@@ -20,7 +20,7 @@
 
 @property (nonatomic, strong) UIView *chatLinkBackView;
 @property (nonatomic, strong) UICollectionView *collectionView;
-@property (nonatomic, strong) ZChatNavLinkSettingView *linkSettingView;
+@property (nonatomic, strong) ChatZZNavLinkSettingView *linkSettingView;
 @property (nonatomic, strong) UIButton *messageBtn;
 @property (nonatomic, strong) UIButton *noticeBtn;
 
@@ -667,9 +667,9 @@
     return _chatLinkBackView;
 }
 
-- (ZChatNavLinkSettingView *)linkSettingView {
+- (ChatZZNavLinkSettingView *)linkSettingView {
     if (!_linkSettingView) {
-        _linkSettingView = [[ZChatNavLinkSettingView alloc] init];
+        _linkSettingView = [[ChatZZNavLinkSettingView alloc] init];
         _linkSettingView.delegate = self;
     }
     return _linkSettingView;

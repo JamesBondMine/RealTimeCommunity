@@ -8,12 +8,12 @@
 #import "HomeSystemMessageAllVC.h"
 #import <DZNEmptyDataSet/UIScrollView+EmptyDataSet.h>
 #import "MSSSMessageModel.h"
-#import "ZSystemMessageAllReviewCell.h"
+#import "SystemZZMessageAllReviewCell.h"
 #import "NFUserHomePageVC.h"
 #import "SyncMutableArray.h"
 #import "ZMessageAlertView.h"
 
-@interface HomeSystemMessageAllVC () <UITableViewDataSource,UITableViewDelegate, DZNEmptyDataSetSource,DZNEmptyDataSetDelegate, ZSystemMessageAllReviewCellDelegate>
+@interface HomeSystemMessageAllVC () <UITableViewDataSource,UITableViewDelegate, DZNEmptyDataSetSource,DZNEmptyDataSetDelegate, SystemZZMessageAllReviewCellDelegate>
 
 //全部通知列表
 @property (nonatomic, strong) SyncMutableArray *systemRecordList;
@@ -55,7 +55,7 @@
     self.baseTableView.mj_footer = self.refreshFooter;
     
     //cell
-    [self.baseTableView registerClass:[ZSystemMessageAllReviewCell class] forCellReuseIdentifier:NSStringFromClass([ZSystemMessageAllReviewCell class])];
+    [self.baseTableView registerClass:[SystemZZMessageAllReviewCell class] forCellReuseIdentifier:NSStringFromClass([SystemZZMessageAllReviewCell class])];
 }
 
 - (void)footerRefreshData {
@@ -209,7 +209,7 @@
     //model
     MSSSMessageModel *model = (MSSSMessageModel *)[self.systemRecordList objectAtIndex:indexPath.row];
     //cell
-    ZSystemMessageAllReviewCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([ZSystemMessageAllReviewCell class]) forIndexPath:indexPath];
+    SystemZZMessageAllReviewCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([SystemZZMessageAllReviewCell class]) forIndexPath:indexPath];
     cell.baseCellIndexPath = indexPath;
     cell.fromType = self.groupHelperType;
     cell.delegate = self;//设置代理

@@ -6,7 +6,7 @@
 //
 
 #import "FileFileHelperSetVC.h"
-#import "ZChatSingleSetCommonCell.h"
+#import "ChatZZSingleSetCommonCell.h"
 #import "ZChatHistoryVC.h"//查找聊天记录
 #import "ZMessageAlertView.h"
 #import "ZMessageTools.h"
@@ -43,7 +43,7 @@
     self.baseTableView.dataSource = self;
     self.baseTableView.delegate = self;
     self.baseTableView.delaysContentTouches = NO;
-    [self.baseTableView registerClass:[ZChatSingleSetCommonCell class] forCellReuseIdentifier:[ZChatSingleSetCommonCell cellIdentifier]];
+    [self.baseTableView registerClass:[ChatZZSingleSetCommonCell class] forCellReuseIdentifier:[ChatZZSingleSetCommonCell cellIdentifier]];
 }
 
 #pragma mark - 数据请求
@@ -87,7 +87,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ZChatSingleSetCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ZChatSingleSetCommonCell cellIdentifier] forIndexPath:indexPath];
+    ChatZZSingleSetCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:[ChatZZSingleSetCommonCell cellIdentifier] forIndexPath:indexPath];
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
             [cell cellConfigWith:ChatSingleSetCellTypeCommon itemStr:MultilingualTranslation(@"查找聊天记录") model:self.friendModel];
@@ -155,7 +155,7 @@
 
 #pragma mark - UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [ZChatSingleSetCommonCell defaultCellHeight];
+    return [ChatZZSingleSetCommonCell defaultCellHeight];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

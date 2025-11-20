@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class IVTTeamCreateDataHandle;
 @interface ZTeamCreateView : UIView
 
-/// 初始化ZTeamInviteDetailView
+/// 初始化TeamZZInviteDetailView
 /// - Parameters:
 ///   - frame: frame
 ///   - dataHandle: 数据处理类
