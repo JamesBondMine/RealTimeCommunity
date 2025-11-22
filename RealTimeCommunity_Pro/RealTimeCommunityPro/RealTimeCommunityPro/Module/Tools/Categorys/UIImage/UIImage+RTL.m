@@ -43,7 +43,7 @@
     static NSArray *rtl_ImageNameList;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        rtl_ImageNameList = @[@"icon_geo_nav_back",
+        rtl_ImageNameList = @[@"icon_xxgeo_nav_back",
                               @"icon_nav_back",
                               @"nav_back_white",
                               @"c_arrow_right_gray",

@@ -9,11 +9,16 @@
 "CFBundleDisplayName" = "RealTalk";
 "CFBundleName" = "RealTalk";
 
-"NSCameraUsageDescription" = "请点击“好”以允许访问。如不允许您将无法正常使用相机进行扫码登录、拍摄照片、头像、录制视频，以及进行视频通话。";
-"NSLocationAlwaysUsageDescription" = "请点击“好”以允许允许访问,以便个人名片中访问您的位置信息。";
-"NSLocationWhenInUseUsageDescription" = "请点击“好”以允许允许访问,以便个人名片中访问您的位置信息。";
-"NSLocationWhenInUseUsageDescription" = "请点击“好”以允许允许访问,以便个人名片中访问您的位置信息。";
-"NSMicrophoneUsageDescription" = "请点击“好”以允许访问。如果不允许，将无法正常使用语音聊天功能。";
-"NSPhotoLibraryUsageDescription" = "请点击“好”以允许访问。如果不允许将无法选择照片作为头像或发送给朋友";
-"NSPhotoLibraryAddUsageDescription" = "请点击“好”以允许访问。如果不允许，将无法把您想要下载的图片保存到手机相册。";
-"NSLocalNetworkUsageDescription" = "请点击“好”以允许访问本地网络以便设备通信。";
+"NSCameraUsageDescription" = "我们需要访问您的相机以拍摄照片和视频，用于与联系人分享、视频通话和直播功能。";
+"NSLocationAlwaysUsageDescription" = "我们需要访问您的位置信息，以便分享当前位置给联系人和发现附近用户。";
+"NSLocationWhenInUseUsageDescription" = "我们需要访问您的位置信息，以便分享当前位置给联系人和发现附近用户。";
+"NSMicrophoneUsageDescription" = "我们需要访问您的麦克风，以便使用语音消息、语音通话、视频通话和直播功能。";
+"NSPhotoLibraryUsageDescription" = "我们需要访问您的相册，以便选择和分享照片、视频给联系人。";
+"NSPhotoLibraryAddUsageDescription" = "我们需要权限将照片和视频保存到您的相册。";
+"NSLocalNetworkUsageDescription" = "我们需要访问本地网络以便设备间通信和提供更好的服务。";
+"NSContactsUsageDescription" = "我们需要访问您的通讯录，以帮助您找到已经在使用本应用的好友。";
+"NSFaceIDUsageDescription" = "我们使用面容ID来安全地验证身份和保护您的账户。";
+"NSUserTrackingUsageDescription" = "我们使用追踪功能为您提供个性化内容并改善您的应用体验。";
+"NSSpeechRecognitionUsageDescription" = "我们需要访问语音识别功能，以便在消息中实现语音转文字功能。";
+"NSCalendarsUsageDescription" = "我们需要访问您的日历，以帮助您安排活动和会议。";
+"NSRemindersUsageDescription" = "我们需要访问您的提醒事项，以便为重要事件设置通知。";

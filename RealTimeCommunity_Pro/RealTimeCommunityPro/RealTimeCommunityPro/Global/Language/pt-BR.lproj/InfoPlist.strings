@@ -9,12 +9,16 @@
 "CFBundleDisplayName" = "RealTalk";
 "CFBundleName" = "RealTalk";
 
-"NSCameraUsageDescription" = "Clique em OK para  permitir o acesso. Se não permitir o acesso, você não poderá usar as funções de login, foto e gra vação de vídeo corretamente.";
-
-"NSLocationAlwaysUsageDescription" = "Clique em  OK para permitir o acesso às suas informações de localização em seu cartão de visita pessoal .";
-"NSLocationWhenInUseUsageDescription" = "Clique  em OK para permitir o acesso às suas informações de localização em seu cartão de visita pessoal.";
-"NSLocationWhenInUseUsageDescription" = "Clique  em OK para permitir o acesso às suas informações de localização em seu cartão de visita pessoal .";
-"NSMicrophoneUsageDescription" = "Clique em OK p ara permitir o acesso. Se não permitir o acesso, você não poderá usar o recurso de bate-papo por  voz corretamente.";
-"NSPhotoLibraryUsageDescription" = "Clique em  OK para permitir o acesso. Se não permitir o acesso, você não poderá usar as funções de login,  foto e gravação de vídeo corretamente.";
-"NSPhotoLibraryAddUsageDescription" = "Clique  em OK para permitir o acesso. Se não permitir o acesso, não será possível salvar as imagens que  deseja baixar no álbum do seu celular.";
-"NSLocalNetworkUsageDescription" = "Clique  em OK para permitir o acesso à rede local para comunicação com o dispositivo.";
+"NSCameraUsageDescription" = "Precisamos acessar sua câmera para tirar fotos e vídeos para compartilhar com seus contatos, fazer videochamadas e transmissões ao vivo.";
+"NSLocationAlwaysUsageDescription" = "Precisamos acessar sua localização para compartilhar sua localização atual com contatos e descobrir usuários próximos.";
+"NSLocationWhenInUseUsageDescription" = "Precisamos acessar sua localização para compartilhar sua localização atual com contatos e descobrir usuários próximos.";
+"NSMicrophoneUsageDescription" = "Precisamos acessar seu microfone para mensagens de voz, chamadas de voz, videochamadas e transmissões ao vivo.";
+"NSPhotoLibraryUsageDescription" = "Precisamos acessar sua biblioteca de fotos para selecionar e compartilhar fotos e vídeos com seus contatos.";
+"NSPhotoLibraryAddUsageDescription" = "Precisamos de permissão para salvar fotos e vídeos em sua biblioteca de fotos.";
+"NSLocalNetworkUsageDescription" = "Precisamos acessar a rede local para comunicação entre dispositivos e fornecer melhores serviços.";
+"NSContactsUsageDescription" = "Precisamos acessar seus contatos para ajudá-lo a encontrar amigos que já estão usando o aplicativo.";
+"NSFaceIDUsageDescription" = "Usamos o Face ID para autenticar com segurança e proteger sua conta.";
+"NSUserTrackingUsageDescription" = "Usamos rastreamento para fornecer conteúdo personalizado e melhorar sua experiência no aplicativo.";
+"NSSpeechRecognitionUsageDescription" = "Precisamos acessar o reconhecimento de fala para recursos de voz para texto em mensagens.";
+"NSCalendarsUsageDescription" = "Precisamos acessar seu calendário para ajudá-lo a agendar eventos e reuniões.";
+"NSRemindersUsageDescription" = "Precisamos acessar seus lembretes para definir notificações para eventos importantes.";

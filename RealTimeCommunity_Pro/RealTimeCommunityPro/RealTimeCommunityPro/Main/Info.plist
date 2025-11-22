@@ -45,5 +45,27 @@
 	</array>
 	<key>com.openinstall.APP_KEY</key>
 	<string></string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera to take photos and videos for sharing with your contacts, video calls, and live streaming features.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need access to your microphone for voice messages, voice calls, video calls, and live streaming features.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library to select and share photos and videos with your contacts.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need permission to save photos and videos to your photo library.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to share your current location with contacts and discover nearby users.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>We need access to your contacts to help you find friends who are already using the app.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>We use Face ID to securely authenticate and protect your account.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>We use tracking to provide you with personalized content and improve your app experience.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>We need access to speech recognition for voice-to-text features in messages.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>We need access to your calendar to help you schedule events and meetings.</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>We need access to your reminders to set notifications for important events.</string>
 </dict>
 </plist>

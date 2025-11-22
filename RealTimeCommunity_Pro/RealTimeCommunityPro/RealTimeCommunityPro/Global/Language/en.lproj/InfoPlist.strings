@@ -9,11 +9,16 @@
 "CFBundleDisplayName" = "RealTalk";
 "CFBundleName" = "RealTalk";
 
-"NSCameraUsageDescription" = "Please click 'OK' to allow access. If you do not allow it, you will not be able to use the camera to scan code to login, take photos, avatars, record videos, or make video calls.";
-"NSLocationWhenInUseUsageDescription" = "Please click “OK” to allow access to your location infor in your personal business card.";
-"NSLocationAlwaysUsageDescription" = "Please click “OK” to allow access to your location infor in your personal business card.";
-"NSLocationWhenInUseUsageDescription" = "Please click “OK” to allow access to your location infor in your personal business card.";
-"NSMicrophoneUsageDescription" = "Please click “OK” to allow access. If not allowed, you will not be able to use the voice chat function properly.";
-"NSPhotoLibraryUsageDescription" = "Please click 'OK' to allow access. If you not, you won't be able to select photos as avatars or send them to friends.";
-"NSPhotoLibraryAddUsageDescription" = "Please click “OK” to allow access. If you don't, you will not be able to save the pictures you want to download to the phone album.";
-"NSLocalNetworkUsageDescription" = "Click OK to allow access to the local network to communicate.";
+"NSCameraUsageDescription" = "We need access to your camera to take photos and videos for sharing with your contacts, video calls, and live streaming features.";
+"NSLocationWhenInUseUsageDescription" = "We need your location to share your current location with contacts and discover nearby users.";
+"NSLocationAlwaysUsageDescription" = "We need your location to share your current location with contacts and discover nearby users.";
+"NSMicrophoneUsageDescription" = "We need access to your microphone for voice messages, voice calls, video calls, and live streaming features.";
+"NSPhotoLibraryUsageDescription" = "We need access to your photo library to select and share photos and videos with your contacts.";
+"NSPhotoLibraryAddUsageDescription" = "We need permission to save photos and videos to your photo library.";
+"NSLocalNetworkUsageDescription" = "We need access to the local network for device communication and to provide better services.";
+"NSContactsUsageDescription" = "We need access to your contacts to help you find friends who are already using the app.";
+"NSFaceIDUsageDescription" = "We use Face ID to securely authenticate and protect your account.";
+"NSUserTrackingUsageDescription" = "We use tracking to provide you with personalized content and improve your app experience.";
+"NSSpeechRecognitionUsageDescription" = "We need access to speech recognition for voice-to-text features in messages.";
+"NSCalendarsUsageDescription" = "We need access to your calendar to help you schedule events and meetings.";
+"NSRemindersUsageDescription" = "We need access to your reminders to set notifications for important events.";
