@@ -693,6 +693,8 @@
 		2A2EC49C2EAF2DF500E48A79 /* MenuContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A2EC4962EAF2DF500E48A79 /* MenuContentViewController.m */; };
 		2A2EC4A22EAF4A8000E48A79 /* HomeContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A2EC49E2EAF4A8000E48A79 /* HomeContentViewController.m */; };
 		2A2EC4A32EAF4A8000E48A79 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A2EC4A02EAF4A8000E48A79 /* ViewController.m */; };
+		2A4363762ED18DD000267BF7 /* terms_of_service_en.html in Resources */ = {isa = PBXBuildFile; fileRef = 2A4363752ED18DD000267BF7 /* terms_of_service_en.html */; };
+		2A4363772ED18DD000267BF7 /* privacy_policy_en.html in Resources */ = {isa = PBXBuildFile; fileRef = 2A4363742ED18DD000267BF7 /* privacy_policy_en.html */; };
 		2A6558E72EB0A6F100ACC799 /* FloatingActionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A6558E62EB0A6F100ACC799 /* FloatingActionButton.m */; };
 		2A6558EC2EB0D34700ACC799 /* LoginCusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A6558EB2EB0D34700ACC799 /* LoginCusViewController.m */; };
 		2A6558F02EB1B95900ACC799 /* LoginServerConfigView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A6558EE2EB1B95900ACC799 /* LoginServerConfigView.m */; };
@@ -2177,6 +2179,8 @@
 		2A2EC49E2EAF4A8000E48A79 /* HomeContentViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeContentViewController.m; sourceTree = "<group>"; };
 		2A2EC49F2EAF4A8000E48A79 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		2A2EC4A02EAF4A8000E48A79 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		2A4363742ED18DD000267BF7 /* privacy_policy_en.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = privacy_policy_en.html; sourceTree = "<group>"; };
+		2A4363752ED18DD000267BF7 /* terms_of_service_en.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = terms_of_service_en.html; sourceTree = "<group>"; };
 		2A6558E52EB0A6F100ACC799 /* FloatingActionButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FloatingActionButton.h; sourceTree = "<group>"; };
 		2A6558E62EB0A6F100ACC799 /* FloatingActionButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FloatingActionButton.m; sourceTree = "<group>"; };
 		2A6558EA2EB0D34700ACC799 /* LoginCusViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginCusViewController.h; sourceTree = "<group>"; };
@@ -4558,6 +4562,8 @@
 				2A1B7ED62EBDA99C006A36CE /* pengyou.png */,
 				2A1B7ED72EBDA99C006A36CE /* pengyouquan.png */,
 				2A1B7ED82EBDA99C006A36CE /* privacy_wind.html */,
+				2A4363742ED18DD000267BF7 /* privacy_policy_en.html */,
+				2A4363752ED18DD000267BF7 /* terms_of_service_en.html */,
 				04AAE0DB2CDB3BB60090660F /* reht_cali_filetw.html */,
 				04AAE0DC2CDB3BB60090660F /* reht_cali_file.html */,
 				04ACC8D32CD4A26F00629B5B /* reht_cq_file.html */,
@@ -5883,6 +5889,8 @@
 				2A1B7EF32EBF1971006A36CE /* NotesSettingViewController.xib in Resources */,
 				04C0D5542989F9C200C926D3 /* mainToFileType.plist in Resources */,
 				0402D29028E69D7E0079DF51 /* repicker_image_picker_select_no@2x.png in Resources */,
+				2A4363762ED18DD000267BF7 /* terms_of_service_en.html in Resources */,
+				2A4363772ED18DD000267BF7 /* privacy_policy_en.html in Resources */,
 				046C6A6F28F2A605002FC033 /* repicker_image_picker_back@2x.png in Resources */,
 				04F9D5F728BDF3D8000AE80A /* Localizable.strings in Resources */,
 				042FC60028F4F7B7007F54FE /* MBProgressHUD.bundle in Resources */,
