@@ -385,15 +385,10 @@ static NSString *g_CurrentLoganPublishURL = nil; // 内存记录当前 Logan pub
 
 #pragma mark - 跳转 服务协议
 - (void)setupServeAgreement {
-    /**
-     showType=1 隐私政策
-     showType=2 服务协议
-     lan=1  简体中文
-     lan=2  繁体中文
-     lan=3  英文
-     */
     [ZTOOL doInMain:^{
-        NSString *urlStr = [NSString stringWithFormat:@"%@?showType=%@&lan=%@", policyUrl, @"2", [ZLanguageTOOL matchAgreementAndPolicyWithLocalLanguage]];
+        // 统一使用英文版服务协议
+        NSString *urlStr = @"https://a.zqtpc.com/application/terms_of_service_en.html";
+        
         BBBaseWebViewController *webVC = [[BBBaseWebViewController alloc] init];
         webVC.webViewTitle = MultilingualTranslation(@"服务协议");
         webVC.webViewUrl = urlStr;
@@ -405,16 +400,10 @@ static NSString *g_CurrentLoganPublishURL = nil; // 内存记录当前 Logan pub
 
 #pragma mark - 跳转 隐私政策
 - (void)setupPrivePolicy {
-    /**
-     showType=1 隐私政策
-     showType=2 服务协议
-     lan=1  简体中文
-     lan=2  繁体中文
-     lan=3  英文
-     */
-    
     [ZTOOL doInMain:^{
-        NSString *urlStr = [NSString stringWithFormat:@"%@?showType=%@&lan=%@", policyUrl, @"1", [ZLanguageTOOL matchAgreementAndPolicyWithLocalLanguage]];
+        // 统一使用英文版隐私政策
+        NSString *urlStr = @"https://a.zqtpc.com/application/privacy_policy_en.html";
+        
         BBBaseWebViewController *webVC = [[BBBaseWebViewController alloc] init];
         webVC.webViewTitle = MultilingualTranslation(@"用户隐私协议");
         webVC.webViewUrl = urlStr;

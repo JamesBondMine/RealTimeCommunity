@@ -11,7 +11,6 @@
 
 #define SERVE_BTN_TAG           101
 #define PRIVACY_BTN_TAG         102
-#define SCORE_BTN_TAG           103
 #define VERSION_BTN_TAG         104
 #define LOGAN_BTN_TAG           105
 
@@ -61,7 +60,7 @@
         make.top.equalTo(versionLbl.mas_bottom).offset(16);
         make.leading.equalTo(self.view).offset(16);
         make.trailing.equalTo(self.view).offset(-16);
-        make.height.mas_equalTo(DWScale(274));
+        make.height.mas_equalTo(DWScale(219)); // 修改高度：274 - 55（评分按钮+分割线）= 219
     }];
     
     //服务协议
@@ -155,51 +154,6 @@
         make.top.equalTo(privacyBtn.mas_bottom);
     }];
     
-    //去评分
-    UIButton *scoreBtn = [[UIButton alloc] init];
-    scoreBtn.tag = SCORE_BTN_TAG;
-    scoreBtn.tkThemebackgroundColors = @[COLORWHITE, COLOR_F5F6F9_DARK];
-    [scoreBtn setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_EEEEEE],[UIImage ImageForColor:COLOR_EEEEEE_DARK]] forState:UIControlStateSelected];
-    [scoreBtn setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_EEEEEE],[UIImage ImageForColor:COLOR_EEEEEE_DARK]] forState:UIControlStateHighlighted];
-    [scoreBtn addTarget:self action:@selector(contentAction:) forControlEvents:UIControlEventTouchUpInside];
-    [centerBackView addSubview:scoreBtn];
-    [scoreBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineView2.mas_bottom);
-        make.leading.trailing.equalTo(centerBackView);
-        make.height.mas_equalTo(DWScale(54));
-    }];
-    
-    UIImageView *scoreArrow = [[UIImageView alloc] init];
-    scoreArrow.image = ImgNamed(@"com_c_arrow_right_gray");
-    [centerBackView addSubview:scoreArrow];
-    [scoreArrow mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(scoreBtn);
-        make.trailing.equalTo(centerBackView).offset(-16);
-        make.width.mas_equalTo(DWScale(8));
-        make.height.mas_equalTo(DWScale(16));
-    }];
-    
-    UILabel * scoreLb = [[UILabel alloc] init];
-    scoreLb.text = MultilingualTranslation(@"去评分");
-    scoreLb.font = FONTN(16);
-    scoreLb.tkThemetextColors = @[COLOR_33, COLOR_33_DARK];
-    [centerBackView addSubview:scoreLb];
-    [scoreLb mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(scoreBtn);
-        make.leading.equalTo(centerBackView).offset(16);
-    }];
-    
-    //分割线
-    UIView *lineView3 = [[UIView alloc] init];
-    lineView3.tkThemebackgroundColors = @[COLOR_EEEEEE, [UIColor colorWithRed:85.0/255.0 green:85.0/255.0 blue:85.0/255.0 alpha:1]];
-    [centerBackView addSubview:lineView3];
-    [lineView3 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(centerBackView).offset(16);
-        make.trailing.equalTo(centerBackView).offset(-16);
-        make.height.mas_equalTo(1.0);
-        make.top.equalTo(scoreBtn.mas_bottom);
-    }];
-    
     //检查更新
     UIButton *checkVersionBtn = [[UIButton alloc] init];
     checkVersionBtn.tag = VERSION_BTN_TAG;
@@ -209,7 +163,7 @@
     [checkVersionBtn addTarget:self action:@selector(contentAction:) forControlEvents:UIControlEventTouchUpInside];
     [centerBackView addSubview:checkVersionBtn];
     [checkVersionBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineView3.mas_bottom);
+        make.top.equalTo(lineView2.mas_bottom);
         make.leading.trailing.equalTo(centerBackView);
         make.height.mas_equalTo(DWScale(54));
     }];
@@ -235,10 +189,10 @@
     }];
     
     //分割线
-    UIView *lineView4 = [[UIView alloc] init];
-    lineView4.tkThemebackgroundColors = @[COLOR_EEEEEE, [UIColor colorWithRed:85.0/255.0 green:85.0/255.0 blue:85.0/255.0 alpha:1]];
-    [centerBackView addSubview:lineView4];
-    [lineView4 mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIView *lineView3 = [[UIView alloc] init];
+    lineView3.tkThemebackgroundColors = @[COLOR_EEEEEE, [UIColor colorWithRed:85.0/255.0 green:85.0/255.0 blue:85.0/255.0 alpha:1]];
+    [centerBackView addSubview:lineView3];
+    [lineView3 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(checkVersionBtn.mas_bottom);
         make.leading.equalTo(centerBackView).offset(16);
         make.trailing.equalTo(centerBackView).offset(-16);
@@ -254,7 +208,7 @@
     [btnLogan addTarget:self action:@selector(contentAction:) forControlEvents:UIControlEventTouchUpInside];
     [centerBackView addSubview:btnLogan];
     [btnLogan mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineView4.mas_bottom);
+        make.top.equalTo(lineView3.mas_bottom);
         make.leading.trailing.equalTo(centerBackView);
         make.height.mas_equalTo(DWScale(54));
     }];
@@ -294,10 +248,6 @@
         [ZTOOL setupPrivePolicy];
     }
     
-    if (btn.tag == SCORE_BTN_TAG) {
-        //去评分，跳商店
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:APP_IN_APPLE_STORE_URL] options:@{} completionHandler:nil];
-    }
     if (btn.tag == VERSION_BTN_TAG) {
         //检查更新
         [ZAppUpdateTools getAppUpdateInfoWithShowDefaultTips:YES completion:nil];
