@@ -62,6 +62,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
 @property (nonatomic, strong) LJCategoryTitleView *categoryView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) NSMutableArray<NSNumber *> *loginTypeArr; // 动态登录方式数组
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *registerArr; // 动态注册方式数组
 
 // 加入企业号模式的UI组件
 @property (nonatomic, strong) UIView *joinServerContainerView; // 容器视图（加入企业号的内容区域）
@@ -201,13 +202,21 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     }
 }
 
-// 动态配置登录方式
+// 动态配置登录方式和注册方式
 - (void)setupLoginMethod {
+    // 初始化登录方式数组
     if (!self.loginTypeArr) {
         self.loginTypeArr = [NSMutableArray array];
     }
     [self.loginTypeArr removeAllObjects];
     
+    // 初始化注册方式数组
+    if (!self.registerArr) {
+        self.registerArr = [NSMutableArray array];
+    }
+    [self.registerArr removeAllObjects];
+    
+    // 配置登录方式
     NSString *loginMethod = ZHostTool.appSysSetModel.loginMethod;
     
     if ([loginMethod isEqualToString:@"1"]) {
@@ -249,7 +258,54 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
         [self.loginTypeArr addObject:@(UserAuthTypeAccount)];
     }
     
+    // 配置注册方式（独立配置，参考 ZLoginViewController）
+    NSInteger registerMethod = [ZHostTool.appSysSetModel.registerMethod integerValue];
+    
+    if (registerMethod == 1) {
+        // 账号
+        [self.registerArr addObject:@(UserAuthTypeAccount)];
+    } else if (registerMethod == 2) {
+        // 邮箱
+        [self.registerArr addObject:@(UserAuthTypeEmail)];
+    } else if (registerMethod == 3) {
+        // 手机号
+        [self.registerArr addObject:@(UserAuthTypePhone)];
+    } else if (registerMethod == 4) {
+        // 手机号+邮箱
+        [self.registerArr addObjectsFromArray:@[
+            @(UserAuthTypePhone),
+            @(UserAuthTypeEmail)
+        ]];
+    } else if (registerMethod == 5) {
+        // 手机号+账号
+        [self.registerArr addObjectsFromArray:@[
+            @(UserAuthTypePhone),
+            @(UserAuthTypeAccount)
+        ]];
+    } else if (registerMethod == 6) {
+        // 邮箱+账号
+        [self.registerArr addObjectsFromArray:@[
+            @(UserAuthTypeEmail),
+            @(UserAuthTypeAccount)
+        ]];
+    } else if (registerMethod == 7) {
+        // 手机号+邮箱+账号
+        [self.registerArr addObjectsFromArray:@[
+            @(UserAuthTypePhone),
+            @(UserAuthTypeEmail),
+            @(UserAuthTypeAccount)
+        ]];
+    } else {
+        // 默认：手机号+邮箱+账号
+        [self.registerArr addObjectsFromArray:@[
+            @(UserAuthTypePhone),
+            @(UserAuthTypeEmail),
+            @(UserAuthTypeAccount)
+        ]];
+    }
+    
     NSLog(@"配置登录方式: %@", self.loginTypeArr);
+    NSLog(@"配置注册方式: %@", self.registerArr);
 }
 
 // 保存企业号配置
@@ -761,6 +817,14 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     [_registerBtn addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
     [_registerBtn addTarget:self action:@selector(buttonTouchUp:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
     [self.view addSubview:_registerBtn];
+    
+    // 根据注册方式数量决定是否显示注册按钮
+    // 如果没有注册方式（如：仅账号登录），则隐藏注册按钮
+    if (self.registerArr.count == 0) {
+        _registerBtn.hidden = YES;
+    } else {
+        _registerBtn.hidden = NO;
+    }
     
     [_registerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(self.view).offset(DWScale(32));
@@ -1679,6 +1743,8 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
 // 统一的注册按钮点击
 - (void)registerAction {
     RegisterCusViewController *registerVC = [[RegisterCusViewController alloc] init];
+    // 传递注册方式数组
+    registerVC.registerArr = self.registerArr;
     [self.navigationController pushViewController:registerVC animated:YES];
 }
 

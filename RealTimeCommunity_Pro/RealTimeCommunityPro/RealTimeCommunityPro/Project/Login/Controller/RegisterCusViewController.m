@@ -115,6 +115,15 @@
     // 隐藏导航栏
     self.navView.hidden = YES;
     
+    // 确保 registerArr 不为 nil，如果为 nil 则使用默认值（防止崩溃）
+    if (!self.registerArr) {
+        self.registerArr = [NSMutableArray arrayWithObjects:
+                            @(UserAuthTypePhone),
+                            @(UserAuthTypeEmail),
+                            @(UserAuthTypeAccount), nil];
+        NSLog(@"⚠️ registerArr 为 nil，使用默认注册方式");
+    }
+    
     // 加载保存的企业号配置
     [self loadSavedCompanyIdConfig];
     
@@ -139,9 +148,29 @@
     // 设置输入框监听
     [self setupTextFieldListeners];
     
-    // 默认选中第一个（手机号）
-    self.currentSelectedIndex = 0;
-    [self.categoryView selectItemAtIndex:0];
+    // 默认选中第一个注册方式（如果有的话）
+    if (self.registerArr.count > 0) {
+        self.currentSelectedIndex = 0;
+        if (self.categoryView) {
+            [self.categoryView selectItemAtIndex:0];
+        }
+        
+        // 初始化时显示第一个注册方式对应的容器
+        int firstAuthType = [self.registerArr[0] intValue];
+        if (firstAuthType == UserAuthTypePhone && _phoneContainerView) {
+            _phoneContainerView.hidden = NO;
+            if (_emailContainerView) _emailContainerView.hidden = YES;
+            if (_accountContainerView) _accountContainerView.hidden = YES;
+        } else if (firstAuthType == UserAuthTypeEmail && _emailContainerView) {
+            _emailContainerView.hidden = NO;
+            if (_phoneContainerView) _phoneContainerView.hidden = YES;
+            if (_accountContainerView) _accountContainerView.hidden = YES;
+        } else if (firstAuthType == UserAuthTypeAccount && _accountContainerView) {
+            _accountContainerView.hidden = NO;
+            if (_phoneContainerView) _phoneContainerView.hidden = YES;
+            if (_emailContainerView) _emailContainerView.hidden = YES;
+        }
+    }
 }
 
 #pragma mark - Setup Methods
@@ -225,7 +254,23 @@
 
 // 设置切换视图
 - (void)setupCategoryView {
-    NSArray *titles = @[MultilingualTranslation(@"手机号"), MultilingualTranslation(@"邮箱"), MultilingualTranslation(@"账号")];
+    // 如果没有注册方式，隐藏切换视图并返回
+    if (self.registerArr.count == 0) {
+        return;
+    }
+    
+    // 根据动态注册方式数组构建 titles
+    NSMutableArray *titles = [NSMutableArray array];
+    for (NSNumber *typeNum in self.registerArr) {
+        int type = [typeNum intValue];
+        if (type == UserAuthTypePhone) {
+            [titles addObject:MultilingualTranslation(@"手机号")];
+        } else if (type == UserAuthTypeEmail) {
+            [titles addObject:MultilingualTranslation(@"邮箱")];
+        } else if (type == UserAuthTypeAccount) {
+            [titles addObject:MultilingualTranslation(@"账号")];
+        }
+    }
     
     _categoryView = [[LJCategoryTitleView alloc] init];
     _categoryView.backgroundColor = [UIColor clearColor];
@@ -255,11 +300,26 @@
     categoryContainerView.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.15];
     categoryContainerView.layer.cornerRadius = DWScale(20);
     
+    // 根据注册方式数量动态计算容器宽度
+    NSInteger registerTypeCount = self.registerArr.count;
+    CGFloat containerWidth = 0;
+    switch (registerTypeCount) {
+        case 1:
+            containerWidth = DWScale(120);
+            break;
+        case 2:
+            containerWidth = DWScale(200);
+            break;
+        case 3:
+            containerWidth = DWScale(300);
+            break;
+    }
+    
     [self.view addSubview:categoryContainerView];
     [categoryContainerView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(_companyIdBtn.mas_bottom).offset(DWScale(52));
         make.centerX.equalTo(self.view);
-        make.width.mas_equalTo(DWScale(300));
+        make.width.mas_equalTo(containerWidth);
         make.height.mas_equalTo(DWScale(40));
     }];
     
@@ -275,18 +335,29 @@
     _contentScrollView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:_contentScrollView];
     [_contentScrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_categoryView.superview.mas_bottom).offset(DWScale(40));
+        if (_categoryView) {
+            make.top.equalTo(_categoryView.superview.mas_bottom).offset(DWScale(40));
+        } else {
+            // 如果没有切换视图，直接从企业号按钮下方开始
+            make.top.equalTo(_companyIdBtn.mas_bottom).offset(DWScale(52));
+        }
         make.leading.trailing.bottom.equalTo(self.view);
     }];
     
-    // 设置手机号注册
-    [self setupPhoneRegisterUI];
-    
-    // 设置邮箱注册
-    [self setupEmailRegisterUI];
-    
-    // 设置账号注册
-    [self setupAccountRegisterUI];
+    // 根据 registerArr 动态创建注册视图
+    for (NSNumber *typeNum in self.registerArr) {
+        int type = [typeNum intValue];
+        if (type == UserAuthTypePhone) {
+            // 设置手机号注册
+            [self setupPhoneRegisterUI];
+        } else if (type == UserAuthTypeEmail) {
+            // 设置邮箱注册
+            [self setupEmailRegisterUI];
+        } else if (type == UserAuthTypeAccount) {
+            // 设置账号注册
+            [self setupAccountRegisterUI];
+        }
+    }
     
     // 设置注册按钮
     [self setupRegisterButton];
@@ -914,8 +985,24 @@
     [_registerBtn addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
     [_registerBtn addTarget:self action:@selector(buttonTouchUp:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
     [_contentScrollView addSubview:_registerBtn];
+    
+    // 动态查找第一个存在的容器视图作为基准
+    UIView *baseView = nil;
+    if (_phoneContainerView) {
+        baseView = _phoneContainerView;
+    } else if (_emailContainerView) {
+        baseView = _emailContainerView;
+    } else if (_accountContainerView) {
+        baseView = _accountContainerView;
+    }
+    
     [_registerBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_phoneContainerView.mas_bottom).offset(DWScale(32));
+        if (baseView) {
+            make.top.equalTo(baseView.mas_bottom).offset(DWScale(32));
+        } else {
+            // 如果没有任何容器视图，相对于 contentScrollView 定位
+            make.top.equalTo(_contentScrollView).offset(DWScale(32));
+        }
         make.leading.equalTo(self.view).offset(DWScale(32));
         make.trailing.equalTo(self.view).offset(-DWScale(32));
         make.height.mas_equalTo(DWScale(50));
@@ -954,38 +1041,62 @@
 
 // 设置输入框监听
 - (void)setupTextFieldListeners {
-    // 手机号输入框
-    [_phoneTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [_phonePasswordField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [_phoneConfirmPasswordField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [_phoneVercodeField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [_phoneInviteCodeField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    // 手机号输入框（仅在视图存在时添加监听）
+    if (_phoneTextField) {
+        [_phoneTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+        [_phoneTextField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
+    }
+    if (_phonePasswordField) {
+        [_phonePasswordField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+        [_phonePasswordField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
+    }
+    if (_phoneConfirmPasswordField) {
+        [_phoneConfirmPasswordField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+        [_phoneConfirmPasswordField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
+    }
+    if (_phoneVercodeField) {
+        [_phoneVercodeField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    }
+    if (_phoneInviteCodeField) {
+        [_phoneInviteCodeField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    }
     
-    // 邮箱输入框
-    [_emailTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [_emailPasswordField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [_emailConfirmPasswordField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [_emailVercodeField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [_emailInviteCodeField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    // 邮箱输入框（仅在视图存在时添加监听）
+    if (_emailTextField) {
+        [_emailTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+        [_emailTextField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
+    }
+    if (_emailPasswordField) {
+        [_emailPasswordField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+        [_emailPasswordField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
+    }
+    if (_emailConfirmPasswordField) {
+        [_emailConfirmPasswordField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+        [_emailConfirmPasswordField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
+    }
+    if (_emailVercodeField) {
+        [_emailVercodeField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    }
+    if (_emailInviteCodeField) {
+        [_emailInviteCodeField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    }
     
-    // 账号输入框
-    [_accountTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [_accountPasswordField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [_accountConfirmPasswordField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [_accountInviteCodeField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
-    
-    // 输入结束监听（用于显示错误提示）
-    [_phoneTextField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
-    [_phonePasswordField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
-    [_phoneConfirmPasswordField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
-    
-    [_emailTextField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
-    [_emailPasswordField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
-    [_emailConfirmPasswordField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
-    
-    [_accountTextField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
-    [_accountPasswordField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
-    [_accountConfirmPasswordField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
+    // 账号输入框（仅在视图存在时添加监听）
+    if (_accountTextField) {
+        [_accountTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+        [_accountTextField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
+    }
+    if (_accountPasswordField) {
+        [_accountPasswordField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+        [_accountPasswordField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
+    }
+    if (_accountConfirmPasswordField) {
+        [_accountConfirmPasswordField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+        [_accountConfirmPasswordField addTarget:self action:@selector(textFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
+    }
+    if (_accountInviteCodeField) {
+        [_accountInviteCodeField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    }
 }
 
 // 输入框内容改变
@@ -995,37 +1106,41 @@
 
 // 输入框结束编辑
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-    if (self.currentSelectedIndex == 0) {
-        // 手机号注册
-        if (textField == _phoneTextField) {
-            [ZAuthInputTools registerCheckPhoneWithText:textField.text];
-        } else if (textField == _phonePasswordField) {
-            [self validatePassword:textField.text];
-        } else if (textField == _phoneConfirmPasswordField) {
-            if (![_phonePasswordField.text isEqualToString:textField.text]) {
-                [HUD showMessage:MultilingualTranslation(@"密码不一致") inView:self.view];
+    if (self.currentSelectedIndex >= 0 && self.currentSelectedIndex < self.registerArr.count) {
+        int authType = [self.registerArr[self.currentSelectedIndex] intValue];
+        
+        if (authType == UserAuthTypePhone) {
+            // 手机号注册
+            if (textField == _phoneTextField) {
+                [ZAuthInputTools registerCheckPhoneWithText:textField.text];
+            } else if (textField == _phonePasswordField) {
+                [self validatePassword:textField.text];
+            } else if (textField == _phoneConfirmPasswordField) {
+                if (![_phonePasswordField.text isEqualToString:textField.text]) {
+                    [HUD showMessage:MultilingualTranslation(@"密码不一致") inView:self.view];
+                }
             }
-        }
-    } else if (self.currentSelectedIndex == 1) {
-        // 邮箱注册
-        if (textField == _emailTextField) {
-            [ZAuthInputTools registerCheckEmailWithText:textField.text];
-        } else if (textField == _emailPasswordField) {
-            [self validatePassword:textField.text];
-        } else if (textField == _emailConfirmPasswordField) {
-            if (![_emailPasswordField.text isEqualToString:textField.text]) {
-                [HUD showMessage:MultilingualTranslation(@"密码不一致") inView:self.view];
+        } else if (authType == UserAuthTypeEmail) {
+            // 邮箱注册
+            if (textField == _emailTextField) {
+                [ZAuthInputTools registerCheckEmailWithText:textField.text];
+            } else if (textField == _emailPasswordField) {
+                [self validatePassword:textField.text];
+            } else if (textField == _emailConfirmPasswordField) {
+                if (![_emailPasswordField.text isEqualToString:textField.text]) {
+                    [HUD showMessage:MultilingualTranslation(@"密码不一致") inView:self.view];
+                }
             }
-        }
-    } else {
-        // 账号注册
-        if (textField == _accountTextField) {
-            [self validateAccountFormat:textField.text];
-        } else if (textField == _accountPasswordField) {
-            [self validatePassword:textField.text];
-        } else if (textField == _accountConfirmPasswordField) {
-            if (![_accountPasswordField.text isEqualToString:textField.text]) {
-                [HUD showMessage:MultilingualTranslation(@"密码不一致") inView:self.view];
+        } else if (authType == UserAuthTypeAccount) {
+            // 账号注册
+            if (textField == _accountTextField) {
+                [self validateAccountFormat:textField.text];
+            } else if (textField == _accountPasswordField) {
+                [self validatePassword:textField.text];
+            } else if (textField == _accountConfirmPasswordField) {
+                if (![_accountPasswordField.text isEqualToString:textField.text]) {
+                    [HUD showMessage:MultilingualTranslation(@"密码不一致") inView:self.view];
+                }
             }
         }
     }
@@ -1061,48 +1176,50 @@
 - (void)checkRegisterButtonAvailable {
     BOOL enabled = NO;
     
-    if (self.currentSelectedIndex == 0) {
-        // 手机号注册
+    if (self.currentSelectedIndex >= 0 && self.currentSelectedIndex < self.registerArr.count) {
+        int authType = [self.registerArr[self.currentSelectedIndex] intValue];
         BOOL isMustInviteCode = [ZHostTool.appSysSetModel.isMustInviteCode isEqualToString:@"1"];
-        if (isMustInviteCode) {
-            enabled = _phoneTextField.text.length > 0 && 
-                     _phoneVercodeField.text.length > 0 && 
-                     _phonePasswordField.text.length > 0 && 
-                     _phoneConfirmPasswordField.text.length > 0 &&
-                     _phoneInviteCodeField.text.length > 0;
-        } else {
-            enabled = _phoneTextField.text.length > 0 && 
-                     _phoneVercodeField.text.length > 0 && 
-                     _phonePasswordField.text.length > 0 && 
-                     _phoneConfirmPasswordField.text.length > 0;
-        }
-    } else if (self.currentSelectedIndex == 1) {
-        // 邮箱注册
-        BOOL isMustInviteCode = [ZHostTool.appSysSetModel.isMustInviteCode isEqualToString:@"1"];
-        if (isMustInviteCode) {
-            enabled = _emailTextField.text.length > 0 && 
-                     _emailVercodeField.text.length > 0 && 
-                     _emailPasswordField.text.length > 0 && 
-                     _emailConfirmPasswordField.text.length > 0 &&
-                     _emailInviteCodeField.text.length > 0;
-        } else {
-            enabled = _emailTextField.text.length > 0 && 
-                     _emailVercodeField.text.length > 0 && 
-                     _emailPasswordField.text.length > 0 && 
-                     _emailConfirmPasswordField.text.length > 0;
-        }
-    } else {
-        // 账号注册
-        BOOL isMustInviteCode = [ZHostTool.appSysSetModel.isMustInviteCode isEqualToString:@"1"];
-        if (isMustInviteCode) {
-            enabled = _accountTextField.text.length > 0 && 
-                     _accountPasswordField.text.length > 0 && 
-                     _accountConfirmPasswordField.text.length > 0 &&
-                     _accountInviteCodeField.text.length > 0;
-        } else {
-            enabled = _accountTextField.text.length > 0 && 
-                     _accountPasswordField.text.length > 0 && 
-                     _accountConfirmPasswordField.text.length > 0;
+        
+        if (authType == UserAuthTypePhone) {
+            // 手机号注册
+            if (isMustInviteCode) {
+                enabled = _phoneTextField.text.length > 0 && 
+                         _phoneVercodeField.text.length > 0 && 
+                         _phonePasswordField.text.length > 0 && 
+                         _phoneConfirmPasswordField.text.length > 0 &&
+                         _phoneInviteCodeField.text.length > 0;
+            } else {
+                enabled = _phoneTextField.text.length > 0 && 
+                         _phoneVercodeField.text.length > 0 && 
+                         _phonePasswordField.text.length > 0 && 
+                         _phoneConfirmPasswordField.text.length > 0;
+            }
+        } else if (authType == UserAuthTypeEmail) {
+            // 邮箱注册
+            if (isMustInviteCode) {
+                enabled = _emailTextField.text.length > 0 && 
+                         _emailVercodeField.text.length > 0 && 
+                         _emailPasswordField.text.length > 0 && 
+                         _emailConfirmPasswordField.text.length > 0 &&
+                         _emailInviteCodeField.text.length > 0;
+            } else {
+                enabled = _emailTextField.text.length > 0 && 
+                         _emailVercodeField.text.length > 0 && 
+                         _emailPasswordField.text.length > 0 && 
+                         _emailConfirmPasswordField.text.length > 0;
+            }
+        } else if (authType == UserAuthTypeAccount) {
+            // 账号注册
+            if (isMustInviteCode) {
+                enabled = _accountTextField.text.length > 0 && 
+                         _accountPasswordField.text.length > 0 && 
+                         _accountConfirmPasswordField.text.length > 0 &&
+                         _accountInviteCodeField.text.length > 0;
+            } else {
+                enabled = _accountTextField.text.length > 0 && 
+                         _accountPasswordField.text.length > 0 && 
+                         _accountConfirmPasswordField.text.length > 0;
+            }
         }
     }
     
@@ -1120,17 +1237,26 @@
     self.currentSelectedIndex = index;
     
     // 隐藏所有容器
-    _phoneContainerView.hidden = YES;
-    _emailContainerView.hidden = YES;
-    _accountContainerView.hidden = YES;
+    if (_phoneContainerView) {
+        _phoneContainerView.hidden = YES;
+    }
+    if (_emailContainerView) {
+        _emailContainerView.hidden = YES;
+    }
+    if (_accountContainerView) {
+        _accountContainerView.hidden = YES;
+    }
     
-    // 显示当前选中的容器
-    if (index == 0) {
-        _phoneContainerView.hidden = NO;
-    } else if (index == 1) {
-        _emailContainerView.hidden = NO;
-    } else {
-        _accountContainerView.hidden = NO;
+    // 根据 registerArr 获取当前选中的注册类型并显示对应容器
+    if (index >= 0 && index < self.registerArr.count) {
+        int authType = [self.registerArr[index] intValue];
+        if (authType == UserAuthTypePhone && _phoneContainerView) {
+            _phoneContainerView.hidden = NO;
+        } else if (authType == UserAuthTypeEmail && _emailContainerView) {
+            _emailContainerView.hidden = NO;
+        } else if (authType == UserAuthTypeAccount && _accountContainerView) {
+            _accountContainerView.hidden = NO;
+        }
     }
     
     // 切换tab时检查按钮状态
@@ -1229,14 +1355,10 @@
 
 // 继续注册流程
 - (void)continueRegisterProcess {
-    // 获取当前注册方式
+    // 根据 registerArr 获取当前注册方式
     int registerWay = UserAuthTypePhone;
-    if (self.currentSelectedIndex == 0) {
-        registerWay = UserAuthTypePhone;
-    } else if (self.currentSelectedIndex == 1) {
-        registerWay = UserAuthTypeEmail;
-    } else {
-        registerWay = UserAuthTypeAccount;
+    if (self.currentSelectedIndex >= 0 && self.currentSelectedIndex < self.registerArr.count) {
+        registerWay = [self.registerArr[self.currentSelectedIndex] intValue];
     }
     
     // 账号注册时先验证账号是否存在
@@ -1594,21 +1716,25 @@
     NSString *vercode = @"";
     NSString *areaCode = @"";
     
-    if (self.currentSelectedIndex == 0) {
-        registerWay = UserAuthTypePhone;
-        account = self.phoneTextField.text;
-        password = self.phonePasswordField.text;
-        vercode = self.phoneVercodeField.text;
-        areaCode = self.phoneCountryCode;
-    } else if (self.currentSelectedIndex == 1) {
-        registerWay = UserAuthTypeEmail;
-        account = self.emailTextField.text;
-        password = self.emailPasswordField.text;
-        vercode = self.emailVercodeField.text;
-    } else {
-        registerWay = UserAuthTypeAccount;
-        account = self.accountTextField.text;
-        password = self.accountPasswordField.text;
+    if (self.currentSelectedIndex >= 0 && self.currentSelectedIndex < self.registerArr.count) {
+        int authType = [self.registerArr[self.currentSelectedIndex] intValue];
+        
+        if (authType == UserAuthTypePhone) {
+            registerWay = UserAuthTypePhone;
+            account = self.phoneTextField.text;
+            password = self.phonePasswordField.text;
+            vercode = self.phoneVercodeField.text;
+            areaCode = self.phoneCountryCode;
+        } else if (authType == UserAuthTypeEmail) {
+            registerWay = UserAuthTypeEmail;
+            account = self.emailTextField.text;
+            password = self.emailPasswordField.text;
+            vercode = self.emailVercodeField.text;
+        } else if (authType == UserAuthTypeAccount) {
+            registerWay = UserAuthTypeAccount;
+            account = self.accountTextField.text;
+            password = self.accountPasswordField.text;
+        }
     }
     
     // AES对称加密密码
@@ -1751,34 +1877,25 @@
 
 // 设置默认国家区号
 - (void)setupDefaultCountryCode {
-    // 使用系统地区设置
-    NSString *countryCode = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
-    
-    // 默认区号
-    NSString *defaultAreaCode = @"+86";
-    
-    // 根据国家代码查询区号
-    if (countryCode) {
-        NSString *dbPath = [[NSBundle mainBundle] pathForResource:@"areacode" ofType:@"db"];
-        FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
-        
-        if ([db open]) {
-            NSString *query = @"SELECT prefix FROM areacode WHERE countryCode = ?";
-            FMResultSet *result = [db executeQuery:query, countryCode];
-            
-            if ([result next]) {
-                NSString *prefix = [result stringForColumn:@"prefix"];
-                if (![NSString isNil:prefix]) {
-                    defaultAreaCode = [NSString stringWithFormat:@"+%@", prefix];
-                }
-            }
-            
-            [result close];
-            [db close];
+    NSString *area_code = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
+    NSString *prefixCode = nil;
+    NSString *dbPath = [[NSBundle mainBundle] pathForResource:@"sysdbdefault" ofType:@"db"];
+    FMDatabase *db = [[FMDatabase alloc] initWithPath:dbPath];
+    if ([db open]) {
+        NSString *sql = [NSString stringWithFormat:@"select prefix from SMS_country where country_code_2 = '%@'", area_code];
+        FMResultSet *rs = [db executeQuery:sql, area_code];
+        if ([rs next]) {
+            prefixCode = [rs stringForColumn:@"prefix"];
         }
+        [rs close];
+        [db close];
     }
     
-    self.phoneCountryCode = defaultAreaCode;
+    if (![NSString isNil:prefixCode]) {
+        self.phoneCountryCode = [NSString stringWithFormat:@"+%@", prefixCode];
+    } else {
+        self.phoneCountryCode = @"+86"; // 默认中国区号
+    }
 }
 
 // 调整图片大小
