@@ -1549,6 +1549,7 @@
 "重新检测" = "Reintentar";
 "退出检测" = "Salir";
 "企业号：%@" = "Empresa: %@";
+"企业号设置成功" = "Configuración empresarial exitosa";
 "网络连接情况" = "Estado de red";
 "域名解析检测" = "Comprobación DNS";
 "导航连接检测" = "Prueba de ping";

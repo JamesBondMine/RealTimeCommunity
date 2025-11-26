@@ -1548,6 +1548,7 @@
 "重新检测" = "Ulangi";
 "退出检测" = "Keluar";
 "企业号：%@" = "Perusahaan: %@";
+"企业号设置成功" = "Pengaturan perusahaan berhasil";
 "网络连接情况" = "Status jaringan";
 "域名解析检测" = "Cek DNS";
 "导航连接检测" = "Tes ping";

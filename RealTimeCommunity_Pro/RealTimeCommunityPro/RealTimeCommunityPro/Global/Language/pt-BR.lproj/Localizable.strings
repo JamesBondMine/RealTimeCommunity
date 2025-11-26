@@ -1575,3 +1575,4 @@
 "TCP节点%@请求成功，耗时%.0f毫秒" = "Nó TCP %@ ok %.0f ms";
 "TCP节点%@请求失败，无法连接至服务器" = "Nó TCP %@ sem servidor";
 "TCP节点%@请求失败，密钥交换失败" = "Nó TCP %@ erro de chave";
+"企业号设置成功" = "Configuração empresarial bem-sucedida";
