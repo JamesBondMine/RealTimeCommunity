@@ -51,6 +51,25 @@ DEF_SINGLETON(ZUserManager)
     if (userInfo) {
         _userInfo = userInfo;
         [_userInfo saveUserInfo];
+        
+        // 🔧 修复：设置新用户时，尝试加载该用户对应的权限缓存
+        // 如果该用户之前登录过并有权限缓存，可以立即加载，不需要等网络请求
+        if (![NSString isNil:_userInfo.userUID]) {
+            NSString *storageKey = [ZUserManager userRoleAuthStorageKeyForUID:_userInfo.userUID];
+            NSData *data = [[MMKV defaultMMKV] getDataForKey:storageKey];
+            if (data) {
+                NSError *unarchiveError = nil;
+                NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:data error:&unarchiveError];
+                if (unarchiver) {
+                    unarchiver.requiresSecureCoding = NO;
+                    id obj = [unarchiver decodeObjectForKey:NSKeyedArchiveRootObjectKey];
+                    [unarchiver finishDecoding];
+                    if ([obj isKindOfClass:[ZUserRoleAuthorityModel class]]) {
+                        _userRoleAuthInfo = (ZUserRoleAuthorityModel *)obj;
+                    }
+                }
+            }
+        }
     }else {
         _userInfo = nil;
         [ZUserModel clearUserInfo];

@@ -72,8 +72,8 @@
     self.isExpanded = NO;
     self.subButtons = [NSMutableArray array];
     
-    // 根据权限构建功能列表
-    [self buildActionList];
+    // 不在初始化时构建功能列表，而是在每次展开时动态构建
+    // 这样可以确保使用最新的用户权限数据
     
     [self setupMainButton];
 }
@@ -159,6 +159,9 @@
 
 - (void)expandButtons {
     self.isExpanded = YES;
+    
+    // 🔧 重要：每次展开时重新构建功能列表，确保使用最新的用户权限数据
+    [self buildActionList];
     
     // 旋转主按钮图标
     UIView *iconView = [self.mainButton viewWithTag:999];
