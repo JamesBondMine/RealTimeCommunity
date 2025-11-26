@@ -61,6 +61,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
 // 切换视图
 @property (nonatomic, strong) LJCategoryTitleView *categoryView;
 @property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *loginTypeArr; // 动态登录方式数组
 
 // 加入企业号模式的UI组件
 @property (nonatomic, strong) UIView *joinServerContainerView; // 容器视图（加入企业号的内容区域）
@@ -157,6 +158,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
         [self setupJoinServerUI];
     } else {
         // 登录模式
+        [self setupLoginMethod]; // 动态配置登录方式
         [self setupCompanyIdButton];
         [self setupCategoryView];
         [self setupContentViews];
@@ -197,6 +199,57 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
         self.presetIpDomain = savedIpDomain;
         NSLog(@"加载保存的IP/域名: %@", savedIpDomain);
     }
+}
+
+// 动态配置登录方式
+- (void)setupLoginMethod {
+    if (!self.loginTypeArr) {
+        self.loginTypeArr = [NSMutableArray array];
+    }
+    [self.loginTypeArr removeAllObjects];
+    
+    NSString *loginMethod = ZHostTool.appSysSetModel.loginMethod;
+    
+    if ([loginMethod isEqualToString:@"1"]) {
+        // 账号
+        [self.loginTypeArr addObject:@(UserAuthTypeAccount)];
+    } else if ([loginMethod isEqualToString:@"2"]) {
+        // 邮箱
+        [self.loginTypeArr addObject:@(UserAuthTypeEmail)];
+    } else if ([loginMethod isEqualToString:@"3"]) {
+        // 手机号
+        [self.loginTypeArr addObject:@(UserAuthTypePhone)];
+    } else if ([loginMethod isEqualToString:@"4"]) {
+        // 手机号+邮箱
+        [self.loginTypeArr addObjectsFromArray:@[
+            @(UserAuthTypePhone),
+            @(UserAuthTypeEmail)
+        ]];
+    } else if ([loginMethod isEqualToString:@"5"]) {
+        // 手机号+账号
+        [self.loginTypeArr addObjectsFromArray:@[
+            @(UserAuthTypePhone),
+            @(UserAuthTypeAccount)
+        ]];
+    } else if ([loginMethod isEqualToString:@"6"]) {
+        // 邮箱+账号
+        [self.loginTypeArr addObjectsFromArray:@[
+            @(UserAuthTypeEmail),
+            @(UserAuthTypeAccount)
+        ]];
+    } else if ([loginMethod isEqualToString:@"7"]) {
+        // 手机号+邮箱+账号
+        [self.loginTypeArr addObjectsFromArray:@[
+            @(UserAuthTypePhone),
+            @(UserAuthTypeEmail),
+            @(UserAuthTypeAccount)
+        ]];
+    } else {
+        // 默认：账号
+        [self.loginTypeArr addObject:@(UserAuthTypeAccount)];
+    }
+    
+    NSLog(@"配置登录方式: %@", self.loginTypeArr);
 }
 
 // 保存企业号配置
@@ -538,7 +591,18 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
 
 // 设置切换视图
 - (void)setupCategoryView {
-    NSArray *titles = @[MultilingualTranslation(@"手机号"), MultilingualTranslation(@"邮箱"), MultilingualTranslation(@"账号")];
+    // 根据动态登录方式数组构建 titles
+    NSMutableArray *titles = [NSMutableArray array];
+    for (NSNumber *typeNum in self.loginTypeArr) {
+        int type = [typeNum intValue];
+        if (type == UserAuthTypePhone) {
+            [titles addObject:MultilingualTranslation(@"手机号")];
+        } else if (type == UserAuthTypeEmail) {
+            [titles addObject:MultilingualTranslation(@"邮箱")];
+        } else if (type == UserAuthTypeAccount) {
+            [titles addObject:MultilingualTranslation(@"账号")];
+        }
+    }
     
     _categoryView = [[LJCategoryTitleView alloc] init];
     _categoryView.backgroundColor = [UIColor clearColor];
@@ -568,11 +632,29 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     categoryContainerView.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.15];
     categoryContainerView.layer.cornerRadius = DWScale(20);
     
+    // 根据登录方式数量动态计算容器宽度
+    // 公式：宽度 = (cellWidth × count) + (cellSpacing × (count - 1)) + 左右内边距(4)
+    NSInteger loginTypeCount = self.loginTypeArr.count;
+
+    CGFloat containerWidth = 0;
+
+    switch (loginTypeCount) {
+        case 1:
+            containerWidth = DWScale(120);
+            break;
+        case 2:
+            containerWidth = DWScale(200);
+            break;
+        case 3:
+            containerWidth = DWScale(300);
+            break;
+    }
+    
     [self.view addSubview:categoryContainerView];
     [categoryContainerView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view).offset(DStatusBarH + DWScale(80));
         make.centerX.equalTo(self.view);
-        make.width.mas_equalTo(DWScale(300));
+        make.width.mas_equalTo(containerWidth);
         make.height.mas_equalTo(DWScale(40));
     }];
     
@@ -590,7 +672,8 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     _scrollView.pagingEnabled = YES;
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.showsHorizontalScrollIndicator = NO;
-    _scrollView.contentSize = CGSizeMake(DScreenWidth * 3, 0);
+    // 根据登录方式数量动态设置 contentSize
+    _scrollView.contentSize = CGSizeMake(DScreenWidth * self.loginTypeArr.count, 0);
     _scrollView.bounces = NO;
     _scrollView.delegate = (id<UIScrollViewDelegate>)self;
     [self.view addSubview:_scrollView];
@@ -600,24 +683,31 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     
     _currentSelectedIndex = 0;
     
-    // 创建三个登录类型视图
-    // 手机号登录
-    _phoneView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, DScreenWidth, _scrollView.height)];
-    _phoneView.backgroundColor = [UIColor whiteColor];
-    [self setupPhoneLoginUI:_phoneView];
-    [_scrollView addSubview:_phoneView];
-    
-    // 邮箱登录
-    _emailView = [[UIView alloc] initWithFrame:CGRectMake(DScreenWidth, 0, DScreenWidth, _scrollView.height)];
-    _emailView.backgroundColor = [UIColor whiteColor];
-    [self setupEmailLoginUI:_emailView];
-    [_scrollView addSubview:_emailView];
-    
-    // 账号登录
-    _accountView = [[UIView alloc] initWithFrame:CGRectMake(DScreenWidth * 2, 0, DScreenWidth, _scrollView.height)];
-    _accountView.backgroundColor = [UIColor whiteColor];
-    [self setupAccountLoginUI:_accountView];
-    [_scrollView addSubview:_accountView];
+    // 根据 loginTypeArr 动态创建登录类型视图
+    for (NSInteger i = 0; i < self.loginTypeArr.count; i++) {
+        int authType = [self.loginTypeArr[i] intValue];
+        CGFloat xOffset = DScreenWidth * i;
+        
+        if (authType == UserAuthTypePhone) {
+            // 手机号登录
+            _phoneView = [[UIView alloc] initWithFrame:CGRectMake(xOffset, 0, DScreenWidth, _scrollView.height)];
+            _phoneView.backgroundColor = [UIColor whiteColor];
+            [self setupPhoneLoginUI:_phoneView];
+            [_scrollView addSubview:_phoneView];
+        } else if (authType == UserAuthTypeEmail) {
+            // 邮箱登录
+            _emailView = [[UIView alloc] initWithFrame:CGRectMake(xOffset, 0, DScreenWidth, _scrollView.height)];
+            _emailView.backgroundColor = [UIColor whiteColor];
+            [self setupEmailLoginUI:_emailView];
+            [_scrollView addSubview:_emailView];
+        } else if (authType == UserAuthTypeAccount) {
+            // 账号登录
+            _accountView = [[UIView alloc] initWithFrame:CGRectMake(xOffset, 0, DScreenWidth, _scrollView.height)];
+            _accountView.backgroundColor = [UIColor whiteColor];
+            [self setupAccountLoginUI:_accountView];
+            [_scrollView addSubview:_accountView];
+        }
+    }
     
     // 创建统一的继续按钮
     [self setupContinueButton];
@@ -895,52 +985,59 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
 
 // 显示密码输入框（根据当前tab）
 - (void)showPasswordInputForCurrentTab {
-    if (_currentSelectedIndex == 0) {
-        [self showPhonePasswordInput];
-    } else if (_currentSelectedIndex == 1) {
-        [self showEmailPasswordInput];
-    } else {
-        [self showAccountPasswordInput];
+    if (_currentSelectedIndex >= 0 && _currentSelectedIndex < self.loginTypeArr.count) {
+        int authType = [self.loginTypeArr[_currentSelectedIndex] intValue];
+        if (authType == UserAuthTypePhone) {
+            [self showPhonePasswordInput];
+        } else if (authType == UserAuthTypeEmail) {
+            [self showEmailPasswordInput];
+        } else if (authType == UserAuthTypeAccount) {
+            [self showAccountPasswordInput];
+        }
     }
 }
 
 // 执行登录逻辑（根据当前tab）
 - (void)performLoginForCurrentTab {
     // 先验证输入
-    if (_currentSelectedIndex == 0) {
-        if (_phoneTextField.text.length == 0) {
-            [HUD showMessage:MultilingualTranslation(@"请输入手机号")];
-            return;
-        }
-        if (_phonePasswordField.text.length == 0) {
-            if (_phoneInputType == 0) {
-                [HUD showMessage:MultilingualTranslation(@"请输入密码")];
-            } else {
-                [HUD showMessage:MultilingualTranslation(@"请输入验证码")];
+    if (_currentSelectedIndex >= 0 && _currentSelectedIndex < self.loginTypeArr.count) {
+        int authType = [self.loginTypeArr[_currentSelectedIndex] intValue];
+        
+        if (authType == UserAuthTypePhone) {
+            if (_phoneTextField.text.length == 0) {
+                [HUD showMessage:MultilingualTranslation(@"请输入手机号")];
+                return;
             }
-            return;
-        }
-    } else if (_currentSelectedIndex == 1) {
-        if (_emailTextField.text.length == 0) {
-            [HUD showMessage:MultilingualTranslation(@"请输入邮箱")];
-            return;
-        }
-        if (_emailPasswordField.text.length == 0) {
-            if (_emailInputType == 0) {
-                [HUD showMessage:MultilingualTranslation(@"请输入密码")];
-            } else {
-                [HUD showMessage:MultilingualTranslation(@"请输入验证码")];
+            if (_phonePasswordField.text.length == 0) {
+                if (_phoneInputType == 0) {
+                    [HUD showMessage:MultilingualTranslation(@"请输入密码")];
+                } else {
+                    [HUD showMessage:MultilingualTranslation(@"请输入验证码")];
+                }
+                return;
             }
-            return;
-        }
-    } else {
-        if (_accountTextField.text.length == 0) {
-            [HUD showMessage:MultilingualTranslation(@"请输入账号")];
-            return;
-        }
-        if (_accountPasswordField.text.length == 0) {
-            [HUD showMessage:MultilingualTranslation(@"请输入密码")];
-            return;
+        } else if (authType == UserAuthTypeEmail) {
+            if (_emailTextField.text.length == 0) {
+                [HUD showMessage:MultilingualTranslation(@"请输入邮箱")];
+                return;
+            }
+            if (_emailPasswordField.text.length == 0) {
+                if (_emailInputType == 0) {
+                    [HUD showMessage:MultilingualTranslation(@"请输入密码")];
+                } else {
+                    [HUD showMessage:MultilingualTranslation(@"请输入验证码")];
+                }
+                return;
+            }
+        } else if (authType == UserAuthTypeAccount) {
+            if (_accountTextField.text.length == 0) {
+                [HUD showMessage:MultilingualTranslation(@"请输入账号")];
+                return;
+            }
+            if (_accountPasswordField.text.length == 0) {
+                [HUD showMessage:MultilingualTranslation(@"请输入密码")];
+                return;
+            }
         }
     }
     
@@ -1653,19 +1750,22 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
         NSLog(@"企业号: %@, IP/域名: %@", companyId, ipDomain);
         
         // 执行登录
-        if (weakSelf.currentSelectedIndex == 0) {
-            // 手机号登录（包含区号）
-            NSString *fullPhoneNumber = [NSString stringWithFormat:@"%@%@", weakSelf.phoneCountryCode, weakSelf.phoneTextField.text];
-            NSLog(@"执行手机号登录: %@ (区号: %@, 手机号: %@), 密码: %@", 
-                  fullPhoneNumber, weakSelf.phoneCountryCode, weakSelf.phoneTextField.text, weakSelf.phonePasswordField.text);
-            [weakSelf loginActionWithCompanyId:companyId ipDomain:ipDomain];
-        } else if (weakSelf.currentSelectedIndex == 1) {
-            // 邮箱登录
-            NSLog(@"执行邮箱登录: %@, 密码: %@", weakSelf.emailTextField.text, weakSelf.emailPasswordField.text);
-            [weakSelf loginActionWithCompanyId:companyId ipDomain:ipDomain];
-        } else {
-            // 账号登录
-            NSLog(@"执行账号登录: %@, 密码: %@", weakSelf.accountTextField.text, weakSelf.accountPasswordField.text);
+        if (weakSelf.currentSelectedIndex >= 0 && weakSelf.currentSelectedIndex < weakSelf.loginTypeArr.count) {
+            int authType = [weakSelf.loginTypeArr[weakSelf.currentSelectedIndex] intValue];
+            
+            if (authType == UserAuthTypePhone) {
+                // 手机号登录（包含区号）
+                NSString *fullPhoneNumber = [NSString stringWithFormat:@"%@%@", weakSelf.phoneCountryCode, weakSelf.phoneTextField.text];
+                NSLog(@"执行手机号登录: %@ (区号: %@, 手机号: %@), 密码: %@", 
+                      fullPhoneNumber, weakSelf.phoneCountryCode, weakSelf.phoneTextField.text, weakSelf.phonePasswordField.text);
+            } else if (authType == UserAuthTypeEmail) {
+                // 邮箱登录
+                NSLog(@"执行邮箱登录: %@, 密码: %@", weakSelf.emailTextField.text, weakSelf.emailPasswordField.text);
+            } else if (authType == UserAuthTypeAccount) {
+                // 账号登录
+                NSLog(@"执行账号登录: %@, 密码: %@", weakSelf.accountTextField.text, weakSelf.accountPasswordField.text);
+            }
+            
             [weakSelf loginActionWithCompanyId:companyId ipDomain:ipDomain];
         }
     }];
@@ -1683,27 +1783,31 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     int loginType = 0;
     int inputType = 0; // 0:密码登录  1:验证码登录
     
-    if (self.currentSelectedIndex == 0) {
-        // 手机号登录
-        loginInfo = self.phoneTextField.text;
-        password = self.phonePasswordField.text;
-        areaCode = self.phoneCountryCode;
-        loginType = UserAuthTypePhone;
-        inputType = self.phoneInputType;
-    } else if (self.currentSelectedIndex == 1) {
-        // 邮箱登录
-        loginInfo = self.emailTextField.text;
-        password = self.emailPasswordField.text;
-        areaCode = @"";
-        loginType = UserAuthTypeEmail;
-        inputType = self.emailInputType;
-    } else {
-        // 账号登录
-        loginInfo = self.accountTextField.text;
-        password = self.accountPasswordField.text;
-        areaCode = @"";
-        loginType = UserAuthTypeAccount;
-        inputType = 0; // 账号登录只支持密码
+    if (self.currentSelectedIndex >= 0 && self.currentSelectedIndex < self.loginTypeArr.count) {
+        int authType = [self.loginTypeArr[self.currentSelectedIndex] intValue];
+        
+        if (authType == UserAuthTypePhone) {
+            // 手机号登录
+            loginInfo = self.phoneTextField.text;
+            password = self.phonePasswordField.text;
+            areaCode = self.phoneCountryCode;
+            loginType = UserAuthTypePhone;
+            inputType = self.phoneInputType;
+        } else if (authType == UserAuthTypeEmail) {
+            // 邮箱登录
+            loginInfo = self.emailTextField.text;
+            password = self.emailPasswordField.text;
+            areaCode = @"";
+            loginType = UserAuthTypeEmail;
+            inputType = self.emailInputType;
+        } else if (authType == UserAuthTypeAccount) {
+            // 账号登录
+            loginInfo = self.accountTextField.text;
+            password = self.accountPasswordField.text;
+            areaCode = @"";
+            loginType = UserAuthTypeAccount;
+            inputType = 0; // 账号登录只支持密码
+        }
     }
     
     // 判断登录方式
@@ -1943,19 +2047,35 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     
     // 登录模式：切换登录方式
     _currentSelectedIndex = index;
-    NSLog(@"切换到: %@", @[@"手机号", @"邮箱", @"账号"][index]);
+    
+    // 根据 loginTypeArr 获取当前选中的登录类型
+    if (index >= 0 && index < self.loginTypeArr.count) {
+        int authType = [self.loginTypeArr[index] intValue];
+        NSString *typeName = @"";
+        if (authType == UserAuthTypePhone) {
+            typeName = @"手机号";
+        } else if (authType == UserAuthTypeEmail) {
+            typeName = @"邮箱";
+        } else if (authType == UserAuthTypeAccount) {
+            typeName = @"账号";
+        }
+        NSLog(@"切换到: %@", typeName);
+    }
     
     // 切换tab时，根据当前状态更新按钮文本和位置
     BOOL hasPasswordField = NO;
-    if (index == 0) {
-        [_continueBtn setTitle:_phonePasswordShown ? MultilingualTranslation(@"登录") : MultilingualTranslation(@"继续") forState:UIControlStateNormal];
-        hasPasswordField = _phonePasswordShown;
-    } else if (index == 1) {
-        [_continueBtn setTitle:_emailPasswordShown ? MultilingualTranslation(@"登录") : MultilingualTranslation(@"继续") forState:UIControlStateNormal];
-        hasPasswordField = _emailPasswordShown;
-    } else {
-        [_continueBtn setTitle:_accountPasswordShown ? MultilingualTranslation(@"登录") : MultilingualTranslation(@"继续") forState:UIControlStateNormal];
-        hasPasswordField = _accountPasswordShown;
+    if (index >= 0 && index < self.loginTypeArr.count) {
+        int authType = [self.loginTypeArr[index] intValue];
+        if (authType == UserAuthTypePhone) {
+            [_continueBtn setTitle:_phonePasswordShown ? MultilingualTranslation(@"登录") : MultilingualTranslation(@"继续") forState:UIControlStateNormal];
+            hasPasswordField = _phonePasswordShown;
+        } else if (authType == UserAuthTypeEmail) {
+            [_continueBtn setTitle:_emailPasswordShown ? MultilingualTranslation(@"登录") : MultilingualTranslation(@"继续") forState:UIControlStateNormal];
+            hasPasswordField = _emailPasswordShown;
+        } else if (authType == UserAuthTypeAccount) {
+            [_continueBtn setTitle:_accountPasswordShown ? MultilingualTranslation(@"登录") : MultilingualTranslation(@"继续") forState:UIControlStateNormal];
+            hasPasswordField = _accountPasswordShown;
+        }
     }
     
     // 动态调整按钮位置
