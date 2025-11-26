@@ -38,7 +38,7 @@
 @class WCTDatabase;
 
 //数据库名称
-static NSString * _Nullable const CIMDBName = @"CIMSDKDB_VERSION2.sqlite";
+static NSString * _Nullable const CIMDBName = @"CIMSDKDB_VERSION3.sqlite";
 
 //数据库-用户信息列表(用于缓存用户的昵称备注头像等信息)
 static NSString * _Nullable const CIMDBUserInfoTableName = @"CIMSDKDB_UserInfo_Table";

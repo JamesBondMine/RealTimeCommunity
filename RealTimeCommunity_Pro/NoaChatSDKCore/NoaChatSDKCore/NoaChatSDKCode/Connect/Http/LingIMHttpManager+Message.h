@@ -79,6 +79,12 @@
 //长链接失败后消息发送接口
 #define Message_Push_Msg_Url                    @"/biz/message/pushMsg"
 
+//查询群置顶消息列表
+#define Message_Query_Group_Top_Msg_Url             @"/biz/message/queryGroupTopMsgList"
+//查询群消息是否可以置顶
+#define Message_Query_Group_Msg_Status_Url             @"/biz/message/queryGroupMsgStatus"
+//查询群置顶消息悬浮列表
+#define Message_Query_Group_Top_Msgs_Url             @"/biz/message/queryGroupTopMsgs"
 #import "LingIMHttpManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -276,6 +282,19 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param onSuccess success
 /// @param onFailure failure
 - (void)MessagePushMsg:(NSData * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure;
+
+/// 查询群置顶消息列表
+/// @param params 操作参数 {groupId:群组ID, userUid:操作用户ID, pageNumber:起始页(从1开始), pageSize:每页数据大小, pageStart:起始索引(从0开始)}
+- (void)MessageQueryGroupTopMsgListWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure;
+
+/// 查询群消息是否可以置顶
+/// @param params 操作参数 {groupId:群组ID, msgId:消息ID, userUid:操作用户ID}
+- (void)MessageQueryGroupMsgStatusWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure;
+
+/// 查询群置顶消息悬浮列表
+/// @param params 操作参数 {groupId:群组ID, userUid:操作用户ID}
+- (void)MessageQueryGroupTopMsgsWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure;
+
 @end
 
 

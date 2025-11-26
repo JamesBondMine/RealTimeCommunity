@@ -18,8 +18,8 @@
 #import "LingIMSDKManager+AppInfo.h"
 #import "LIMChatMessageModel.h"
 
-/// 每页展示数据数量
-#define kPageNumber 20
+/// 每页展示数据数量（分页上限，统一 100 条）
+#define kPageNumber 100
 
 @implementation LingIMSDKManager (ChatMessage)
 
@@ -167,7 +167,8 @@
                             //本地存储成功后，将消息传递到UI层
                             //数据传递到UI层
                             //此处代理方法，就不能像以前那样判断是否响应，要直接触发，记录一下，防止写错
-                            [weakSelf.messageDelegate cimToolChatMessageReceive:chatModel];
+                            // 使用 cimToolChatMessageUpdate 而不是 cimToolChatMessageReceive，避免重复添加消息
+                            [weakSelf.messageDelegate cimToolChatMessageUpdate:chatModel];
                             //                            [weakSelf.sessionDelegate imSdkSessionSyncFinish];
                             //消息提醒
                             [IMSDKManager toolMessageReceiveRemindWith:message];
@@ -180,7 +181,8 @@
                             //本地存储成功后，将消息传递到UI层
                             //数据传递到UI层
                             //此处代理方法，就不能像以前那样判断是否响应，要直接触发，记录一下，防止写错
-                            [weakSelf.messageDelegate cimToolChatMessageReceive:chatModel];
+                            // 使用 cimToolChatMessageUpdate 而不是 cimToolChatMessageReceive，避免重复添加消息
+                            [weakSelf.messageDelegate cimToolChatMessageUpdate:chatModel];
                             //                            [weakSelf.sessionDelegate imSdkSessionSyncFinish];
                             //消息提醒
                             [IMSDKManager toolMessageReceiveRemindWith:message];
@@ -327,6 +329,45 @@
     NSString *sessionTableName = [DBTOOL getSessionTableNameWith:message];
     return [DBTOOL insertOrUpdateChatMessageWith:message tableName:sessionTableName];
 }
+
+- (void)toolInsertOrUpdateChatMessagesWith:(NSArray <LingIMChatMessageModel *>*)messageList {
+    //表名称 CIMDB_myUserID_toUserID_Table
+    if (messageList.count == 0) {
+        return;
+    }
+    
+    NSMutableDictionary *messageListDic = [NSMutableDictionary new];
+    for (LingIMChatMessageModel *message in messageList) {
+        if (!message || ![message isKindOfClass:[LingIMChatMessageModel class]]) {
+            continue;
+        }
+        
+        NSString *sessionTableName = [DBTOOL getSessionTableNameWith:message];
+        if (!sessionTableName || sessionTableName.length == 0) {
+            continue;
+        }
+        
+        NSMutableArray *messageArr = messageListDic[sessionTableName];
+        if (!messageArr) {
+            messageArr = [NSMutableArray new];
+            messageListDic[sessionTableName] = messageArr;
+        }
+        [messageArr addObject:message];
+    }
+   
+    if (messageListDic.count == 0) {
+        return;
+    }
+    for (NSString *sessionTableName in messageListDic) {
+        NSMutableArray *messageArr = messageListDic[sessionTableName];
+        if (messageArr.count == 0) {
+            continue;
+        }
+        [DBTOOL insertOrUpdateChatMessagesWith:messageArr tableName:sessionTableName];
+    }
+    
+}
+
 #pragma mark - 删除数据库某消息
 - (BOOL)toolDeleteChatMessageWith:(LingIMChatMessageModel *)message {
     //表名称 CIMDB_myUserID_toUserID_Table
@@ -440,6 +481,14 @@
     NSString *sessionTableName = [NSString stringWithFormat:@"CIMDB_%@_%@_Table",[IMSDKManager myUserID],sessionID];
     CIMLog(@"sessionTableName = %@",sessionTableName);
     return [DBTOOL getOneChatMessageWithServiceMessageID:smsgID withTableName:sessionTableName];
+}
+
+#pragma mark - 根据某个服务端消息ID获取消息（排除删除和撤回的消息）
+- (LingIMChatMessageModel *)toolGetOneChatMessageWithServiceMessageIDExcludeDeleted:(NSString *)smsgID sessionID:(NSString *)sessionID {
+    //表名称 CIMDB_myUserID_toUserID_Table
+    NSString *sessionTableName = [NSString stringWithFormat:@"CIMDB_%@_%@_Table",[IMSDKManager myUserID],sessionID];
+    CIMLog(@"sessionTableName = %@",sessionTableName);
+    return [DBTOOL getOneChatMessageWithServiceMessageIDExcludeDeleted:smsgID withTableName:sessionTableName];
 }
 
 #pragma mark - 获取某个会话的最新消息
@@ -1525,6 +1574,21 @@
 #pragma mark - 长链接失败后发送消息接口
 - (void)MessagePushMsg:(NSData * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure {
     [[LingIMHttpManager sharedManager] MessagePushMsg:params onSuccess:onSuccess onFailure:onFailure];
+}
+
+#pragma mark - 查询群置顶消息列表
+- (void)MessageQueryGroupTopMsgListWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure {
+    [[LingIMHttpManager sharedManager] MessageQueryGroupTopMsgListWith:params onSuccess:onSuccess onFailure:onFailure];
+}
+
+#pragma mark - 查询群消息是否可以置顶
+- (void)MessageQueryGroupMsgStatusWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure {
+    [[LingIMHttpManager sharedManager] MessageQueryGroupMsgStatusWith:params onSuccess:onSuccess onFailure:onFailure];
+}
+
+#pragma mark - 查询群置顶消息悬浮列表
+- (void)MessageQueryGroupTopMsgsWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure {
+    [[LingIMHttpManager sharedManager] MessageQueryGroupTopMsgsWith:params onSuccess:onSuccess onFailure:onFailure];
 }
 
 @end

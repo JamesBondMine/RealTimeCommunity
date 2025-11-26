@@ -319,7 +319,7 @@
     if (kAllHttpRequestUseTcp) {
         [LingIMTcpRequestModel sendTcpRequestWithParam:params Url:Message_Add_Chat_Tag_Url Method:LingRequestPost SuccessFunc:onSuccess FailureFunc:onFailure];
     }else {
-        [self netRequestWithType:LingIMHttpRequestTypePOST path:Message_Add_Chat_Tag_Url parameters:params onSuccess:onSuccess onFailure:onFailure];        
+        [self netRequestWithType:LingIMHttpRequestTypePOST path:Message_Add_Chat_Tag_Url parameters:params onSuccess:onSuccess onFailure:onFailure];
     }
 }
 
@@ -352,6 +352,33 @@
 - (void)MessagePushMsg:(NSData * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure {
     // 保持HTTP接口不变
     [self netRequestMessagePushWithPath:Message_Push_Msg_Url paramData:params onSuccess:onSuccess onFailure:onFailure];
+}
+
+#pragma mark - 查询群置顶消息列表
+- (void)MessageQueryGroupTopMsgListWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure {
+    if (kAllHttpRequestUseTcp) {
+        [LingIMTcpRequestModel sendTcpRequestWithParam:params Url:Message_Query_Group_Top_Msg_Url Method:LingRequestPost SuccessFunc:onSuccess FailureFunc:onFailure];
+    }else {
+        [self netRequestWithType:LingIMHttpRequestTypePOST path:Message_Query_Group_Top_Msg_Url parameters:params onSuccess:onSuccess onFailure:onFailure];
+    }
+}
+
+#pragma mark - 查询群消息是否可以置顶
+- (void)MessageQueryGroupMsgStatusWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure {
+    if (kAllHttpRequestUseTcp) {
+        [LingIMTcpRequestModel sendTcpRequestWithParam:params Url:Message_Query_Group_Msg_Status_Url Method:LingRequestPost SuccessFunc:onSuccess FailureFunc:onFailure];
+    }else {
+        [self netRequestWithType:LingIMHttpRequestTypePOST path:Message_Query_Group_Msg_Status_Url parameters:params onSuccess:onSuccess onFailure:onFailure];
+    }
+}
+
+#pragma mark - 查询群置顶消息悬浮列表
+- (void)MessageQueryGroupTopMsgsWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure {
+    if (kAllHttpRequestUseTcp) {
+        [LingIMTcpRequestModel sendTcpRequestWithParam:params Url:Message_Query_Group_Top_Msgs_Url Method:LingRequestPost SuccessFunc:onSuccess FailureFunc:onFailure];
+    }else {
+        [self netRequestWithType:LingIMHttpRequestTypePOST path:Message_Query_Group_Top_Msgs_Url parameters:params onSuccess:onSuccess onFailure:onFailure];
+    }
 }
 
 @end

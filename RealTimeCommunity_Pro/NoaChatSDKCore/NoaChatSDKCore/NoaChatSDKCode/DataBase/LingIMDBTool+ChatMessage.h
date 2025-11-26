@@ -13,10 +13,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LingIMDBTool (ChatMessage)
 
-/// 更新 或 新增 消息到 消息表
-/// @param message 消息内容
-/// @param tableName 表名称
+/// 单个插入聊天信息
+/// - Parameters:
+///   - message: 聊天信息
+///   - tableName: 表名
 - (BOOL)insertOrUpdateChatMessageWith:(LingIMChatMessageModel *)message tableName:(NSString *)tableName;
+
+/// 批量插入聊天信息
+/// - Parameters:
+///   - messageList: 聊天信息列表
+///   - tableName: 表名
+- (BOOL)insertOrUpdateChatMessagesWith:(NSArray<LingIMChatMessageModel *> *)messageList tableName:(NSString *)tableName;
 
 /// 获取某个会话的聊天历史消息
 /// @param sessionTableName 会话表名称
@@ -81,6 +88,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param smsgID 服务端消息ID
 /// @param tableName 会话表名称
 - (LingIMChatMessageModel *)getOneChatMessageWithServiceMessageID:(NSString *)smsgID withTableName:(NSString *)tableName;
+
+/// 根据某个服务端消息ID获取消息（排除删除和撤回的消息）
+/// @param smsgID 服务端消息ID
+/// @param tableName 会话表名称
+- (LingIMChatMessageModel *)getOneChatMessageWithServiceMessageIDExcludeDeleted:(NSString *)smsgID withTableName:(NSString *)tableName;
 
 /// 获取某个会话的最新消息
 /// @param tableName 会话表名称

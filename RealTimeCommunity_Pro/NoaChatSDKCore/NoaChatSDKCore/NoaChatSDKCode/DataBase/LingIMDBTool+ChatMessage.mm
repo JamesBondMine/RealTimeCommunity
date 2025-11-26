@@ -15,8 +15,21 @@
 
 @implementation LingIMDBTool (ChatMessage)
 #pragma mark - 更新 或 新增 消息到 消息表
+
+/// 单个插入聊天信息
+/// - Parameters:
+///   - message: 聊天信息
+///   - tableName: 表名
 - (BOOL)insertOrUpdateChatMessageWith:(LingIMChatMessageModel *)message tableName:(NSString *)tableName {
     return [DBTOOL insertModelToTable:tableName model:message];
+}
+
+/// 批量插入聊天信息
+/// - Parameters:
+///   - messageList: 聊天信息列表
+///   - tableName: 表名
+- (BOOL)insertOrUpdateChatMessagesWith:(NSArray<LingIMChatMessageModel *> *)messageList tableName:(NSString *)tableName {
+    return [DBTOOL insertMulitModelToTable:tableName modelClass:LingIMChatMessageModel.class list:messageList];
 }
 
 #pragma mark - 获取某个会话的聊天历史消息
@@ -96,15 +109,29 @@
     }
 }
 
-#pragma mark - 获取某个时间范围内容的聊天历史记录
+#pragma mark - 获取某个时间范围内容的聊天历史记录（带默认上限）
 - (NSArray<LingIMChatMessageModel *> *)getChatMessageHistoryWith:(NSString *)sessionTableName startTime:(long long)startTime endTime:(long long)endTime {
-    
-    [DBTOOL isTableStateOkWithName:sessionTableName model:LingIMChatMessageModel.class];
+    return [self getChatMessageHistoryWith:sessionTableName startTime:startTime endTime:endTime limit:300];
+}
 
+#pragma mark - 获取某个时间范围内容的聊天历史记录（指定上限）
+- (NSArray<LingIMChatMessageModel *> *)getChatMessageHistoryWith:(NSString *)sessionTableName startTime:(long long)startTime endTime:(long long)endTime limit:(NSInteger)limit {
+    [DBTOOL isTableStateOkWithName:sessionTableName model:LingIMChatMessageModel.class];
+    NSInteger safeLimit = (limit > 0 ? limit : 300);
     if (endTime > 0) {
-        return [self.cimDB getObjectsOfClass:LingIMChatMessageModel.class fromTable:sessionTableName where:{LingIMChatMessageModel.sendTime >= startTime && LingIMChatMessageModel.sendTime < endTime && LingIMChatMessageModel.messageStatus == 1} orders:{LingIMChatMessageModel.sendTime.asOrder(WCTOrderedDescending), LingIMChatMessageModel.serviceMsgID.asOrder(WCTOrderedDescending)}];
-    }else {
-        return [self.cimDB getObjectsOfClass:LingIMChatMessageModel.class fromTable:sessionTableName where:LingIMChatMessageModel.sendTime >= startTime && LingIMChatMessageModel.messageStatus == 1 orders:{LingIMChatMessageModel.sendTime.asOrder(WCTOrderedDescending), LingIMChatMessageModel.serviceMsgID.asOrder(WCTOrderedDescending)}];
+        return [self.cimDB getObjectsOfClass:LingIMChatMessageModel.class
+                                   fromTable:sessionTableName
+                                       where:{LingIMChatMessageModel.sendTime >= startTime && LingIMChatMessageModel.sendTime < endTime && LingIMChatMessageModel.messageStatus == 1}
+                                       orders:{LingIMChatMessageModel.sendTime.asOrder(WCTOrderedDescending), LingIMChatMessageModel.serviceMsgID.asOrder(WCTOrderedDescending)}
+                                        limit:safeLimit
+                                       offset:0];
+    } else {
+        return [self.cimDB getObjectsOfClass:LingIMChatMessageModel.class
+                                   fromTable:sessionTableName
+                                       where:LingIMChatMessageModel.sendTime >= startTime && LingIMChatMessageModel.messageStatus == 1
+                                       orders:{LingIMChatMessageModel.sendTime.asOrder(WCTOrderedDescending), LingIMChatMessageModel.serviceMsgID.asOrder(WCTOrderedDescending)}
+                                        limit:safeLimit
+                                       offset:0];
     }
 }
 
@@ -154,12 +181,22 @@
 
 #pragma mark - 清空某个会话的全部聊天数据
 - (BOOL)deleteAllChatMessageWith:(NSString *)tableName {
-    return [self.cimDB deleteFromTable:tableName];
+    __block BOOL result = YES;
+    [self.cimDB runTransaction:^BOOL(WCTHandle * _Nonnull) {
+        result = [self.cimDB deleteFromTable:tableName];
+        return result;
+    }];
+    return result;
 }
 
 #pragma mark - 删除群里某个群成员在本群发过的所有本地缓存的消息
 - (BOOL)deleteGroupMemberAllSendChatMessageWith:(NSString *)tableName withMemberId:(NSString *)memberId {
-    return [self.cimDB deleteFromTable:tableName where:LingIMChatMessageModel.fromID == memberId];
+    __block BOOL result = YES;
+    [self.cimDB runTransaction:^BOOL(WCTHandle * _Nonnull) {
+        result = [self.cimDB deleteFromTable:tableName where:LingIMChatMessageModel.fromID == memberId];
+        return result;
+    }];
+    return result;
 }
 
 #pragma mark - 根据某个消息ID获取消息
@@ -174,6 +211,14 @@
     return [self.cimDB getObjectOfClass:LingIMChatMessageModel.class fromTable:tableName where:LingIMChatMessageModel.serviceMsgID == smsgID];
 }
 
+#pragma mark - 根据某个服务端消息ID获取消息（排除删除和撤回的消息）
+- (LingIMChatMessageModel *)getOneChatMessageWithServiceMessageIDExcludeDeleted:(NSString *)smsgID withTableName:(NSString *)tableName {
+    [DBTOOL isTableStateOkWithName:tableName model:LingIMChatMessageModel.class];
+    // 过滤条件：messageStatus == 1 (正常消息，排除删除 status=0 和撤回 status=2)
+    // 同时排除双向删除类型的消息
+    return [self.cimDB getObjectOfClass:LingIMChatMessageModel.class fromTable:tableName where:LingIMChatMessageModel.serviceMsgID == smsgID && LingIMChatMessageModel.messageStatus == 1 && LingIMChatMessageModel.messageType != CIMChatMessageType_BilateralDel];
+}
+
 #pragma mark - 获取某个会话的最新消息
 - (LingIMChatMessageModel *)getLatestChatMessageWithTableName:(NSString *)tableName {
     
@@ -183,8 +228,12 @@
 
 #pragma mark - 全部已读某个会话表的消息
 - (BOOL)messageHaveReadAllWith:(NSString *)tableName {
-    return [self.cimDB updateTable:tableName setProperty:LingIMChatMessageModel.chatMessageReaded toValue:@(YES)];
-    
+    __block BOOL result = YES;
+    [self.cimDB runTransaction:^BOOL(WCTHandle * _Nonnull) {
+        result = [self.cimDB updateTable:tableName setProperty:LingIMChatMessageModel.chatMessageReaded toValue:@(YES)];
+        return result;
+    }];
+    return result;
 }
 
 #pragma mark - 根据搜索内容查询聊天记录
@@ -253,7 +302,11 @@
 
 #pragma mark - 删除某个时间戳之前的所有消息(eg:timeValue为2023年1月1日10:01，则类似2023年1月1日10:00这样的消息都被删除)
 - (BOOL)messageDeleteBeforTime:(long long)timeValue withTableName:(NSString *)tableName {
-    BOOL deleteResult = [self.cimDB deleteFromTable:tableName where:LingIMChatMessageModel.sendTime <= timeValue];
+    __block BOOL deleteResult = YES;
+    [self.cimDB runTransaction:^BOOL(WCTHandle * _Nonnull) {
+        deleteResult = [self.cimDB deleteFromTable:tableName where:LingIMChatMessageModel.sendTime <= timeValue];
+        return deleteResult;
+    }];
     return deleteResult;
 }
 
