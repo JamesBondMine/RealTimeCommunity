@@ -27,6 +27,8 @@
 #import "RegisterCusViewController.h"
 #import "MainInputTextView.h"
 #import "ZQRcodeScanViewController.h"
+#import "ZImgVerCodeView.h"
+#import "ZCaptchaCodeTools.h"
 
 // 页面模式枚举--ceshi
 typedef NS_ENUM(NSInteger, LoginPageMode) {
@@ -84,11 +86,26 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
 @property (nonatomic, strong) UITextField *phoneTextField;
 @property (nonatomic, strong) UITextField *phonePasswordField;
 @property (nonatomic, assign) BOOL phonePasswordShown;
+@property (nonatomic, assign) int phoneInputType; // 0:密码登录  1:验证码登录
+@property (nonatomic, strong) UIButton *phoneSwitchBtn; // 切换密码/验证码按钮
+@property (nonatomic, strong) UIView *phonePasswordContainer; // 密码容器，用于切换
+@property (nonatomic, strong) UIButton *phoneGetVerCodeBtn; // 获取验证码按钮
+@property (nonatomic, strong) NSTimer *phoneVerCodeTimer; // 验证码倒计时
+@property (nonatomic, assign) NSInteger phoneVerCodeCountdown; // 倒计时秒数
 
 // 邮箱登录相关
 @property (nonatomic, strong) UITextField *emailTextField;
 @property (nonatomic, strong) UITextField *emailPasswordField;
 @property (nonatomic, assign) BOOL emailPasswordShown;
+@property (nonatomic, assign) int emailInputType; // 0:密码登录  1:验证码登录
+@property (nonatomic, strong) UIButton *emailSwitchBtn; // 切换密码/验证码按钮
+@property (nonatomic, strong) UIView *emailPasswordContainer; // 密码容器，用于切换
+@property (nonatomic, strong) UIButton *emailGetVerCodeBtn; // 获取验证码按钮
+@property (nonatomic, strong) NSTimer *emailVerCodeTimer; // 验证码倒计时
+@property (nonatomic, assign) NSInteger emailVerCodeCountdown; // 倒计时秒数
+
+// 验证码工具
+@property (nonatomic, strong) ZCaptchaCodeTools *captchaTools;
 
 // 账号登录相关
 @property (nonatomic, strong) UITextField *accountTextField;
@@ -896,7 +913,11 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
             return;
         }
         if (_phonePasswordField.text.length == 0) {
-            [HUD showMessage:MultilingualTranslation(@"请输入密码")];
+            if (_phoneInputType == 0) {
+                [HUD showMessage:MultilingualTranslation(@"请输入密码")];
+            } else {
+                [HUD showMessage:MultilingualTranslation(@"请输入验证码")];
+            }
             return;
         }
     } else if (_currentSelectedIndex == 1) {
@@ -905,7 +926,11 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
             return;
         }
         if (_emailPasswordField.text.length == 0) {
-            [HUD showMessage:MultilingualTranslation(@"请输入密码")];
+            if (_emailInputType == 0) {
+                [HUD showMessage:MultilingualTranslation(@"请输入密码")];
+            } else {
+                [HUD showMessage:MultilingualTranslation(@"请输入验证码")];
+            }
             return;
         }
     } else {
@@ -949,23 +974,44 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
         return;
     }
     
+    // 初始化输入类型为密码登录
+    _phoneInputType = 0;
+    
     // 创建密码输入框容器
-    UIView *passwordContainer = [[UIView alloc] init];
-    passwordContainer.backgroundColor = COLOR_F5F6F9;
-    passwordContainer.layer.cornerRadius = DWScale(12);
-    passwordContainer.layer.masksToBounds = NO;
-    [_phoneView addSubview:passwordContainer];
+    _phonePasswordContainer = [[UIView alloc] init];
+    _phonePasswordContainer.backgroundColor = COLOR_F5F6F9;
+    _phonePasswordContainer.layer.cornerRadius = DWScale(12);
+    _phonePasswordContainer.layer.masksToBounds = NO;
+    [_phoneView addSubview:_phonePasswordContainer];
     
     // 密码图标
     UIImageView *lockIcon = [[UIImageView alloc] init];
     lockIcon.image = ImgNamed(@"relogimg_img_password_input_tip_reb");
     lockIcon.contentMode = UIViewContentModeScaleAspectFit;
     lockIcon.tintColor = COLOR_81D8CF;
-    [passwordContainer addSubview:lockIcon];
+    lockIcon.tag = 1001; // 设置tag以便后续切换图标
+    [_phonePasswordContainer addSubview:lockIcon];
     [lockIcon mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(passwordContainer).offset(DWScale(16));
-        make.centerY.equalTo(passwordContainer);
+        make.leading.equalTo(_phonePasswordContainer).offset(DWScale(16));
+        make.centerY.equalTo(_phonePasswordContainer);
         make.size.mas_equalTo(CGSizeMake(DWScale(22), DWScale(22)));
+    }];
+    
+    // 创建获取验证码按钮（初始隐藏）
+    _phoneGetVerCodeBtn = [[UIButton alloc] init];
+    [_phoneGetVerCodeBtn setTitle:MultilingualTranslation(@"获取验证码") forState:UIControlStateNormal];
+    [_phoneGetVerCodeBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [_phoneGetVerCodeBtn setTitleColor:COLOR_99 forState:UIControlStateDisabled];
+    _phoneGetVerCodeBtn.titleLabel.font = FONTN(14);
+    [_phoneGetVerCodeBtn addTarget:self action:@selector(phoneGetVerCodeAction) forControlEvents:UIControlEventTouchUpInside];
+    _phoneGetVerCodeBtn.hidden = YES;
+    _phoneGetVerCodeBtn.tag = 1002; // 设置tag用于查找
+    [_phonePasswordContainer addSubview:_phoneGetVerCodeBtn];
+    [_phoneGetVerCodeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.trailing.equalTo(_phonePasswordContainer).offset(-DWScale(12));
+        make.centerY.equalTo(_phonePasswordContainer);
+        make.width.mas_equalTo(DWScale(90));
+        make.height.mas_equalTo(DWScale(36));
     }];
     
     // 创建密码输入框
@@ -975,27 +1021,44 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     _phonePasswordField.textColor = COLOR_33;
     _phonePasswordField.backgroundColor = COLOR_F5F6F9;
     _phonePasswordField.secureTextEntry = YES;
-    [passwordContainer addSubview:_phonePasswordField];
+    [_phonePasswordContainer addSubview:_phonePasswordField];
     [_phonePasswordField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(lockIcon.mas_trailing).offset(DWScale(12));
-        make.trailing.equalTo(passwordContainer).offset(-DWScale(16));
-        make.centerY.equalTo(passwordContainer);
+        make.trailing.equalTo(_phonePasswordContainer).offset(-DWScale(16));
+        make.centerY.equalTo(_phonePasswordContainer);
         make.height.mas_equalTo(DWScale(56));
     }];
     
     // 设置容器约束
-    [passwordContainer mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_phonePasswordContainer mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(_phoneView).offset(DWScale(32));
         make.trailing.equalTo(_phoneView).offset(-DWScale(24));
         make.top.equalTo(_phoneView).offset(DWScale(20) + DWScale(56) + DWScale(16));
         make.height.mas_equalTo(DWScale(56));
     }];
     
+    // 创建切换按钮（在密码输入框左下方）
+    _phoneSwitchBtn = [[UIButton alloc] init];
+    [_phoneSwitchBtn setTitle:MultilingualTranslation(@"验证码登录") forState:UIControlStateNormal];
+    [_phoneSwitchBtn setTitle:MultilingualTranslation(@"密码登录") forState:UIControlStateSelected];
+    [_phoneSwitchBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    _phoneSwitchBtn.titleLabel.font = FONTN(14);
+    [_phoneSwitchBtn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+    [_phoneSwitchBtn addTarget:self action:@selector(phoneSwitchLoginTypeAction:) forControlEvents:UIControlEventTouchUpInside];
+    _phoneSwitchBtn.selected = NO;
+    [_phoneView addSubview:_phoneSwitchBtn];
+    [_phoneSwitchBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.equalTo(_phonePasswordContainer);
+        make.top.equalTo(_phonePasswordContainer.mas_bottom).offset(DWScale(10));
+        make.width.mas_equalTo(DWScale(150));
+        make.height.mas_equalTo(DWScale(20));
+    }];
+    
     // 更新继续按钮约束
     [_continueBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(self.view).offset(DWScale(32));
         make.trailing.equalTo(self.view).offset(-DWScale(24));
-        make.top.equalTo(self.view).offset(DStatusBarH + DWScale(80) + DWScale(44) + DWScale(30) + DWScale(20) + DWScale(56) + DWScale(16) + DWScale(56) + DWScale(30));
+        make.top.equalTo(self.view).offset(DStatusBarH + DWScale(80) + DWScale(44) + DWScale(30) + DWScale(20) + DWScale(56) + DWScale(16) + DWScale(56) + DWScale(10) + DWScale(20) + DWScale(20));
         make.height.mas_equalTo(DWScale(56));
     }];
     
@@ -1003,7 +1066,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     [UIView animateWithDuration:0.3 animations:^{
         [self.phoneView layoutIfNeeded];
         [self.view layoutIfNeeded];
-        passwordContainer.alpha = 1;
+        _phonePasswordContainer.alpha = 1;
     } completion:^(BOOL finished) {
         [self.phonePasswordField becomeFirstResponder];
     }];
@@ -1026,23 +1089,44 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
         return;
     }
     
+    // 初始化输入类型为密码登录
+    _emailInputType = 0;
+    
     // 创建密码输入框容器
-    UIView *passwordContainer = [[UIView alloc] init];
-    passwordContainer.backgroundColor = COLOR_F5F6F9;
-    passwordContainer.layer.cornerRadius = DWScale(12);
-    passwordContainer.layer.masksToBounds = NO;
-    [_emailView addSubview:passwordContainer];
+    _emailPasswordContainer = [[UIView alloc] init];
+    _emailPasswordContainer.backgroundColor = COLOR_F5F6F9;
+    _emailPasswordContainer.layer.cornerRadius = DWScale(12);
+    _emailPasswordContainer.layer.masksToBounds = NO;
+    [_emailView addSubview:_emailPasswordContainer];
     
     // 密码图标
     UIImageView *lockIcon = [[UIImageView alloc] init];
     lockIcon.image = ImgNamed(@"relogimg_img_password_input_tip_reb");
     lockIcon.contentMode = UIViewContentModeScaleAspectFit;
     lockIcon.tintColor = COLOR_81D8CF;
-    [passwordContainer addSubview:lockIcon];
+    lockIcon.tag = 1001; // 设置tag以便后续切换图标
+    [_emailPasswordContainer addSubview:lockIcon];
     [lockIcon mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.equalTo(passwordContainer).offset(DWScale(16));
-        make.centerY.equalTo(passwordContainer);
+        make.leading.equalTo(_emailPasswordContainer).offset(DWScale(16));
+        make.centerY.equalTo(_emailPasswordContainer);
         make.size.mas_equalTo(CGSizeMake(DWScale(22), DWScale(22)));
+    }];
+    
+    // 创建获取验证码按钮（初始隐藏）
+    _emailGetVerCodeBtn = [[UIButton alloc] init];
+    [_emailGetVerCodeBtn setTitle:MultilingualTranslation(@"获取验证码") forState:UIControlStateNormal];
+    [_emailGetVerCodeBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [_emailGetVerCodeBtn setTitleColor:COLOR_99 forState:UIControlStateDisabled];
+    _emailGetVerCodeBtn.titleLabel.font = FONTN(14);
+    [_emailGetVerCodeBtn addTarget:self action:@selector(emailGetVerCodeAction) forControlEvents:UIControlEventTouchUpInside];
+    _emailGetVerCodeBtn.hidden = YES;
+    _emailGetVerCodeBtn.tag = 1002; // 设置tag用于查找
+    [_emailPasswordContainer addSubview:_emailGetVerCodeBtn];
+    [_emailGetVerCodeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.trailing.equalTo(_emailPasswordContainer).offset(-DWScale(12));
+        make.centerY.equalTo(_emailPasswordContainer);
+        make.width.mas_equalTo(DWScale(90));
+        make.height.mas_equalTo(DWScale(36));
     }];
     
     // 创建密码输入框
@@ -1052,27 +1136,44 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     _emailPasswordField.textColor = COLOR_33;
     _emailPasswordField.backgroundColor = COLOR_F5F6F9;
     _emailPasswordField.secureTextEntry = YES;
-    [passwordContainer addSubview:_emailPasswordField];
+    [_emailPasswordContainer addSubview:_emailPasswordField];
     [_emailPasswordField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(lockIcon.mas_trailing).offset(DWScale(12));
-        make.trailing.equalTo(passwordContainer).offset(-DWScale(16));
-        make.centerY.equalTo(passwordContainer);
+        make.trailing.equalTo(_emailPasswordContainer).offset(-DWScale(16));
+        make.centerY.equalTo(_emailPasswordContainer);
         make.height.mas_equalTo(DWScale(56));
     }];
     
     // 设置容器约束
-    [passwordContainer mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_emailPasswordContainer mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(_emailView).offset(DWScale(32));
         make.trailing.equalTo(_emailView).offset(-DWScale(24));
         make.top.equalTo(_emailView).offset(DWScale(20) + DWScale(56) + DWScale(16));
         make.height.mas_equalTo(DWScale(56));
     }];
     
+    // 创建切换按钮（在密码输入框左下方）
+    _emailSwitchBtn = [[UIButton alloc] init];
+    [_emailSwitchBtn setTitle:MultilingualTranslation(@"验证码登录") forState:UIControlStateNormal];
+    [_emailSwitchBtn setTitle:MultilingualTranslation(@"密码登录") forState:UIControlStateSelected];
+    [_emailSwitchBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    _emailSwitchBtn.titleLabel.font = FONTN(14);
+    [_emailSwitchBtn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+    [_emailSwitchBtn addTarget:self action:@selector(emailSwitchLoginTypeAction:) forControlEvents:UIControlEventTouchUpInside];
+    _emailSwitchBtn.selected = NO;
+    [_emailView addSubview:_emailSwitchBtn];
+    [_emailSwitchBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.equalTo(_emailPasswordContainer);
+        make.top.equalTo(_emailPasswordContainer.mas_bottom).offset(DWScale(10));
+        make.width.mas_equalTo(DWScale(150));
+        make.height.mas_equalTo(DWScale(20));
+    }];
+    
     // 更新继续按钮约束
     [_continueBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(self.view).offset(DWScale(32));
         make.trailing.equalTo(self.view).offset(-DWScale(24));
-        make.top.equalTo(self.view).offset(DStatusBarH + DWScale(80) + DWScale(44) + DWScale(30) + DWScale(20) + DWScale(56) + DWScale(16) + DWScale(56) + DWScale(30));
+        make.top.equalTo(self.view).offset(DStatusBarH + DWScale(80) + DWScale(44) + DWScale(30) + DWScale(20) + DWScale(56) + DWScale(16) + DWScale(56) + DWScale(10) + DWScale(20) + DWScale(20));
         make.height.mas_equalTo(DWScale(56));
     }];
     
@@ -1080,13 +1181,326 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     [UIView animateWithDuration:0.3 animations:^{
         [self.emailView layoutIfNeeded];
         [self.view layoutIfNeeded];
-        passwordContainer.alpha = 1;
+        _emailPasswordContainer.alpha = 1;
     } completion:^(BOOL finished) {
         [self.emailPasswordField becomeFirstResponder];
     }];
     
     [_continueBtn setTitle:MultilingualTranslation(@"登录") forState:UIControlStateNormal];
     _emailPasswordShown = YES;
+}
+
+// 手机号登录方式切换
+- (void)phoneSwitchLoginTypeAction:(UIButton *)sender {
+    sender.selected = !sender.selected;
+    _phonePasswordField.text = @"";
+    
+    // 获取图标视图和按钮
+    UIImageView *lockIcon = (UIImageView *)[_phonePasswordContainer viewWithTag:1001];
+    
+    if (sender.selected) {
+        // 切换到验证码登录
+        _phoneInputType = 1;
+        _phonePasswordField.placeholder = MultilingualTranslation(@"请输入验证码");
+        _phonePasswordField.secureTextEntry = NO;
+        _phonePasswordField.keyboardType = UIKeyboardTypeNumberPad;
+        lockIcon.image = ImgNamed(@"img_vercode_input_tip_reb");
+        
+        // 显示获取验证码按钮，调整输入框约束
+        _phoneGetVerCodeBtn.hidden = NO;
+        [_phonePasswordField mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.leading.equalTo(lockIcon.mas_trailing).offset(DWScale(12));
+            make.trailing.equalTo(_phoneGetVerCodeBtn.mas_leading).offset(-DWScale(8));
+            make.centerY.equalTo(_phonePasswordContainer);
+            make.height.mas_equalTo(DWScale(56));
+        }];
+    } else {
+        // 切换到密码登录
+        _phoneInputType = 0;
+        _phonePasswordField.placeholder = MultilingualTranslation(@"请输入密码");
+        _phonePasswordField.secureTextEntry = YES;
+        _phonePasswordField.keyboardType = UIKeyboardTypeASCIICapable;
+        lockIcon.image = ImgNamed(@"relogimg_img_password_input_tip_reb");
+        
+        // 隐藏获取验证码按钮，恢复输入框约束
+        _phoneGetVerCodeBtn.hidden = YES;
+        [_phonePasswordField mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.leading.equalTo(lockIcon.mas_trailing).offset(DWScale(12));
+            make.trailing.equalTo(_phonePasswordContainer).offset(-DWScale(16));
+            make.centerY.equalTo(_phonePasswordContainer);
+            make.height.mas_equalTo(DWScale(56));
+        }];
+    }
+}
+
+// 邮箱登录方式切换
+- (void)emailSwitchLoginTypeAction:(UIButton *)sender {
+    sender.selected = !sender.selected;
+    _emailPasswordField.text = @"";
+    
+    // 获取图标视图
+    UIImageView *lockIcon = (UIImageView *)[_emailPasswordContainer viewWithTag:1001];
+    
+    if (sender.selected) {
+        // 切换到验证码登录
+        _emailInputType = 1;
+        _emailPasswordField.placeholder = MultilingualTranslation(@"请输入验证码");
+        _emailPasswordField.secureTextEntry = NO;
+        _emailPasswordField.keyboardType = UIKeyboardTypeNumberPad;
+        lockIcon.image = ImgNamed(@"img_vercode_input_tip_reb");
+        
+        // 显示获取验证码按钮，调整输入框约束
+        _emailGetVerCodeBtn.hidden = NO;
+        [_emailPasswordField mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.leading.equalTo(lockIcon.mas_trailing).offset(DWScale(12));
+            make.trailing.equalTo(_emailGetVerCodeBtn.mas_leading).offset(-DWScale(8));
+            make.centerY.equalTo(_emailPasswordContainer);
+            make.height.mas_equalTo(DWScale(56));
+        }];
+    } else {
+        // 切换到密码登录
+        _emailInputType = 0;
+        _emailPasswordField.placeholder = MultilingualTranslation(@"请输入密码");
+        _emailPasswordField.secureTextEntry = YES;
+        _emailPasswordField.keyboardType = UIKeyboardTypeASCIICapable;
+        lockIcon.image = ImgNamed(@"relogimg_img_password_input_tip_reb");
+        
+        // 隐藏获取验证码按钮，恢复输入框约束
+        _emailGetVerCodeBtn.hidden = YES;
+        [_emailPasswordField mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.leading.equalTo(lockIcon.mas_trailing).offset(DWScale(12));
+            make.trailing.equalTo(_emailPasswordContainer).offset(-DWScale(16));
+            make.centerY.equalTo(_emailPasswordContainer);
+            make.height.mas_equalTo(DWScale(56));
+        }];
+    }
+}
+
+#pragma mark - 获取验证码
+
+// 手机号获取验证码
+- (void)phoneGetVerCodeAction {
+    // 验证手机号
+    if (_phoneTextField.text.length == 0) {
+        [HUD showMessage:MultilingualTranslation(@"请先输入手机号")];
+        return;
+    }
+    
+    [IMSDKManager configSDKCaptchaChannel:ZHostTool.appSysSetModel.captchaChannel];
+    
+    if (ZHostTool.appSysSetModel.captchaChannel == 1) {
+        // 无验证码，直接获取
+        [self requestPhoneGetVercode:@"" ticket:@"" randstr:@"" captchaVerifyParam:@""];
+    } else if (ZHostTool.appSysSetModel.captchaChannel == 2) {
+        // 图形验证码
+        ZImgVerCodeView *vercodeView = [[ZImgVerCodeView alloc] init];
+        vercodeView.loginName = _phoneTextField.text;
+        vercodeView.verCodeType = 2;
+        vercodeView.imgCodeStr = @"";
+        [vercodeView show];
+        @weakify(self)
+        [vercodeView setSureBtnBlock:^(NSString * _Nonnull imgCode) {
+            @strongify(self)
+            [self requestPhoneGetVercode:imgCode ticket:@"" randstr:@"" captchaVerifyParam:@""];
+        }];
+    } else if (ZHostTool.appSysSetModel.captchaChannel == 3) {
+        // 腾讯云无痕验证
+        [self.captchaTools verCaptchaCode];
+        @weakify(self)
+        [self.captchaTools setTencentCaptchaResultSuccess:^(NSString * _Nonnull ticket, NSString * _Nonnull randstr) {
+            @strongify(self)
+            [self requestPhoneGetVercode:@"" ticket:ticket randstr:randstr captchaVerifyParam:@""];
+        }];
+        [self.captchaTools setCaptchaResultFail:^{
+            @strongify(self)
+            [IMSDKManager configSDKCaptchaChannel:2];
+            ZImgVerCodeView *vercodeView = [[ZImgVerCodeView alloc] init];
+            vercodeView.loginName = self->_phoneTextField.text;
+            vercodeView.verCodeType = 2;
+            vercodeView.imgCodeStr = @"";
+            [vercodeView show];
+            [vercodeView setSureBtnBlock:^(NSString * _Nonnull imgCode) {
+                @strongify(self)
+                [self requestPhoneGetVercode:imgCode ticket:@"" randstr:@"" captchaVerifyParam:@""];
+            }];
+        }];
+    } else if (ZHostTool.appSysSetModel.captchaChannel == 4) {
+        // 阿里云无痕验证
+        [self.captchaTools verCaptchaCode];
+        @weakify(self)
+        [self.captchaTools setAliyunCaptchaResultSuccess:^(NSString * _Nonnull captchaVerifyParam) {
+            @strongify(self)
+            [self requestPhoneGetVercode:@"" ticket:@"" randstr:@"" captchaVerifyParam:captchaVerifyParam];
+        }];
+        [self.captchaTools setCaptchaResultFail:^{
+            @strongify(self)
+            [IMSDKManager configSDKCaptchaChannel:2];
+            ZImgVerCodeView *vercodeView = [[ZImgVerCodeView alloc] init];
+            vercodeView.loginName = self->_phoneTextField.text;
+            vercodeView.verCodeType = 2;
+            vercodeView.imgCodeStr = @"";
+            [vercodeView show];
+            [vercodeView setSureBtnBlock:^(NSString * _Nonnull imgCode) {
+                @strongify(self)
+                [self requestPhoneGetVercode:imgCode ticket:@"" randstr:@"" captchaVerifyParam:@""];
+            }];
+        }];
+    }
+}
+
+// 邮箱获取验证码
+- (void)emailGetVerCodeAction {
+    // 验证邮箱
+    if (_emailTextField.text.length == 0) {
+        [HUD showMessage:MultilingualTranslation(@"请先输入邮箱")];
+        return;
+    }
+    
+    // 邮箱不需要验证码，直接获取
+    [self requestEmailGetVercode:@"" ticket:@"" randstr:@"" captchaVerifyParam:@""];
+}
+
+// 手机号请求获取验证码
+- (void)requestPhoneGetVercode:(NSString *)code ticket:(NSString *)ticket randstr:(NSString *)randstr captchaVerifyParam:(NSString *)captchaVerifyParam {
+    [HUD showActivityMessage:@"" inView:self.view];
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObjectSafe:_phoneTextField.text forKey:@"loginInfo"];
+    [params setObjectSafe:@(UserAuthTypePhone) forKey:@"loginType"];
+    [params setObjectSafe:@(2) forKey:@"type"]; // 2表示登录
+    [params setObjectSafe:_phoneCountryCode forKey:@"areaCode"];
+    [params setObjectSafe:code forKey:@"code"];
+    [params setObjectSafe:ticket forKey:@"ticket"];
+    [params setObjectSafe:randstr forKey:@"randstr"];
+    [params setObjectSafe:captchaVerifyParam forKey:@"captchaVerifyParam"];
+    
+    @weakify(self)
+    [IMSDKManager authGetPhoneEmailVerCodeWith:params onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+        @strongify(self)
+        [ZTOOL doInMain:^{
+            NSString *vercodeStr = (NSString *)data;
+            DLog(@"手机验证码：%@", vercodeStr);
+            [HUD showMessage:MultilingualTranslation(@"验证码已发送") inView:self.view];
+            [self startPhoneVerCodeCountdown];
+            [IMSDKManager configSDKCaptchaChannel:ZHostTool.appSysSetModel.captchaChannel];
+            self.captchaTools.aliyunVerNum = 0;
+        }];
+    } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
+        @strongify(self)
+        [ZTOOL doInMain:^{
+            [HUD showMessageWithCode:code errorMsg:msg inView:self.view];
+        }];
+    }];
+}
+
+// 邮箱请求获取验证码
+- (void)requestEmailGetVercode:(NSString *)code ticket:(NSString *)ticket randstr:(NSString *)randstr captchaVerifyParam:(NSString *)captchaVerifyParam {
+    [HUD showActivityMessage:@"" inView:self.view];
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObjectSafe:_emailTextField.text forKey:@"loginInfo"];
+    [params setObjectSafe:@(UserAuthTypeEmail) forKey:@"loginType"];
+    [params setObjectSafe:@(2) forKey:@"type"]; // 2表示登录
+    [params setObjectSafe:@"" forKey:@"areaCode"];
+    [params setObjectSafe:code forKey:@"code"];
+    [params setObjectSafe:ticket forKey:@"ticket"];
+    [params setObjectSafe:randstr forKey:@"randstr"];
+    [params setObjectSafe:captchaVerifyParam forKey:@"captchaVerifyParam"];
+    
+    @weakify(self)
+    [IMSDKManager authGetPhoneEmailVerCodeWith:params onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+        @strongify(self)
+        [ZTOOL doInMain:^{
+            NSString *vercodeStr = (NSString *)data;
+            DLog(@"邮箱验证码：%@", vercodeStr);
+            [HUD showMessage:MultilingualTranslation(@"验证码已发送") inView:self.view];
+            [self startEmailVerCodeCountdown];
+            [IMSDKManager configSDKCaptchaChannel:ZHostTool.appSysSetModel.captchaChannel];
+            self.captchaTools.aliyunVerNum = 0;
+        }];
+    } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
+        @strongify(self)
+        [ZTOOL doInMain:^{
+            [HUD showMessageWithCode:code errorMsg:msg inView:self.view];
+        }];
+    }];
+}
+
+#pragma mark - 验证码倒计时
+
+// 开始手机号验证码倒计时
+- (void)startPhoneVerCodeCountdown {
+    _phoneVerCodeCountdown = 60;
+    _phoneGetVerCodeBtn.enabled = NO;
+    [_phoneGetVerCodeBtn setTitle:[NSString stringWithFormat:@"%lds", (long)_phoneVerCodeCountdown] forState:UIControlStateNormal];
+    
+    if (_phoneVerCodeTimer) {
+        [_phoneVerCodeTimer invalidate];
+        _phoneVerCodeTimer = nil;
+    }
+    
+    @weakify(self)
+    _phoneVerCodeTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        @strongify(self)
+        self->_phoneVerCodeCountdown--;
+        if (self->_phoneVerCodeCountdown <= 0) {
+            [self stopPhoneVerCodeCountdown];
+        } else {
+            [self->_phoneGetVerCodeBtn setTitle:[NSString stringWithFormat:@"%lds", (long)self->_phoneVerCodeCountdown] forState:UIControlStateNormal];
+        }
+    }];
+}
+
+// 停止手机号验证码倒计时
+- (void)stopPhoneVerCodeCountdown {
+    if (_phoneVerCodeTimer) {
+        [_phoneVerCodeTimer invalidate];
+        _phoneVerCodeTimer = nil;
+    }
+    _phoneGetVerCodeBtn.enabled = YES;
+    [_phoneGetVerCodeBtn setTitle:MultilingualTranslation(@"获取验证码") forState:UIControlStateNormal];
+}
+
+// 开始邮箱验证码倒计时
+- (void)startEmailVerCodeCountdown {
+    _emailVerCodeCountdown = 60;
+    _emailGetVerCodeBtn.enabled = NO;
+    [_emailGetVerCodeBtn setTitle:[NSString stringWithFormat:@"%lds", (long)_emailVerCodeCountdown] forState:UIControlStateNormal];
+    
+    if (_emailVerCodeTimer) {
+        [_emailVerCodeTimer invalidate];
+        _emailVerCodeTimer = nil;
+    }
+    
+    @weakify(self)
+    _emailVerCodeTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        @strongify(self)
+        self->_emailVerCodeCountdown--;
+        if (self->_emailVerCodeCountdown <= 0) {
+            [self stopEmailVerCodeCountdown];
+        } else {
+            [self->_emailGetVerCodeBtn setTitle:[NSString stringWithFormat:@"%lds", (long)self->_emailVerCodeCountdown] forState:UIControlStateNormal];
+        }
+    }];
+}
+
+// 停止邮箱验证码倒计时
+- (void)stopEmailVerCodeCountdown {
+    if (_emailVerCodeTimer) {
+        [_emailVerCodeTimer invalidate];
+        _emailVerCodeTimer = nil;
+    }
+    _emailGetVerCodeBtn.enabled = YES;
+    [_emailGetVerCodeBtn setTitle:MultilingualTranslation(@"获取验证码") forState:UIControlStateNormal];
+}
+
+#pragma mark - Lazy Loading
+
+- (ZCaptchaCodeTools *)captchaTools {
+    if (!_captchaTools) {
+        _captchaTools = [[ZCaptchaCodeTools alloc] init];
+    }
+    return _captchaTools;
 }
 
 // 显示账号密码输入框
@@ -1267,6 +1681,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     NSString *password = @"";
     NSString *areaCode = @"";
     int loginType = 0;
+    int inputType = 0; // 0:密码登录  1:验证码登录
     
     if (self.currentSelectedIndex == 0) {
         // 手机号登录
@@ -1274,50 +1689,64 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
         password = self.phonePasswordField.text;
         areaCode = self.phoneCountryCode;
         loginType = UserAuthTypePhone;
+        inputType = self.phoneInputType;
     } else if (self.currentSelectedIndex == 1) {
         // 邮箱登录
         loginInfo = self.emailTextField.text;
         password = self.emailPasswordField.text;
         areaCode = @"";
         loginType = UserAuthTypeEmail;
+        inputType = self.emailInputType;
     } else {
         // 账号登录
         loginInfo = self.accountTextField.text;
         password = self.accountPasswordField.text;
         areaCode = @"";
         loginType = UserAuthTypeAccount;
+        inputType = 0; // 账号登录只支持密码
     }
     
-    // 验证密码长度
-    if (password.length < 6 || password.length > 16) {
-        [HUD showMessage:MultilingualTranslation(@"密码长度为6-16位")];
-        return;
-    }
-    
-    // 获取加密密钥
-    [HUD showActivityMessage:@""];
-    WeakSelf
-    [IMSDKManager authGetEncryptKeySuccess:^(id  _Nullable data, NSString * _Nullable traceId) {
-        [ZTOOL doInMain:^{
-            if ([data isKindOfClass:[NSString class]]) {
-                NSString *encryptKey = (NSString *)data;
-                // 执行登录
-                [weakSelf performLoginWithLoginInfo:loginInfo 
-                                            password:password 
-                                           loginType:loginType 
-                                            areaCode:areaCode 
-                                          encryptKey:encryptKey];
-            } else {
+    // 判断登录方式
+    if (inputType == 0) {
+        // 密码登录：需要获取加密密钥
+        
+        // 验证密码长度
+        if (password.length < 6 || password.length > 16) {
+            [HUD showMessage:MultilingualTranslation(@"密码长度为6-16位")];
+            return;
+        }
+        
+        // 获取加密密钥
+        [HUD showActivityMessage:@""];
+        WeakSelf
+        [IMSDKManager authGetEncryptKeySuccess:^(id  _Nullable data, NSString * _Nullable traceId) {
+            [ZTOOL doInMain:^{
+                if ([data isKindOfClass:[NSString class]]) {
+                    NSString *encryptKey = (NSString *)data;
+                    // 执行密码登录
+                    [weakSelf performLoginWithLoginInfo:loginInfo 
+                                                password:password 
+                                               loginType:loginType 
+                                                areaCode:areaCode 
+                                              encryptKey:encryptKey];
+                } else {
+                    [HUD hideHUD];
+                    [HUD showMessage:MultilingualTranslation(@"获取加密密钥失败")];
+                }
+            }];
+        } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
+            [ZTOOL doInMain:^{
                 [HUD hideHUD];
-                [HUD showMessage:MultilingualTranslation(@"获取加密密钥失败")];
-            }
+                [HUD showMessageWithCode:code errorMsg:msg];
+            }];
         }];
-    } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
-        [ZTOOL doInMain:^{
-            [HUD hideHUD];
-            [HUD showMessageWithCode:code errorMsg:msg];
-        }];
-    }];
+    } else {
+        // 验证码登录：直接登录，不需要加密密钥
+        [self performVerCodeLoginWithLoginInfo:loginInfo 
+                                        verCode:password 
+                                      loginType:loginType 
+                                       areaCode:areaCode];
+    }
 }
 
 // 执行登录请求
@@ -1411,6 +1840,90 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
                 } else {
                     [HUD showMessageWithCode:code errorMsg:msg];
                 }
+            } else {
+                // 其他错误
+                [HUD showMessageWithCode:code errorMsg:msg];
+            }
+        }];
+    }];
+}
+
+// 执行验证码登录请求
+- (void)performVerCodeLoginWithLoginInfo:(NSString *)loginInfo 
+                                  verCode:(NSString *)verCode 
+                                loginType:(int)loginType 
+                                 areaCode:(NSString *)areaCode {
+    
+    // 构建登录参数
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObjectSafe:loginInfo forKey:@"loginInfo"];
+    [params setObjectSafe:[NSNumber numberWithInt:loginType] forKey:@"loginType"];
+    [params setObjectSafe:verCode forKey:@"code"]; // 验证码
+    [params setObjectSafe:@"" forKey:@"encryptKey"]; // 验证码登录不需要加密密钥
+    [params setObjectSafe:areaCode forKey:@"areaCode"];
+    [params setObjectSafe:@"" forKey:@"userPw"]; // 验证码登录不需要密码
+    [params setObjectSafe:[NSNumber numberWithInt:2] forKey:@"type"]; // 2表示登录
+    [params setObjectSafe:@"" forKey:@"loginFailVerifyCode"];
+    [params setObjectSafe:@"" forKey:@"ticket"];
+    [params setObjectSafe:@"" forKey:@"randstr"];
+    [params setObjectSafe:@"" forKey:@"captchaVerifyParam"];
+    
+    [HUD showActivityMessage:@""];
+    WeakSelf
+    [IMSDKManager authUserLoginWith:params onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+        [ZTOOL doInMain:^{
+            [HUD hideHUD];
+            [HUD showMessage:MultilingualTranslation(@"登录成功")];
+            
+            // 保存登录信息
+            ZUserModel *loginUserModel = [ZUserModel mj_objectWithKeyValues:data];
+            [ZUserModel savePreAccount:loginInfo Type:loginType];
+            [UserManager setUserInfo:loginUserModel];
+            
+            // 配置SDK用户信息
+            LingIMSDKUserOptions *userOption = [LingIMSDKUserOptions new];
+            userOption.userToken = loginUserModel.token;
+            userOption.userID = loginUserModel.userUID;
+            userOption.userNickname = loginUserModel.nickname;
+            userOption.userAvatar = loginUserModel.avatar;
+            [IMSDKManager configSDKUserWith:userOption];
+            
+            // 验证码登录不需要保存密码用于弱密码检查
+            
+            // 设置TabBar UI
+            [ZTOOL setupTabBarUI];
+            
+            // 配置数据库和其他模块
+            AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+            [delegate configDB];
+            [delegate configMediaCall];
+            
+            // 日志模块（登录后更新日志模块用户信息）
+            NSString *loganURL = [ZTOOL loganEffectivePublishURL];
+            [ZTOOL reloadLoganIfNeededWithPublishURL:loganURL];
+            
+            // 小程序（在创建tabbar之后）
+            [delegate checkMiniAppFloatShow];
+        }];
+    } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
+        [ZTOOL doInMain:^{
+            [HUD hideHUD];
+            
+            if (code == Auth_User_Account_Banned || code == Auth_User_Device_Banned || code == Auth_User_IPAddress_Banned) {
+                if (code == Auth_User_Account_Banned && loginType == UserAuthTypeAccount) {
+                    [ZTOOL setupAlertUserBannedUIWithErrorCode:code withContent:loginInfo loginType:UserAuthTypeAccount];
+                } else {
+                    [ZTOOL setupAlertUserBannedUIWithErrorCode:code withContent:msg loginType:0];
+                }
+            } else if (code == LingIMHttpResponseCodeUsedIpDisabled) {
+                // 登录不在白名单内
+                [HUD showMessage:[NSString stringWithFormat:MultilingualTranslation(@"登录IP：%@ 不在白名单内"), msg]];
+            } else if (code == Auth_User_Password_Error_Code) {
+                // 验证码错误（验证码登录时，Auth_User_Password_Error_Code 表示验证码错误）
+                [HUD showMessage:MultilingualTranslation(@"验证码不正确")];
+            } else if (code == Auth_User_reGet_Img_Code) {
+                // 账号密码或验证码错误
+                [HUD showMessage:MultilingualTranslation(@"验证码不正确")];
             } else {
                 // 其他错误
                 [HUD showMessageWithCode:code errorMsg:msg];
@@ -1864,6 +2377,16 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    // 清理验证码倒计时
+    if (_phoneVerCodeTimer) {
+        [_phoneVerCodeTimer invalidate];
+        _phoneVerCodeTimer = nil;
+    }
+    if (_emailVerCodeTimer) {
+        [_emailVerCodeTimer invalidate];
+        _emailVerCodeTimer = nil;
+    }
 }
 
 @end
