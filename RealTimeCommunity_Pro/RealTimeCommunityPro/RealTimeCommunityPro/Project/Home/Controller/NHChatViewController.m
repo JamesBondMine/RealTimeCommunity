@@ -3928,6 +3928,26 @@
     [self imageVideoBrowserWith:messageModel];
 }
 
+
+#pragma mark - UITableViewDelegate (GIF 播放控制)
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([cell isKindOfClass:NSClassFromString(@"ZMessageImageCell")]) {
+        SEL sel = NSSelectorFromString(@"startGifPlayback");
+        if ([cell respondsToSelector:sel]) {
+            ((void (*)(id, SEL))objc_msgSend)(cell, sel);
+        }
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([cell isKindOfClass:NSClassFromString(@"ZMessageImageCell")]) {
+        SEL sel = NSSelectorFromString(@"stopGifPlayback");
+        if ([cell respondsToSelector:sel]) {
+            ((void (*)(id, SEL))objc_msgSend)(cell, sel);
+        }
+    }
+}
+
 //长按消息 菜单弹窗
 - (void)messageCellLongTapWithIndex:(NSIndexPath *)cellIndex {
     if (self.multiSelectStatus) {

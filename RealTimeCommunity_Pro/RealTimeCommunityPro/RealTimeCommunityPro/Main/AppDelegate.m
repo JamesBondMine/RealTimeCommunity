@@ -153,6 +153,14 @@ static NSString * const kLastAppVersionKey = @"LastAppVersion";
     //图片支持WebP
     SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
     [[SDImageCodersManager sharedManager] addCoder:webPCoder];
+    //图片支持GIF
+    Class gifCoderCls = NSClassFromString(@"SDImageGIFCoder");
+    if (gifCoderCls && [[gifCoderCls class] respondsToSelector:@selector(sharedCoder)]) {
+        id gifCoder = [gifCoderCls performSelector:@selector(sharedCoder)];
+        if (gifCoder) {
+            [[SDImageCodersManager sharedManager] addCoder:gifCoder];
+        }
+    }
 }
 
 #pragma mark - Translate Flag Bridge

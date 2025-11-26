@@ -22,6 +22,18 @@
 {
     FLAnimatedImageView *_contentImageView;
 }
+#pragma mark - GIF Playback Control
+- (void)startGifPlayback {
+    if (_contentImageView.image.sd_isAnimated) {
+        [_contentImageView startAnimating];
+    }
+}
+
+- (void)stopGifPlayback {
+    if ([_contentImageView isAnimating]) {
+        [_contentImageView stopAnimating];
+    }
+}
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -31,9 +43,20 @@
     return self;
 }
 
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    
+    // TODO: 优化cell复用导致图片展示错乱问题
+    // 取消之前的图片加载操作
+    [_contentImageView sd_cancelCurrentImageLoad];
+    // 停止动图播放并重置，避免复用残留
+    [_contentImageView stopAnimating];
+    _contentImageView.image = nil;
+}
+
 #pragma mark - UI布局
 - (void)setupImageUI {
-    _contentImageView = [[FLAnimatedImageView alloc] init];
+    _contentImageView = [[SDAnimatedImageView alloc] init];
     _contentImageView.userInteractionEnabled = YES;
     [self.contentView addSubview:_contentImageView];
 
@@ -45,6 +68,13 @@
     [super setConfigMessage:model];
     WeakSelf
     _contentImageView.frame = _contentRect;
+    
+    // 取消之前的图片加载操作
+    [_contentImageView sd_cancelCurrentImageLoad];
+    // 停止动图播放并重置
+    [_contentImageView stopAnimating];
+    _contentImageView.image = nil;
+    
     if (model.message.localImg != nil) {
         _contentImageView.image = model.message.localImg;
     } else if (![NSString isNil:model.message.localImgName]) {
@@ -54,13 +84,13 @@
         //缩略图
         NSData *localImgData = [NSData dataWithContentsOfFile:localThumbImgPath];
         if (localImgData) {
-            if ([[[NSString getImageFileFormat:localImgData] lowercaseString] isEqualToString:@"gif"]) {
-                //GIF图片
-                UIImage *gifImage = [UIImage sd_imageWithGIFData:localImgData];
-                [_contentImageView sd_setImageWithURL:nil placeholderImage:gifImage options:SDWebImageRetryFailed | SDWebImageAllowInvalidSSLCertificates];
+            NSString *fmt = [[NSString getImageFileFormat:localImgData] lowercaseString];
+            if ([fmt isEqualToString:@"gif"]) {
+                // 本地 GIF：使用 SDAnimatedImage 支持动图
+                SDAnimatedImage *animated = [SDAnimatedImage imageWithData:localImgData];
+                _contentImageView.image = animated; // SDAnimatedImageView 自动播放
             } else {
-                //静态图片
-                [_contentImageView setImage:[UIImage imageWithData:localImgData]];
+                _contentImageView.image = [UIImage imageWithData:localImgData];
             }
         } else {
             NSString *thumbnailImg;
@@ -73,12 +103,22 @@
                     thumbnailImg = model.message.thumbnailImg;
                 }
             }
-            //            [self setGiftImage:_contentImageView url:thumbnailImg];
-            [_contentImageView sd_setImageWithURL:[thumbnailImg getImageFullUrl] placeholderImage:[UIImage imageCompressFitSizeScale:DefaultImage targetSize:_contentRect.size] options:(SDWebImageRetryFailed | SDWebImageContinueInBackground | SDWebImageScaleDownLargeImages | SDWebImageHighPriority | SDWebImageAllowInvalidSSLCertificates) completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            // 远端缩略/原图
+            BOOL isGIF = [[thumbnailImg lowercaseString] containsString:@".gif"];
+            SDWebImageOptions options = (SDWebImageRetryFailed | SDWebImageContinueInBackground | SDWebImageHighPriority | SDWebImageAllowInvalidSSLCertificates);
+            if (!isGIF) {
+                options |= SDWebImageScaleDownLargeImages;
+            }
+            SDWebImageContext *context = @{
+                SDImageCoderDecodeFirstFrameOnly: @(NO)
+            };
+            [_contentImageView sd_setImageWithURL:[thumbnailImg getImageFullUrl]
+                                  placeholderImage:[UIImage imageCompressFitSizeScale:DefaultImage targetSize:_contentRect.size]
+                                           options:options
+                                         completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
                 StrongSelf;
                 [strongSelf loadWithImage:image URL:[model.message.thumbnailImg getImageFullString] error:error];
             }];
-            [_contentImageView startAnimating];
         }
     } else {
         WeakSelf;
@@ -92,11 +132,21 @@
                 thumbnailImg = model.message.thumbnailImg;
             }
         }
-        [_contentImageView sd_setImageWithURL:[thumbnailImg getImageFullUrl] placeholderImage:[UIImage imageCompressFitSizeScale:DefaultImage targetSize:_contentRect.size] options:(SDWebImageRetryFailed | SDWebImageContinueInBackground | SDWebImageScaleDownLargeImages | SDWebImageHighPriority | SDWebImageAllowInvalidSSLCertificates) completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+        BOOL isGIF = [[thumbnailImg lowercaseString] containsString:@".gif"];
+        SDWebImageOptions options = (SDWebImageRetryFailed | SDWebImageContinueInBackground | SDWebImageHighPriority | SDWebImageAllowInvalidSSLCertificates);
+        if (!isGIF) {
+            options |= SDWebImageScaleDownLargeImages;
+        }
+        SDWebImageContext *context = @{
+            SDImageCoderDecodeFirstFrameOnly: @(NO)
+        };
+        [_contentImageView sd_setImageWithURL:[thumbnailImg getImageFullUrl]
+                              placeholderImage:[UIImage imageCompressFitSizeScale:DefaultImage targetSize:_contentRect.size]
+                                       options:options
+                                     completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
             StrongSelf;
             [strongSelf loadWithImage:image URL:[model.message.thumbnailImg getImageFullString] error:error];
         }];
-        [_contentImageView startAnimating];
     }
     
     //上传回调

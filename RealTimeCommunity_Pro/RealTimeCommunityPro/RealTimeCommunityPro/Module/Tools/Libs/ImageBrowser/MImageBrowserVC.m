@@ -49,6 +49,19 @@ typedef NS_ENUM(NSUInteger, ZoomViewScrollDirection) {
         _customUIBlock(self);
     }
 }
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    [[SDImageCache sharedImageCache] clearMemory];
+    // 停止当前可见动图播放，降低内存压力
+    for (NSNumber *key in self.viewZoomCache) {
+        MImageBrowserZoomView *zoom = [self.viewZoomCache objectForKey:key];
+        if ([zoom respondsToSelector:@selector(imageView)]) {
+            UIImageView *iv = [zoom valueForKey:@"imageView"];
+            if ([iv isAnimating]) [iv stopAnimating];
+        }
+    }
+}
 #pragma mark - 处理imageArr内数据，统一成MImageBrowserModel
 - (void)configImageArr{
     NSMutableArray *imagesArr = [NSMutableArray array];

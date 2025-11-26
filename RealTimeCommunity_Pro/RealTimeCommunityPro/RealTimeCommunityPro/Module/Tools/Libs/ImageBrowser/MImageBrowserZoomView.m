@@ -41,7 +41,7 @@
     self.delegate = self;
     
     CGFloat imageViewW = [UIScreen mainScreen].bounds.size.width - 2 * 60;
-    _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, imageViewW, imageViewW)];
+    _imageView = [[SDAnimatedImageView alloc] initWithFrame:CGRectMake(0, 0, imageViewW, imageViewW)];
     _imageView.center = CGPointMake(self.frame.size.width / 2.0, self.frame.size.height / 2.0);
     _imageView.contentMode = UIViewContentModeScaleAspectFit;
     _imageView.clipsToBounds = YES;
@@ -128,7 +128,10 @@
         BOOL hasOriginImageCache = [[SDImageCache sharedImageCache] cachePathForKey:model.originURLString].length > 0;
         if (model.originURLString && hasOriginImageCache) {
             //有原图地址 + 缓存
-            [_imageView sd_setImageWithURL:[NSURL URLWithString:model.originURLString] placeholderImage:placeholderImage options:SDWebImageRetryFailed | SDWebImageAllowInvalidSSLCertificates completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            [_imageView sd_setImageWithURL:[NSURL URLWithString:model.originURLString]
+                          placeholderImage:placeholderImage
+                                   options:(SDWebImageRetryFailed | SDWebImageAllowInvalidSSLCertificates | SDWebImageHighPriority)
+                                 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
                 if (image) {
                     [weakSelf becomeBigStateImage:weakSelf.imageView.image animation:YES];
                     self->_imageState = ShowImageStateOrigin;
@@ -142,7 +145,10 @@
             if (!hasThumbImageCache) {
                 [_activityIndicator startAnimating];
             }
-            [_imageView sd_setImageWithURL:[NSURL URLWithString:model.thumbURLString ] placeholderImage:placeholderImage options:SDWebImageRetryFailed | SDWebImageAllowInvalidSSLCertificates completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            [_imageView sd_setImageWithURL:[NSURL URLWithString:model.thumbURLString]
+                          placeholderImage:placeholderImage
+                                   options:(SDWebImageRetryFailed | SDWebImageAllowInvalidSSLCertificates | SDWebImageHighPriority)
+                                 completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
                 [weakSelf.activityIndicator stopAnimating];
                 if (image) {
                     self -> _imageState = ShowImageStateBig;
@@ -152,7 +158,12 @@
             
         }else if (model.image || model.imageData) {
             //加载图片数据
-            _imageView.image = model.image ? model.image : [UIImage imageWithData:model.imageData];
+            if (model.imageData) {
+                SDAnimatedImage *animated = [SDAnimatedImage imageWithData:model.imageData];
+                _imageView.image = animated ?: [UIImage imageWithData:model.imageData];
+            } else {
+                _imageView.image = model.image;
+            }
             [self becomeBigStateImage:_imageView.image animation:YES];
             _imageState = ShowImageStateBig;
             
