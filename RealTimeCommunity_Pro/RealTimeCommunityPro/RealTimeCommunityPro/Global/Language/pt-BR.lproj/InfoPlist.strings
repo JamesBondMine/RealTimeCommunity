@@ -18,7 +18,6 @@
 "NSLocalNetworkUsageDescription" = "Precisamos acessar a rede local para comunicação entre dispositivos e fornecer melhores serviços.";
 "NSContactsUsageDescription" = "Precisamos acessar seus contatos para ajudá-lo a encontrar amigos que já estão usando o aplicativo.";
 "NSFaceIDUsageDescription" = "Usamos o Face ID para autenticar com segurança e proteger sua conta.";
-"NSUserTrackingUsageDescription" = "Usamos rastreamento para fornecer conteúdo personalizado e melhorar sua experiência no aplicativo.";
 "NSSpeechRecognitionUsageDescription" = "Precisamos acessar o reconhecimento de fala para recursos de voz para texto em mensagens.";
 "NSCalendarsUsageDescription" = "Precisamos acessar seu calendário para ajudá-lo a agendar eventos e reuniões.";
 "NSRemindersUsageDescription" = "Precisamos acessar seus lembretes para definir notificações para eventos importantes.";

@@ -28,7 +28,7 @@
 #import "MainInputTextView.h"
 #import "ZQRcodeScanViewController.h"
 
-// 页面模式枚举
+// 页面模式枚举--ceshi
 typedef NS_ENUM(NSInteger, LoginPageMode) {
     LoginPageModeJoinServer = 0,  // 加入企业号模式
     LoginPageModeLogin = 1        // 登录模式

@@ -59,8 +59,6 @@
 	<string>We need access to your contacts to help you find friends who are already using the app.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>We use Face ID to securely authenticate and protect your account.</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>We use tracking to provide you with personalized content and improve your app experience.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>We need access to speech recognition for voice-to-text features in messages.</string>
 	<key>NSCalendarsUsageDescription</key>

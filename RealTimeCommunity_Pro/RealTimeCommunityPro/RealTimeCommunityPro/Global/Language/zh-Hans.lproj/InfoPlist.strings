@@ -18,7 +18,6 @@
 "NSLocalNetworkUsageDescription" = "我们需要访问本地网络以便设备间通信和提供更好的服务。";
 "NSContactsUsageDescription" = "我们需要访问您的通讯录，以帮助您找到已经在使用本应用的好友。";
 "NSFaceIDUsageDescription" = "我们使用面容ID来安全地验证身份和保护您的账户。";
-"NSUserTrackingUsageDescription" = "我们使用追踪功能为您提供个性化内容并改善您的应用体验。";
 "NSSpeechRecognitionUsageDescription" = "我们需要访问语音识别功能，以便在消息中实现语音转文字功能。";
 "NSCalendarsUsageDescription" = "我们需要访问您的日历，以帮助您安排活动和会议。";
 "NSRemindersUsageDescription" = "我们需要访问您的提醒事项，以便为重要事件设置通知。";
