@@ -10,6 +10,13 @@
 #import "ZImagePickerVC.h"
 #import "EMEmojiMenuPopView.h"
 
+// 添加默认图片
+#define kAddIconImgName @"emoji_collect_add"
+// 石头剪刀布默认
+#define kStoneScissorClothIconImgName @"emoji_collect_stoneScissorCloth"
+// 筛子默认
+#define kPlayDiceIconImgName @"emoji_collect_playDice"
+
 @interface EMChatGitImgCollectionView() <UICollectionViewDelegate, UICollectionViewDataSource, ZChatGitImgCollectionCellDelegate>
 
 @property (nonatomic, strong) NSMutableArray *collectionList;
@@ -106,23 +113,32 @@
 - (void)defaultAddData {
     //Add
     LingIMStickersModel *addModel = [[LingIMStickersModel alloc] init];
-    addModel.assetAddIcon = @"emoji_collect_add";
+    addModel.assetAddIcon = kAddIconImgName;
     [self.collectionList addObject:addModel];
 }
 
 - (void)defaultGameStickersData {
     //石头剪刀布
     LingIMStickersModel *stoneScissorClothModel = [[LingIMStickersModel alloc] init];
-    stoneScissorClothModel.assetAddIcon = @"emoji_collect_stoneScissorCloth";
+    stoneScissorClothModel.assetAddIcon = kStoneScissorClothIconImgName;
     [self.collectionList addObject:stoneScissorClothModel];
     
     //摇色子
     LingIMStickersModel *playDiceModel = [[LingIMStickersModel alloc] init];
-    playDiceModel.assetAddIcon = @"emoji_collect_playDice";
+    playDiceModel.assetAddIcon = kPlayDiceIconImgName;
     [self.collectionList addObject:playDiceModel];
 }
 
 #pragma mark - Request
+
+/// 清空数据源，并重置数据
+- (void)resetCollectionList {
+    // 清空数据源
+    [self.collectionList removeAllObjects];
+    // 添加默认add
+    [self defaultAddData];
+}
+
 //请求收藏的表情列表(分页)
 - (void)requestCollectionStickersList {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -131,64 +147,103 @@
     [dict setObjectSafe:@((_pageNumber - 1) * 20) forKey:@"pageStart"];
     [dict setObjectSafe:@(0) forKey:@"lastUpdateTime"];
     [dict setObjectSafe:UserManager.userInfo.userUID forKey:@"userUid"];
-    WeakSelf
+    
+    @weakify(self)
     [IMSDKManager imSdkUserGetCollectStickersList:dict onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
-        [weakSelf.collectionView.mj_footer endRefreshing];
-        [weakSelf.collectionView.mj_header endRefreshing];
+        @strongify(self)
+        [self.collectionView.mj_footer endRefreshing];
+        [self.collectionView.mj_header endRefreshing];
         
-        if ([data isKindOfClass:[NSDictionary class]]) {
-            //数据处理
-            NSDictionary *dataDict = (NSDictionary *)data;
-            NSArray *rowList = (NSArray *)[dataDict objectForKeySafe:@"rows"];
-            if (weakSelf.pageNumber == 1 && rowList.count > 0) {
-                [weakSelf.collectionList removeAllObjects];
-                //清空缓存的收藏表情
+        if (![data isKindOfClass:[NSDictionary class]]) {
+            if (self.pageNumber < 2) {
+                // 清空缓存的收藏表情
                 [DBTOOL deleteAllCollectionStickersModels];
-                //添加默认add
-                [weakSelf defaultAddData];
+                // 清空数据源，并重置数据
+                [self resetCollectionList];
+                // 添加游戏表情到最后(筛子+石头剪刀布)
+                [self defaultGameStickersData];
+                // 刷新UI
+                [self.collectionView reloadData];
+            }else {
+                // 保持原样,因为本次获取的数据异常,但是需要将pageNumber-1,因为本次获取失败
+                self.pageNumber -= 1;
+                // 数据无需处理，也无需刷新UI
             }
-            if (weakSelf.pageNumber > 1 && weakSelf.collectionList.count >= 3) {
-                [weakSelf.collectionList removeObjectsInRange:NSMakeRange(weakSelf.collectionList.count - 2, 2)];
-            }
+            return;
+        }
+        
+        if (self.pageNumber < 2) {
+            // 第一页时重置数据
+            // 清空缓存的收藏表情
+            [DBTOOL deleteAllCollectionStickersModels];
+            // 清空数据源，并重置数据
+            [self resetCollectionList];
+        }else {
+            // 非第一页时，移除最后两个游戏表情数据(筛子+石头剪刀布)，以便后续添加新数据后，再添加游戏表情数据到最后
+            // 使用 removeObjectsAtIndexes 或收集索引后删除
+            NSMutableIndexSet *indexesToRemove = [NSMutableIndexSet indexSet];
+            
+            [self.collectionList enumerateObjectsUsingBlock:^(LingIMStickersModel *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                if ([obj.assetAddIcon isEqualToString:kStoneScissorClothIconImgName] ||
+                    [obj.assetAddIcon isEqualToString:kPlayDiceIconImgName]) {
+                    [indexesToRemove addIndex:idx];
+                }
+            }];
+            
+            [self.collectionList removeObjectsAtIndexes:indexesToRemove];
+        }
+        
+        // 数据处理
+        NSDictionary *dataDict = (NSDictionary *)data;
+        NSArray *rowList = [dataDict objectForKeySafe:@"rows"];
+        if (rowList && rowList.count > 0 && [rowList isKindOfClass:[NSArray class]]) {
+            // 解析rowList
             NSArray *tempGifImgList = [LingIMStickersModel mj_objectArrayWithKeyValuesArray:rowList];
-            [weakSelf.collectionList addObjectsFromArray:tempGifImgList];
-            if ( rowList.count > 0) {
-                //添加游戏表情到最后
-                [weakSelf defaultGameStickersData];
-            }
+            // 添加收藏的表情
+            [self.collectionList addObjectsFromArray:tempGifImgList];
             
             //保存接口返回的收藏表情到本地数据库
             [DBTOOL batchInsertCollectionStickersModelWith:tempGifImgList];
-                
-            //分页处理
-            NSInteger totalPage = [[dataDict objectForKeySafe:@"pages"] integerValue];
-            if (weakSelf.pageNumber < totalPage) {
-                if (!weakSelf.collectionView.mj_footer) {
-                    weakSelf.collectionView.mj_footer = weakSelf.refreshFooter;
-                }
-            } else {
-                weakSelf.collectionView.mj_footer = nil;
-            }
-            [weakSelf.collectionView reloadData];
         }
-    } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
-        [weakSelf.collectionView.mj_footer endRefreshing];
-        [weakSelf.collectionView.mj_header endRefreshing];
-        NSArray *dbCollectionList = [DBTOOL getMyCollectionStickersList];
-        if (dbCollectionList.count > 0) {
-            [weakSelf.collectionList removeAllObjects];
-            //添加默认add
-            [weakSelf defaultAddData];
-            //添加本地缓存
-            [weakSelf.collectionList addObjectsFromArray:dbCollectionList];
-            //条件游戏表情
-            [weakSelf defaultGameStickersData];
+        
+        //添加游戏表情到最后
+        [self defaultGameStickersData];
             
-            weakSelf.collectionView.mj_footer = nil;
-            [weakSelf.collectionView reloadData];
+        //分页处理
+        NSInteger totalPage = [[dataDict objectForKeySafe:@"pages"] integerValue];
+        if (self.pageNumber < totalPage) {
+            if (!self.collectionView.mj_footer) {
+                self.collectionView.mj_footer = self.refreshFooter;
+            }
         } else {
-            if (!weakSelf.collectionView.mj_footer) {
-                weakSelf.collectionView.mj_footer = weakSelf.refreshFooter;
+            self.collectionView.mj_footer = nil;
+        }
+        [self.collectionView reloadData];
+    } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
+        @strongify(self)
+        [self.collectionView.mj_footer endRefreshing];
+        [self.collectionView.mj_header endRefreshing];
+        
+        // 保持原样,因为本次获取的数据异常,但是需要将pageNumber-1,因为本次获取失败
+        self.pageNumber -= 1;
+        // 避免出现self.pageNumber < 1的存在，保证最小为1
+        self.pageNumber = MAX(1, self.pageNumber);
+        
+        // 从数据库中读取
+        NSArray *dbCollectionList = [DBTOOL getMyCollectionStickersList];
+        if (dbCollectionList && dbCollectionList.count > 0) {
+            // 清空数据源，并重置数据
+            [self resetCollectionList];
+            // 添加本地数据库收藏的表情
+            [self.collectionList addObjectsFromArray:dbCollectionList];
+            // 添加游戏表情到最后(筛子+石头剪刀布)
+            [self defaultGameStickersData];
+            // 刷新UI
+            self.collectionView.mj_footer = nil;
+            [self.collectionView reloadData];
+        } else {
+            if (!self.collectionView.mj_footer) {
+                self.collectionView.mj_footer = self.refreshFooter;
             }
         }
     }];
