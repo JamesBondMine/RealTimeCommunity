@@ -108,7 +108,7 @@
             }
         }
         if (releaseEnable) {
-            self.navBtnRight.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+            self.navBtnRight.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
             self.navBtnRight.enabled = YES;
         } else {
             self.navBtnRight.tkThemebackgroundColors = @[COLOR_CCCCCC, COLOR_CCCCCC_DARK];

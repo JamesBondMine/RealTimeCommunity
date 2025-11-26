@@ -65,7 +65,7 @@
 - (UILabel *)ssoLabel {
     if (!_ssoLabel) {
         _ssoLabel = [UILabel new];
-        _ssoLabel.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _ssoLabel.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         _ssoLabel.font = FONTR(12);
         _ssoLabel.textAlignment = NSTextAlignmentCenter;
         _ssoLabel.text = [NSString stringWithFormat:@"%@: %@", MultilingualTranslation(@"企业号"), self.dataHandle.currentSsoNumber];
@@ -230,7 +230,7 @@
     // 边框宽度
     borderLayer.lineWidth = 1;
     // 边框颜色
-    borderLayer.strokeColor = COLOR_81D8CF.CGColor;
+    borderLayer.strokeColor = COLOR_4791FF.CGColor;
     // 填充颜色
     borderLayer.fillColor = HEXACOLOR(@"4791FF", 0.2).CGColor;
     [view.layer addSublayer:borderLayer];
@@ -240,7 +240,7 @@
     borderLayer.tkThemeChangeBlock = ^(id  _Nullable itself, NSUInteger themeIndex) {
         @strongify(borderLayer)
         // 边框颜色
-        borderLayer.strokeColor = COLOR_81D8CF.CGColor;
+        borderLayer.strokeColor = COLOR_4791FF.CGColor;
         // 填充颜色
         borderLayer.fillColor = HEXACOLOR(@"4791FF", 0.2).CGColor;
     };
@@ -279,7 +279,7 @@
         // 高亮所有匹配到的数字（和可选的%）
         UIColor *highlightColor;
         if (status == ZNetworkDetecting) {
-            highlightColor = (themeIndex == 0) ? COLOR_81D8CF : COLOR_81D8CF_DARK;
+            highlightColor = (themeIndex == 0) ? COLOR_4791FF : COLOR_4791FF_DARK;
         }else if (status == ZNetworkDetectFinish) {
             highlightColor = (themeIndex == 0) ? COLOR_F93A2F : COLOR_F93A2F_DARK;
         }else {

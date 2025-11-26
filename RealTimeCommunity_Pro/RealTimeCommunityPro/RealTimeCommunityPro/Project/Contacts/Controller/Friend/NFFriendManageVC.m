@@ -376,7 +376,7 @@
 //    msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_F6F6F6, COLOR_F5F6F9_DARK];
     [msgAlertView.btnCancel setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];
 //    [msgAlertView.btnCancel setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-//    msgAlertView.btnCancel.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+//    msgAlertView.btnCancel.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     [msgAlertView alertShow];
     msgAlertView.sureBtnBlock = ^(BOOL isCheckBox) {
         [weakSelf requestDeleteFriend];
@@ -395,7 +395,7 @@
 //        msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_F6F6F6, COLOR_F6F6F6_DARK];
         [msgAlertView.btnCancel setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];
 //        [msgAlertView.btnCancel setTkThemeTitleColor:@[COLORWHITE, COLORWHITE_DARK] forState:UIControlStateNormal];
-//        msgAlertView.btnCancel.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+//        msgAlertView.btnCancel.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         [msgAlertView alertShow];
         msgAlertView.sureBtnBlock = ^(BOOL isCheckBox) {
             [weakSelf requestBlackFriend];

@@ -131,7 +131,7 @@
     UIButton *btnSure = [UIButton buttonWithType:UIButtonTypeCustom];
     [btnSure setTitle:MultilingualTranslation(@"确定") forState:UIControlStateNormal];
     [btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-    btnSure.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+    btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
     [btnSure setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateSelected];
     [btnSure setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
     btnSure.titleLabel.font = FONTN(17);

@@ -213,7 +213,7 @@
     };
     
     [attStrName yy_setFont:FONTR(16) range:rangeName];
-    [attStrName yy_setColor:COLOR_81D8CF range:rangeName];
+    [attStrName yy_setColor:COLOR_4791FF range:rangeName];
     _lblName.attributedText = attStrName;
 }
 
@@ -246,7 +246,7 @@
     };
     
     [attStrName yy_setFont:FONTR(16) range:rangeName];
-    [attStrName yy_setColor:COLOR_81D8CF range:rangeName];
+    [attStrName yy_setColor:COLOR_4791FF range:rangeName];
     _lblName.attributedText = attStrName;
 }
 

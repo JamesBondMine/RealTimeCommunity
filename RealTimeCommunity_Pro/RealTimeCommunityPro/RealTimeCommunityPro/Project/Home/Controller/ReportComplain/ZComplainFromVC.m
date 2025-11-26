@@ -89,7 +89,7 @@
     [_btnSubmit setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
     _btnSubmit.titleLabel.font = FONTR(12);
     _btnSubmit.enabled = NO;
-    [_btnSubmit setTkThemebackgroundColors:@[[COLOR_81D8CF colorWithAlphaComponent:0.3], [COLOR_81D8CF_DARK colorWithAlphaComponent:0.3]]];
+    [_btnSubmit setTkThemebackgroundColors:@[[COLOR_4791FF colorWithAlphaComponent:0.3], [COLOR_4791FF_DARK colorWithAlphaComponent:0.3]]];
     [_btnSubmit addTarget:self action:@selector(btnSubmitClick) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_btnSubmit];
     [_btnSubmit mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -660,9 +660,9 @@
     }
     
     if (_btnSubmit.isEnabled) {
-        [_btnSubmit setTkThemebackgroundColors:@[COLOR_81D8CF, COLOR_81D8CF_DARK]];
+        [_btnSubmit setTkThemebackgroundColors:@[COLOR_4791FF, COLOR_4791FF_DARK]];
     }else {
-        [_btnSubmit setTkThemebackgroundColors:@[[COLOR_81D8CF colorWithAlphaComponent:0.3], [COLOR_81D8CF_DARK colorWithAlphaComponent:0.3]]];
+        [_btnSubmit setTkThemebackgroundColors:@[[COLOR_4791FF colorWithAlphaComponent:0.3], [COLOR_4791FF_DARK colorWithAlphaComponent:0.3]]];
     }
 }
 
@@ -818,7 +818,7 @@
     self.emailTextField.text = @"";
     //提交按钮
     _btnSubmit.enabled = NO;
-    [_btnSubmit setTkThemebackgroundColors:@[[COLOR_81D8CF colorWithAlphaComponent:0.3], [COLOR_81D8CF_DARK colorWithAlphaComponent:0.3]]];
+    [_btnSubmit setTkThemebackgroundColors:@[[COLOR_4791FF colorWithAlphaComponent:0.3], [COLOR_4791FF_DARK colorWithAlphaComponent:0.3]]];
 }
 #pragma mark - 实时监听邮箱的输入值
 - (void)emailTextFieldChanged:(UITextField *)tfEmail {

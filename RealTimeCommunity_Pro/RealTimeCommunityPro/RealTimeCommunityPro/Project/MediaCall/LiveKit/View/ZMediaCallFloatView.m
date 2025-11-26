@@ -83,7 +83,7 @@
     
     _lblCallTip = [UILabel new];
     _lblCallTip.font = FONTR(12);
-    _lblCallTip.textColor = COLOR_81D8CF;
+    _lblCallTip.textColor = COLOR_4791FF;
     _lblCallTip.preferredMaxLayoutWidth = DWScale(90);
     [_viewContent addSubview:_lblCallTip];
     [_lblCallTip mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -107,7 +107,7 @@
             //音频
             
             _ivCallState.image = ImgNamed(@"ms_btn_accept_s");
-            _lblCallTip.textColor = COLOR_81D8CF;
+            _lblCallTip.textColor = COLOR_4791FF;
             _lblCallTip.text = MultilingualTranslation(@"等待接通");
             
             //request请求、waiting等待、accept接受、confirm确认、discard断开连接
@@ -127,7 +127,7 @@
         {
             //视频
             _ivCallState.image = ImgNamed(@"ms_btn_video_accept_s");
-            _lblCallTip.textColor = COLOR_81D8CF;
+            _lblCallTip.textColor = COLOR_4791FF;
             _lblCallTip.text = MultilingualTranslation(@"等待接通");
             
             //request请求、waiting等待、accept接受、confirm确认、discard断开连接

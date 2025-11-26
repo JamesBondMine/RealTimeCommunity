@@ -58,7 +58,7 @@
         _saveButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_saveButton setTitle:MultilingualTranslation(@"保存") forState:UIControlStateNormal];
         _saveButton.titleLabel.font = FONTM(15);
-        _saveButton.titleLabel.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _saveButton.titleLabel.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         _saveButton.titleEdgeInsets = UIEdgeInsetsMake(16, 16, 16, 16);
     }
     return _saveButton;
@@ -178,10 +178,10 @@
         @strongify(self)
         if (themeIndex == 0) {
             [self.backButton setTitleColor:COLOR_33 forState:UIControlStateNormal];
-            [self.saveButton setTitleColor:COLOR_81D8CF forState:UIControlStateNormal];
+            [self.saveButton setTitleColor:COLOR_4791FF forState:UIControlStateNormal];
         } else {
             [self.backButton setTitleColor:COLOR_33_DARK forState:UIControlStateNormal];
-            [self.saveButton setTitleColor:COLOR_81D8CF_DARK forState:UIControlStateNormal];
+            [self.saveButton setTitleColor:COLOR_4791FF_DARK forState:UIControlStateNormal];
         }
     };
 }
@@ -227,15 +227,15 @@
     
     // 边框相关设置
     maskLayer.lineWidth = 1;
-    maskLayer.strokeColor = COLOR_81D8CF.CGColor;
+    maskLayer.strokeColor = COLOR_4791FF.CGColor;
     maskLayer.fillColor = UIColor.clearColor.CGColor;
     @weakify(maskLayer)
     maskLayer.tkThemeChangeBlock = ^(id  _Nullable itself, NSUInteger themeIndex) {
         @strongify(maskLayer)
         if (themeIndex == 0) {
-            maskLayer.strokeColor = COLOR_81D8CF.CGColor;
+            maskLayer.strokeColor = COLOR_4791FF.CGColor;
         } else {
-            maskLayer.strokeColor = COLOR_81D8CF_DARK.CGColor;
+            maskLayer.strokeColor = COLOR_4791FF_DARK.CGColor;
         }
     };
     

@@ -418,7 +418,7 @@ static NSString *g_CurrentLoganPublishURL = nil; // 内存记录当前 Logan pub
     bannedAlertView.lblTitle.text = MultilingualTranslation(@"提示");
     bannedAlertView.lblContent.text = MultilingualTranslation(@"账号信息发生变化，请重新登录");
     [bannedAlertView.btnCancel setTitle:MultilingualTranslation(@"重新登录") forState:UIControlStateNormal];
-    [bannedAlertView.btnCancel setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [bannedAlertView.btnCancel setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     [bannedAlertView alertTipViewSHow];
     WeakSelf
     bannedAlertView.cancelBtnBlock = ^{

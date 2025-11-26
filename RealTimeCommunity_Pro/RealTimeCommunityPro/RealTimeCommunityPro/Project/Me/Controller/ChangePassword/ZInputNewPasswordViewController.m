@@ -156,7 +156,7 @@
         [ZAuthInputTools checkCreatPasswordEndWithTextFormat:self.confimPasswordInput.inputText.text]) {
         self.navBtnRight.enabled = YES;
         [self.navBtnRight setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-        self.navBtnRight.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        self.navBtnRight.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         [self.navBtnRight setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateSelected];
         [self.navBtnRight setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
     } else {

@@ -597,7 +597,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     _scanServerButton = [[UIButton alloc] init];
     [_scanServerButton setTitle:MultilingualTranslation(@"扫一扫加入服务器") forState:UIControlStateNormal];
     [_scanServerButton setImage:ImgNamed(@"relogimg_icon_sso_scan_reb") forState:UIControlStateNormal];
-    [_scanServerButton setTitleColor:COLOR_81D8CF forState:UIControlStateNormal];
+    [_scanServerButton setTitleColor:COLOR_4791FF forState:UIControlStateNormal];
     _scanServerButton.titleLabel.font = FONTN(14);
     [_scanServerButton setBtnImageAlignmentType:ButtonImageAlignmentTypeLeft imageSpace:DWScale(10)];
     [_scanServerButton addTarget:self action:@selector(scanServerAction) forControlEvents:UIControlEventTouchUpInside];
@@ -613,7 +613,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     [_confirmServerButton setTitle:MultilingualTranslation(@"确定") forState:UIControlStateNormal];
     [_confirmServerButton setTitleColor:COLORWHITE forState:UIControlStateNormal];
     _confirmServerButton.titleLabel.font = FONTB(17);
-    _confirmServerButton.backgroundColor = [COLOR_81D8CF colorWithAlphaComponent:0.3];
+    _confirmServerButton.backgroundColor = [COLOR_4791FF colorWithAlphaComponent:0.3];
     _confirmServerButton.layer.cornerRadius = DWScale(12);
     _confirmServerButton.enabled = NO;
     [_confirmServerButton addTarget:self action:@selector(confirmServerAction) forControlEvents:UIControlEventTouchUpInside];
@@ -781,7 +781,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     [_continueBtn setTitle:MultilingualTranslation(@"继续") forState:UIControlStateNormal];
     [_continueBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _continueBtn.titleLabel.font = FONTB(17);
-    _continueBtn.backgroundColor = COLOR_81D8CF;
+    _continueBtn.backgroundColor = COLOR_4791FF;
     _continueBtn.layer.cornerRadius = DWScale(12);
     _continueBtn.layer.shadowColor = [[UIColor colorWithRed:0.40 green:0.82 blue:0.77 alpha:0.4] CGColor];
     _continueBtn.layer.shadowOffset = CGSizeMake(0, 4);
@@ -807,12 +807,12 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
 - (void)setupRegisterButton {
     _registerBtn = [[UIButton alloc] init];
     [_registerBtn setTitle:MultilingualTranslation(@"注册账号") forState:UIControlStateNormal];
-    [_registerBtn setTitleColor:COLOR_81D8CF forState:UIControlStateNormal];
+    [_registerBtn setTitleColor:COLOR_4791FF forState:UIControlStateNormal];
     _registerBtn.titleLabel.font = FONTB(17);
     _registerBtn.backgroundColor = [UIColor clearColor];
     _registerBtn.layer.cornerRadius = DWScale(12);
     _registerBtn.layer.borderWidth = 1.5;
-    _registerBtn.layer.borderColor = COLOR_81D8CF.CGColor;
+    _registerBtn.layer.borderColor = COLOR_4791FF.CGColor;
     [_registerBtn addTarget:self action:@selector(registerAction) forControlEvents:UIControlEventTouchUpInside];
     [_registerBtn addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
     [_registerBtn addTarget:self action:@selector(buttonTouchUp:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchUpOutside];
@@ -871,7 +871,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
 //    UIImageView *phoneIcon = [[UIImageView alloc] init];
 //    phoneIcon.image = ImgNamed(@"cim_login_phone");
 //    phoneIcon.contentMode = UIViewContentModeScaleAspectFit;
-//    phoneIcon.tintColor = COLOR_81D8CF;
+//    phoneIcon.tintColor = COLOR_4791FF;
 //    [phoneInputContainer addSubview:phoneIcon];
 //    [phoneIcon mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.leading.equalTo(phoneInputContainer).offset(DWScale(16));
@@ -882,7 +882,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     // 区号按钮
     _phoneAreaCodeBtn = [[UIButton alloc] init];
     [_phoneAreaCodeBtn setTitle:self.phoneCountryCode forState:UIControlStateNormal];
-    [_phoneAreaCodeBtn setTitleColor:COLOR_81D8CF forState:UIControlStateNormal];
+    [_phoneAreaCodeBtn setTitleColor:COLOR_4791FF forState:UIControlStateNormal];
     _phoneAreaCodeBtn.titleLabel.font = FONTN(16);
     [_phoneAreaCodeBtn addTarget:self action:@selector(selectPhoneCountryCode) forControlEvents:UIControlEventTouchUpInside];
     [phoneInputContainer addSubview:_phoneAreaCodeBtn];
@@ -943,7 +943,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     UIImageView *emailIcon = [[UIImageView alloc] init];
     emailIcon.image = ImgNamed(@"relogimg_img_email_input_tip_reb");
     emailIcon.contentMode = UIViewContentModeScaleAspectFit;
-    emailIcon.tintColor = COLOR_81D8CF;
+    emailIcon.tintColor = COLOR_4791FF;
     [emailInputContainer addSubview:emailIcon];
     [emailIcon mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(emailInputContainer).offset(DWScale(16));
@@ -990,7 +990,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     UIImageView *accountIcon = [[UIImageView alloc] init];
     accountIcon.image = ImgNamed(@"relogimg_img_account_input_tip_reb");
     accountIcon.contentMode = UIViewContentModeScaleAspectFit;
-    accountIcon.tintColor = COLOR_81D8CF;
+    accountIcon.tintColor = COLOR_4791FF;
     [accountInputContainer addSubview:accountIcon];
     [accountIcon mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(accountInputContainer).offset(DWScale(16));
@@ -1149,7 +1149,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     UIImageView *lockIcon = [[UIImageView alloc] init];
     lockIcon.image = ImgNamed(@"relogimg_img_password_input_tip_reb");
     lockIcon.contentMode = UIViewContentModeScaleAspectFit;
-    lockIcon.tintColor = COLOR_81D8CF;
+    lockIcon.tintColor = COLOR_4791FF;
     lockIcon.tag = 1001; // 设置tag以便后续切换图标
     [_phonePasswordContainer addSubview:lockIcon];
     [lockIcon mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -1161,7 +1161,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     // 创建获取验证码按钮（初始隐藏）
     _phoneGetVerCodeBtn = [[UIButton alloc] init];
     [_phoneGetVerCodeBtn setTitle:MultilingualTranslation(@"获取验证码") forState:UIControlStateNormal];
-    [_phoneGetVerCodeBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [_phoneGetVerCodeBtn setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     [_phoneGetVerCodeBtn setTitleColor:COLOR_99 forState:UIControlStateDisabled];
     _phoneGetVerCodeBtn.titleLabel.font = FONTN(14);
     [_phoneGetVerCodeBtn addTarget:self action:@selector(phoneGetVerCodeAction) forControlEvents:UIControlEventTouchUpInside];
@@ -1202,7 +1202,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     _phoneSwitchBtn = [[UIButton alloc] init];
     [_phoneSwitchBtn setTitle:MultilingualTranslation(@"验证码登录") forState:UIControlStateNormal];
     [_phoneSwitchBtn setTitle:MultilingualTranslation(@"密码登录") forState:UIControlStateSelected];
-    [_phoneSwitchBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [_phoneSwitchBtn setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     _phoneSwitchBtn.titleLabel.font = FONTN(14);
     [_phoneSwitchBtn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [_phoneSwitchBtn addTarget:self action:@selector(phoneSwitchLoginTypeAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -1264,7 +1264,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     UIImageView *lockIcon = [[UIImageView alloc] init];
     lockIcon.image = ImgNamed(@"relogimg_img_password_input_tip_reb");
     lockIcon.contentMode = UIViewContentModeScaleAspectFit;
-    lockIcon.tintColor = COLOR_81D8CF;
+    lockIcon.tintColor = COLOR_4791FF;
     lockIcon.tag = 1001; // 设置tag以便后续切换图标
     [_emailPasswordContainer addSubview:lockIcon];
     [lockIcon mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -1276,7 +1276,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     // 创建获取验证码按钮（初始隐藏）
     _emailGetVerCodeBtn = [[UIButton alloc] init];
     [_emailGetVerCodeBtn setTitle:MultilingualTranslation(@"获取验证码") forState:UIControlStateNormal];
-    [_emailGetVerCodeBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [_emailGetVerCodeBtn setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     [_emailGetVerCodeBtn setTitleColor:COLOR_99 forState:UIControlStateDisabled];
     _emailGetVerCodeBtn.titleLabel.font = FONTN(14);
     [_emailGetVerCodeBtn addTarget:self action:@selector(emailGetVerCodeAction) forControlEvents:UIControlEventTouchUpInside];
@@ -1317,7 +1317,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     _emailSwitchBtn = [[UIButton alloc] init];
     [_emailSwitchBtn setTitle:MultilingualTranslation(@"验证码登录") forState:UIControlStateNormal];
     [_emailSwitchBtn setTitle:MultilingualTranslation(@"密码登录") forState:UIControlStateSelected];
-    [_emailSwitchBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [_emailSwitchBtn setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     _emailSwitchBtn.titleLabel.font = FONTN(14);
     [_emailSwitchBtn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [_emailSwitchBtn addTarget:self action:@selector(emailSwitchLoginTypeAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -1688,7 +1688,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     UIImageView *lockIcon = [[UIImageView alloc] init];
     lockIcon.image = ImgNamed(@"relogimg_img_password_input_tip_reb");
     lockIcon.contentMode = UIViewContentModeScaleAspectFit;
-    lockIcon.tintColor = COLOR_81D8CF;
+    lockIcon.tintColor = COLOR_4791FF;
     [passwordContainer addSubview:lockIcon];
     [lockIcon mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(passwordContainer).offset(DWScale(16));
@@ -2204,9 +2204,9 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     
     _confirmServerButton.enabled = isAvailable;
     if (isAvailable) {
-        _confirmServerButton.backgroundColor = COLOR_81D8CF;
+        _confirmServerButton.backgroundColor = COLOR_4791FF;
     } else {
-        _confirmServerButton.backgroundColor = [COLOR_81D8CF colorWithAlphaComponent:0.3];
+        _confirmServerButton.backgroundColor = [COLOR_4791FF colorWithAlphaComponent:0.3];
     }
 }
 

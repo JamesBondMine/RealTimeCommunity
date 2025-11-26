@@ -196,7 +196,7 @@
         for(NSTextCheckingResult *result in [matches objectEnumerator]) {
             NSRange matchRange = [result range];
             [attStrName yy_setFont:FONTR(16) range:matchRange];
-            [attStrName yy_setColor:COLOR_81D8CF range:matchRange];
+            [attStrName yy_setColor:COLOR_4791FF range:matchRange];
         }
         _lblTitle.attributedText = attStrName;
         
@@ -224,7 +224,7 @@
         };
         
         [subAttStrName yy_setFont:FONTR(14) range:subRangeName];
-        [subAttStrName yy_setColor:COLOR_81D8CF range:subRangeName];
+        [subAttStrName yy_setColor:COLOR_4791FF range:subRangeName];
         _lblTitleSub.attributedText = subAttStrName;
     }
 }
@@ -258,7 +258,7 @@
     };
     
     [attStrName yy_setFont:FONTR(16) range:rangeName];
-    [attStrName yy_setColor:COLOR_81D8CF range:rangeName];
+    [attStrName yy_setColor:COLOR_4791FF range:rangeName];
     _lblTitle.attributedText = attStrName;
 }
 
@@ -307,7 +307,7 @@
     };
     
     [attStrName yy_setFont:FONTR(14) range:rangeName];
-    [attStrName yy_setColor:COLOR_81D8CF range:rangeName];
+    [attStrName yy_setColor:COLOR_4791FF range:rangeName];
     _lblTitleSub.attributedText = attStrName;
     
     if (historyMsgModel.chatType == CIMChatType_SingleChat) {

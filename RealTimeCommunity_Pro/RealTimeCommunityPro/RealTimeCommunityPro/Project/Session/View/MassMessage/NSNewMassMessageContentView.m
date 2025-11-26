@@ -44,7 +44,7 @@
     _btnText = [UIButton buttonWithType:UIButtonTypeCustom];
     [_btnText setTitle:MultilingualTranslation(@"文本") forState:UIControlStateNormal];
     [_btnText setTkThemeTitleColor:@[COLOR_99, COLOR_99_DARK] forState:UIControlStateNormal];
-    [_btnText setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateSelected];
+    [_btnText setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateSelected];
     _btnText.titleLabel.font = FONTR(12);
     _btnText.tag = 200;
     [_btnText addTarget:self action:@selector(btnSelectClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -60,7 +60,7 @@
     _btnAttachment = [UIButton buttonWithType:UIButtonTypeCustom];
     [_btnAttachment setTitle:MultilingualTranslation(@"附件") forState:UIControlStateNormal];
     [_btnAttachment setTkThemeTitleColor:@[COLOR_99, COLOR_99_DARK] forState:UIControlStateNormal];
-    [_btnAttachment setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateSelected];
+    [_btnAttachment setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateSelected];
     _btnAttachment.titleLabel.font = FONTR(12);
     _btnAttachment.tag = 201;
     [_btnAttachment addTarget:self action:@selector(btnSelectClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -151,11 +151,11 @@
     _btnReselect = [UIButton buttonWithType:UIButtonTypeCustom];
     _btnReselect.layer.cornerRadius = DWScale(12);
     _btnReselect.layer.masksToBounds = YES;
-    _btnReselect.layer.tkThemeborderColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    _btnReselect.layer.tkThemeborderColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     _btnReselect.layer.borderWidth = 1;
     [_btnReselect setTitle:MultilingualTranslation(@"重新选择") forState:UIControlStateNormal];
     _btnReselect.titleLabel.font = FONTR(12);
-    [_btnReselect setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [_btnReselect setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     _btnReselect.hidden = YES;
     [_btnReselect addTarget:self action:@selector(btnSelectAttachmentClick) forControlEvents:UIControlEventTouchUpInside];
     [_viewAttachment addSubview:_btnReselect];

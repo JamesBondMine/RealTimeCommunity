@@ -134,7 +134,7 @@ static NSString *const ZPwdWeakCheckModelTypeWeekPassword = @"WEAK_PASSWORD";
     msgAlertView.lblContent.textAlignment = NSTextAlignmentLeft;
     [msgAlertView.btnSure setTitle:MultilingualTranslation(@"去修改") forState:UIControlStateNormal];
     [msgAlertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-    msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+    msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
     [msgAlertView.btnCancel setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];
     [msgAlertView.btnCancel setTkThemeTitleColor:@[COLOR_66, COLOR_66_DARK] forState:UIControlStateNormal];
     msgAlertView.btnCancel.tkThemebackgroundColors = @[COLOR_F6F6F6, COLOR_F6F6F6_DARK];

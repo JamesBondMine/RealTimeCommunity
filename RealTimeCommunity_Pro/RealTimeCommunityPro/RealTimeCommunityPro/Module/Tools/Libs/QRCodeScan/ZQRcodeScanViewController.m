@@ -223,7 +223,7 @@
     UIButton *btn = (UIButton *)sender;
     //判断是否有闪光灯
    if (![self.device hasTorch]) {
-       [HUD showMessage:MultilingualTranslation(@"当前设备无闪光灯，无法开启照明功能")];
+       [HUD showMessage:MultilingualTranslation(@"当前设备没有闪光灯，无法开启照明功能")];
        return;
    }
    
@@ -295,7 +295,7 @@
     //设置线条宽度
     CGContextSetLineWidth(context, 6.0f);
     //设置线条颜色
-    CGContextSetStrokeColorWithColor(context, COLOR_81D8CF.CGColor);
+    CGContextSetStrokeColorWithColor(context, COLOR_4791FF.CGColor);
     //路径
     CGContextBeginPath(context);
     //设置起点坐标
@@ -339,7 +339,7 @@
                 msgAlertView.lblContent.textAlignment = NSTextAlignmentLeft;
                 [msgAlertView.btnSure setTitle:MultilingualTranslation(@"我知道了") forState:UIControlStateNormal];
                 [msgAlertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-                msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+                msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
                 [msgAlertView alertShow];
                 WeakSelf
                 msgAlertView.sureBtnBlock = ^(BOOL isCheckBox) {
@@ -354,7 +354,7 @@
                 msgAlertView.lblContent.textAlignment = NSTextAlignmentLeft;
                 [msgAlertView.btnSure setTitle:MultilingualTranslation(@"是") forState:UIControlStateNormal];
                 [msgAlertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-                msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+                msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
                 [msgAlertView.btnCancel setTitle:MultilingualTranslation(@"否") forState:UIControlStateNormal];
                 [msgAlertView.btnCancel setTkThemeTitleColor:@[COLOR_66, COLOR_66_DARK] forState:UIControlStateNormal];
                 msgAlertView.btnCancel.tkThemebackgroundColors = @[COLOR_F6F6F6, COLOR_F6F6F6_DARK];
@@ -396,7 +396,7 @@
             msgAlertView.lblContent.textAlignment = NSTextAlignmentLeft;
             [msgAlertView.btnSure setTitle:MultilingualTranslation(@"是") forState:UIControlStateNormal];
             [msgAlertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-            msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+            msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
             [msgAlertView.btnCancel setTitle:MultilingualTranslation(@"否") forState:UIControlStateNormal];
             [msgAlertView.btnCancel setTkThemeTitleColor:@[COLOR_66, COLOR_66_DARK] forState:UIControlStateNormal];
             msgAlertView.btnCancel.tkThemebackgroundColors = @[COLOR_F6F6F6, COLOR_F6F6F6_DARK];
@@ -434,7 +434,7 @@
             msgAlertView.lblContent.textAlignment = NSTextAlignmentLeft;
             [msgAlertView.btnSure setTitle:MultilingualTranslation(@"是") forState:UIControlStateNormal];
             [msgAlertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-            msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+            msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
             [msgAlertView.btnCancel setTitle:MultilingualTranslation(@"否") forState:UIControlStateNormal];
             [msgAlertView.btnCancel setTkThemeTitleColor:@[COLOR_66, COLOR_66_DARK] forState:UIControlStateNormal];
             msgAlertView.btnCancel.tkThemebackgroundColors = @[COLOR_F6F6F6, COLOR_F6F6F6_DARK];
@@ -469,7 +469,7 @@
             msgAlertView.lblContent.textAlignment = NSTextAlignmentLeft;
             [msgAlertView.btnSure setTitle:MultilingualTranslation(@"我知道了") forState:UIControlStateNormal];
             [msgAlertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-            msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+            msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
             [msgAlertView alertShow];
             WeakSelf
             msgAlertView.sureBtnBlock = ^(BOOL isCheckBox) {
@@ -496,18 +496,24 @@
         }
     } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
         [HUD hideHUD];
-        ZMessageAlertView *msgAlertView = [[ZMessageAlertView alloc] initWithMsgAlertType:ZMessageAlertTypeSingleBtn supView:nil];
-        msgAlertView.lblTitle.text = MultilingualTranslation(@"无效二维码");
-        msgAlertView.lblContent.text = code == 50005 ? MultilingualTranslation(@"二维码已过期") : MultilingualTranslation(@"当前二维码无效，确认是否有误");
-        msgAlertView.lblContent.textAlignment = NSTextAlignmentLeft;
-        [msgAlertView.btnSure setTitle:MultilingualTranslation(@"我知道了") forState:UIControlStateNormal];
-        [msgAlertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-        msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
-        [msgAlertView alertShow];
-        WeakSelf
-        msgAlertView.sureBtnBlock = ^(BOOL isCheckBox) {
+        if (code == 41055) {
+            [HUD showMessage:MultilingualTranslation(@"当前群不支持二维码入群")];
             [weakSelf checkAVAuthorizationStatus];
-        };
+        } else {
+            ZMessageAlertView *msgAlertView = [[ZMessageAlertView alloc] initWithMsgAlertType:ZMessageAlertTypeSingleBtn supView:nil];
+            msgAlertView.lblTitle.text = MultilingualTranslation(@"无效二维码");
+            msgAlertView.lblContent.text = code == 50005 ? MultilingualTranslation(@"二维码已过期") : MultilingualTranslation(@"当前二维码无效，确认是否有误");
+            msgAlertView.lblContent.textAlignment = NSTextAlignmentLeft;
+            [msgAlertView.btnSure setTitle:MultilingualTranslation(@"我知道了") forState:UIControlStateNormal];
+            [msgAlertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
+            msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
+            [msgAlertView alertShow];
+            WeakSelf
+            msgAlertView.sureBtnBlock = ^(BOOL isCheckBox) {
+                [weakSelf checkAVAuthorizationStatus];
+            };
+        }
+        
     }];
 }
 

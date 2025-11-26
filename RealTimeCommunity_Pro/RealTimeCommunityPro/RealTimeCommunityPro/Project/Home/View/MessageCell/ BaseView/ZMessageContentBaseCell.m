@@ -124,8 +124,8 @@
     }];
     
     //已读状态(已读人数进度)
-    _readedView = [[HomeMsgReadProgressView alloc] initWithRadius:16 fillColor:COLOR_81D8CF];
-    [_readedView configBorderWithColor:COLOR_81D8CF borderWidth:1.5];
+    _readedView = [[HomeMsgReadProgressView alloc] initWithRadius:16 fillColor:COLOR_4791FF];
+    [_readedView configBorderWithColor:COLOR_4791FF borderWidth:1.5];
     _readedView.progress = 0;
     _readedView.frame = CGRectMake(0, 0, DWScale(16), DWScale(16));
     _readedView.hidden = YES;
@@ -1130,7 +1130,7 @@
         _groupRoleView.backgroundColor = COLOR_FF9327;
     } else if (role == 1) {
         roleContent =  MultilingualTranslation(@"管理员");
-        _groupRoleView.backgroundColor = COLOR_81D8CF;
+        _groupRoleView.backgroundColor = COLOR_4791FF;
     } else {
         roleContent = @"";
         _groupRoleView.backgroundColor = COLOR_FF9C9C;

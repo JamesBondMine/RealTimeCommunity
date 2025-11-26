@@ -77,7 +77,7 @@
     UIButton *registerBtn = [[UIButton alloc] init];
     [registerBtn setTitle:MultilingualTranslation(@"注册账户") forState:UIControlStateNormal];
     [registerBtn setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-    registerBtn.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    registerBtn.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     registerBtn.titleLabel.font = FONTN(16);
     [registerBtn rounded:DWScale(14)];
     [registerBtn addTarget:self action:@selector(charactersManagetRegisterAction) forControlEvents:UIControlEventTouchUpInside];
@@ -91,7 +91,7 @@
     UIButton *bindingBtn = [[UIButton alloc] init];
     [bindingBtn setTitle:MultilingualTranslation(@"绑定账户") forState:UIControlStateNormal];
     [bindingBtn setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-    bindingBtn.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    bindingBtn.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     bindingBtn.titleLabel.font = FONTN(16);
     [bindingBtn rounded:DWScale(14)];
     [bindingBtn addTarget:self action:@selector(charactersManagetBindingAction) forControlEvents:UIControlEventTouchUpInside];
@@ -134,10 +134,10 @@
     //换绑
     UIButton *changeBindBtn = [[UIButton alloc] init];
     [changeBindBtn setTitle:MultilingualTranslation(@"换绑") forState:UIControlStateNormal];
-    [changeBindBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [changeBindBtn setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     changeBindBtn.titleLabel.font = FONTN(12);
     changeBindBtn.tkThemebackgroundColors = @[COLORWHITE, COLORWHITE_DARK];
-    [changeBindBtn rounded:DWScale(6) width:1 color:COLOR_81D8CF];
+    [changeBindBtn rounded:DWScale(6) width:1 color:COLOR_4791FF];
     [changeBindBtn addTarget:self action:@selector(changeBindAction) forControlEvents:UIControlEventTouchUpInside];
     [accountBackView addSubview:changeBindBtn];
     [changeBindBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -151,7 +151,7 @@
     UIButton *addChartBtn = [[UIButton alloc] init];
     [addChartBtn setTitle:MultilingualTranslation(@"增加字符") forState:UIControlStateNormal];
     [addChartBtn setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-    addChartBtn.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    addChartBtn.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     [addChartBtn rounded:DWScale(6)];
     addChartBtn.titleLabel.font = FONTN(12);
     [addChartBtn addTarget:self action:@selector(addChartAction) forControlEvents:UIControlEventTouchUpInside];

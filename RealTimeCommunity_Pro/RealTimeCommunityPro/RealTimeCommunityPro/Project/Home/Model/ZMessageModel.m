@@ -507,10 +507,10 @@
         
             if ([atKey isEqualToString:UserManager.userInfo.userUID]) {
                 // @我
-                [self.attStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:self.attStr.string appointStr:MultilingualTranslation(@"@我")];
+                [self.attStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:self.attStr.string appointStr:MultilingualTranslation(@"@我")];
             } else if ([atKey isEqualToString:@"-1"]) {
                 // @所有人
-                [self.attStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:self.attStr.string appointStr:MultilingualTranslation(@"@所有人")];
+                [self.attStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:self.attStr.string appointStr:MultilingualTranslation(@"@所有人")];
             } else {
                 // @其他用户 显示 @昵称
                 NSString *resultValue;
@@ -521,7 +521,7 @@
                     LingIMFriendModel *friendModel = [IMSDKManager toolCheckMyFriendWith:atKey];
                     resultValue = [NSString stringWithFormat:@"@%@", friendModel ? friendModel.nickname : [atUserDic objectForKeySafe:atKey]];
                 }
-                [self.attStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:self.attStr.string appointStr:resultValue];
+                [self.attStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:self.attStr.string appointStr:resultValue];
             }
         }
     } else {
@@ -566,10 +566,10 @@
         
                     if ([atKey isEqualToString:UserManager.userInfo.userUID]) {
                         // @我
-                        [self.translateAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:self.translateAttStr.string appointStr:MultilingualTranslation(@"@我")];
+                        [self.translateAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:self.translateAttStr.string appointStr:MultilingualTranslation(@"@我")];
                     } else if ([atKey isEqualToString:@"-1"]) {
                         // @所有人
-                        [self.translateAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:self.translateAttStr.string appointStr:MultilingualTranslation(@"@所有人")];
+                        [self.translateAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:self.translateAttStr.string appointStr:MultilingualTranslation(@"@所有人")];
                     } else {
                         // @其他用户 显示 @昵称
                         NSString *resultValue;
@@ -580,7 +580,7 @@
                             LingIMFriendModel *friendModel = [IMSDKManager toolCheckMyFriendWith:atKey];
                             resultValue = [NSString stringWithFormat:@"@%@", friendModel ? friendModel.nickname : [atUserDic objectForKeySafe:atKey]];
                         }
-                        [self.translateAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:self.translateAttStr.string appointStr:resultValue];
+                        [self.translateAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:self.translateAttStr.string appointStr:resultValue];
                     }
                 }
                 CGSize translateSize = [YYTextLayout layoutWithContainerSize:CGSizeMake(DScreenWidth - 140, CGFLOAT_MAX) text:self.translateAttStr].textBoundingSize;
@@ -1238,17 +1238,17 @@
             //先设置全部为 66颜色
             [self.attStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, resutlContent.length)];
             if ([_message.backDeleteExt isEqualToString:UserManager.userInfo.userUID]) {
-                [self.attStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[resutlContent rangeOfString:_message.fromNickname]];
+                [self.attStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[resutlContent rangeOfString:_message.fromNickname]];
             } else if ([UserManager.userInfo.userUID isEqualToString:_message.fromID]) {
                 LingIMGroupMemberModel *originMessageUserModel = [IMSDKManager imSdkCheckGroupMemberWith:_message.backDeleteExt groupID:_message.toID];
                 if (originMessageUserModel) {
-                    [self.attStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[resutlContent rangeOfString:originMessageUserModel.showName]];
+                    [self.attStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[resutlContent rangeOfString:originMessageUserModel.showName]];
                 }
             } else {
                 LingIMGroupMemberModel *originMessageUserModel = [IMSDKManager imSdkCheckGroupMemberWith:_message.backDeleteExt groupID:_message.toID];
                 if (originMessageUserModel) {
-                    [self.attStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[resutlContent rangeOfString:_message.fromNickname]];
-                    [self.attStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[resutlContent rangeOfString:originMessageUserModel.showName == nil ? @"" : originMessageUserModel.showName]];
+                    [self.attStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[resutlContent rangeOfString:_message.fromNickname]];
+                    [self.attStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[resutlContent rangeOfString:originMessageUserModel.showName == nil ? @"" : originMessageUserModel.showName]];
                 }
             }
         } else {
@@ -1276,7 +1276,7 @@
             if (_message.chatType == CIMChatType_GroupChat) {
                 LingIMGroupMemberModel *groupMemberModel = [IMSDKManager imSdkCheckGroupMemberWith:_message.fromID groupID:_message.toID];
                 // 用户昵称需变为蓝色
-                [self.attStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[resutlContent rangeOfString:groupMemberModel ? groupMemberModel.showName : _message.fromNickname]];
+                [self.attStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[resutlContent rangeOfString:groupMemberModel ? groupMemberModel.showName : _message.fromNickname]];
             }
         }
         CGSize size = [self.attStr boundingRectWithSize:CGSizeMake(DScreenWidth - 20*2, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size;
@@ -1342,14 +1342,14 @@
             
                 if ([atKey isEqualToString:UserManager.userInfo.userUID]) {
                     // @我
-                    [self.attStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:self.attStr.string appointStr:MultilingualTranslation(@"@我")];
+                    [self.attStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:self.attStr.string appointStr:MultilingualTranslation(@"@我")];
                 } else if ([atKey isEqualToString:@"-1"]) {
                     // @所有人
-                    [self.attStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:self.attStr.string appointStr:MultilingualTranslation(@"@所有人")];
+                    [self.attStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:self.attStr.string appointStr:MultilingualTranslation(@"@所有人")];
                 } else {
                     NSString *resultValue = [NSString stringWithFormat:@"@%@", [atUserDic objectForKey:atKey]];
                     // @昵称
-                    [self.attStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:self.attStr.string appointStr:resultValue];
+                    [self.attStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:self.attStr.string appointStr:resultValue];
                 }
             }
         } else {
@@ -1429,10 +1429,10 @@
                     
                         if ([atKey isEqualToString:UserManager.userInfo.userUID]) {
                             // @我
-                            [self.translateAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:self.translateAttStr.string appointStr:MultilingualTranslation(@"@我")];
+                            [self.translateAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:self.translateAttStr.string appointStr:MultilingualTranslation(@"@我")];
                         } else if ([atKey isEqualToString:@"-1"]) {
                             // @所有人
-                            [self.translateAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:self.translateAttStr.string appointStr:MultilingualTranslation(@"@所有人")];
+                            [self.translateAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:self.translateAttStr.string appointStr:MultilingualTranslation(@"@所有人")];
                         } else {
                             // @其他用户 显示 @昵称
                             NSString *resultValue;
@@ -1443,7 +1443,7 @@
                                 LingIMFriendModel *friendModel = [IMSDKManager toolCheckMyFriendWith:atKey];
                                 resultValue = [NSString stringWithFormat:@"@%@", friendModel ? friendModel.nickname : [atUserDic objectForKeySafe:atKey]];
                             }
-                            [self.translateAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:self.translateAttStr.string appointStr:resultValue];
+                            [self.translateAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:self.translateAttStr.string appointStr:resultValue];
                         }
                     }
                     CGSize translateSize = [YYTextLayout layoutWithContainerSize:CGSizeMake(DScreenWidth - 140, CGFLOAT_MAX) text:self.translateAttStr].textBoundingSize;
@@ -1814,8 +1814,8 @@
             serverMsgAttStr = [[NSMutableAttributedString alloc] initWithString:msgContent];
             //全部先设置为 66
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
-            //需要突出的地方设置为 COLOR_81D8CF
-            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:MultilingualTranslation(@"添加好友")]];
+            //需要突出的地方设置为 COLOR_4791FF
+            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:MultilingualTranslation(@"添加好友")]];
         }
             break;
         case IMServerMessage_ServerMsgType_BlackFriendMessage://好友黑名单
@@ -1872,16 +1872,16 @@
             //富文本处理，颜色处理
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
             if (![createModel.uid isEqualToString:UserManager.userInfo.userUID]) {
-                [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberCreateModel ? groupMemberCreateModel.showName : createModel.nick]];
+                [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberCreateModel ? groupMemberCreateModel.showName : createModel.nick]];
             }
             for (UserInfo *obj in invitedMemberArr) {
                 if (![obj.uId isEqualToString:createModel.uid]) {
                     LingIMFriendModel *friendModel = [IMSDKManager toolCheckMyFriendWith:obj.uId];
                     if (friendModel) {
-                        [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:msgContent appointStr:friendModel ? friendModel.showName: obj.uNick];
+                        [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:msgContent appointStr:friendModel ? friendModel.showName: obj.uNick];
                     } else {
                         LingIMGroupMemberModel *memberModel = [IMSDKManager imSdkCheckGroupMemberWith:obj.uId groupID:createModel.gid];
-                        [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:msgContent appointStr:memberModel ? memberModel.showName : obj.uNick];
+                        [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:msgContent appointStr:memberModel ? memberModel.showName : obj.uNick];
                     }
                 }
             }
@@ -1920,9 +1920,9 @@
                         LingIMFriendModel *friendModel = [IMSDKManager toolCheckMyFriendWith:obj.uId];
                         if (friendModel) {
                             [invitedUserNameStr appendFormat:@"“%@”", friendModel ? friendModel.showName: obj.uNick];
-                            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:msgContent appointStr:friendModel ? friendModel.showName: obj.uNick];
+                            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:msgContent appointStr:friendModel ? friendModel.showName: obj.uNick];
                         } else {
-                            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:msgContent appointStr:obj.uNick];
+                            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:msgContent appointStr:obj.uNick];
                         }
                     }
                 }
@@ -1956,17 +1956,17 @@
                 //富文本处理，颜色处理
                 [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
                 if (![inviteModel.uid isEqualToString:UserManager.userInfo.userUID]) {
-                    [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberInviteModel ? groupMemberInviteModel.showName : inviteModel.nick]];
+                    [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberInviteModel ? groupMemberInviteModel.showName : inviteModel.nick]];
                 }
                 for (UserInfo *obj in invitedMemberArr) {
                     if (![obj.uId isEqualToString:UserManager.userInfo.userUID]) {
                         LingIMFriendModel *friendModel = [IMSDKManager toolCheckMyFriendWith:obj.uId];
                         if (friendModel) {
                             [invitedUserNameStr appendFormat:@"“%@”", friendModel ? friendModel.showName: obj.uNick];
-                            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:msgContent appointStr:friendModel ? friendModel.showName : obj.uNick];
+                            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:msgContent appointStr:friendModel ? friendModel.showName : obj.uNick];
                         } else {
                             LingIMGroupMemberModel *memberModel = [IMSDKManager imSdkCheckGroupMemberWith:obj.uId groupID:inviteModel.gid];
-                            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF fullStr:msgContent appointStr:memberModel ? memberModel.showName : obj.uNick];
+                            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF fullStr:msgContent appointStr:memberModel ? memberModel.showName : obj.uNick];
                         }
                     }
                 }
@@ -2020,8 +2020,8 @@
             
             if (![kickmember.uid isEqualToString:UserManager.userInfo.userUID]) {
                 
-                [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberOperateModel ? groupMemberOperateModel.showName : kickmember.operateNick]];
-                [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberKickModel ? groupMemberKickModel.showName : kickmember.nick]];
+                [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberOperateModel ? groupMemberOperateModel.showName : kickmember.operateNick]];
+                [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberKickModel ? groupMemberKickModel.showName : kickmember.nick]];
             }
         }
             break;
@@ -2033,7 +2033,7 @@
             serverMsgAttStr = [[NSMutableAttributedString alloc] initWithString:msgContent];
             
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
-            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : outGroupMember.nick]];
+            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : outGroupMember.nick]];
         }
             break;
         case IMServerMessage_ServerMsgType_TransferOwnerMessage://转让群主
@@ -2043,7 +2043,7 @@
             NSString *msgContent = [NSString stringWithFormat:MultilingualTranslation(@"群主变更为“%@”"),groupMemberModel ? groupMemberModel.showName : groupOwnerTransfer.nick];
             serverMsgAttStr = [[NSMutableAttributedString alloc] initWithString:msgContent];
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
-            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : groupOwnerTransfer.nick]];
+            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : groupOwnerTransfer.nick]];
         }
             break;
         case IMServerMessage_ServerMsgType_EstoppelGroupMessage://告知全部群成员 群禁言 开启/关闭
@@ -2059,7 +2059,7 @@
             }
             serverMsgAttStr = [[NSMutableAttributedString alloc] initWithString:msgContent];
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
-            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:userName]];
+            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:userName]];
         }
             break;
             
@@ -2076,7 +2076,7 @@
             }
             serverMsgAttStr = [[NSMutableAttributedString alloc] initWithString:msgContent];
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
-            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:userName]];
+            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:userName]];
         }
             break;
         case IMServerMessage_ServerMsgType_AdminGroupMessage://变更管理员
@@ -2109,11 +2109,11 @@
             [adminInfoArr enumerateObjectsUsingBlock:^(UserInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 if (![obj.uId isEqualToString:UserManager.userInfo.userUID]) {
                     LingIMGroupMemberModel *groupMemberModel = [IMSDKManager imSdkCheckGroupMemberWith:obj.uId groupID:groupAdmin.gid];
-                    [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : obj.uNick]];
+                    [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : obj.uNick]];
                 }
             }];
             
-            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberOperateModel ? groupMemberOperateModel.showName : groupAdmin.operateNick]];
+            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberOperateModel ? groupMemberOperateModel.showName : groupAdmin.operateNick]];
         }
             break;
         case IMServerMessage_ServerMsgType_NameGroupMessage://群名称修改
@@ -2124,7 +2124,7 @@
             serverMsgAttStr = [[NSMutableAttributedString alloc] initWithString:msgContent];
             //颜色
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
-            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : groupName.nick]];
+            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : groupName.nick]];
         }
             break;
         case IMServerMessage_ServerMsgType_NoticeGroupMessage://群公告设置
@@ -2135,7 +2135,7 @@
             serverMsgAttStr = [[NSMutableAttributedString alloc] initWithString:msgContent];
             //颜色
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
-            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : groupNotice.nick]];
+            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : groupNotice.nick]];
         }
             break;
         case IMServerMessage_ServerMsgType_GroupSingleForbidMessage://群主或管理员 禁言某个群成员
@@ -2167,10 +2167,10 @@
             //富文本颜色
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
             if ([memberBanned.toUid isEqualToString:UserManager.userInfo.userUID]) {
-                [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberFromModel ? groupMemberFromModel.showName : memberBanned.fromNick]];
+                [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberFromModel ? groupMemberFromModel.showName : memberBanned.fromNick]];
             } else {
-                [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberToModel ? groupMemberToModel.showName : memberBanned.toNick]];
-                [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberFromModel ? groupMemberFromModel.showName : memberBanned.fromNick]];
+                [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberToModel ? groupMemberToModel.showName : memberBanned.toNick]];
+                [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberFromModel ? groupMemberFromModel.showName : memberBanned.fromNick]];
             }
         }
             break;
@@ -2181,7 +2181,7 @@
             NSString *msgContent = [NSString stringWithFormat:MultilingualTranslation(@"“%@”解散了该群"), groupMemberModel ? groupMemberModel.showName : groupDissolve.nick];
             serverMsgAttStr = [[NSMutableAttributedString alloc] initWithString:msgContent];
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
-            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : groupDissolve.nick]];
+            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : groupDissolve.nick]];
         }
             break;
         case IMServerMessage_ServerMsgType_InviteJoinGroupNoFriendMessage://邀请好友进群，但是好友不存在，该消息只转发给邀请加入的用户
@@ -2191,7 +2191,7 @@
             NSString *msgContent = [NSString stringWithFormat:MultilingualTranslation(@"“%@”未添加你为好友，无法邀请进入群聊"), groupMemberModel ? groupMemberModel.showName : inviteJoinGroupNoFriend.operateNick];
             serverMsgAttStr = [[NSMutableAttributedString alloc] initWithString:msgContent];
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
-            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : inviteJoinGroupNoFriend.operateNick]];
+            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : inviteJoinGroupNoFriend.operateNick]];
         }
             break;
         case IMServerMessage_ServerMsgType_InviteJoinGroupBlackFriendMessage://邀请好友进群，但是已被拉黑，该消息只转发给邀请加入的用户
@@ -2201,7 +2201,7 @@
             NSString *msgContent = [NSString stringWithFormat:MultilingualTranslation(@"“%@”拒绝加入群聊"), groupMemberModel ? groupMemberModel.showName : inviteJoinGroupBlackFriend.operateNick];
             serverMsgAttStr = [[NSMutableAttributedString alloc] initWithString:msgContent];
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
-            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : inviteJoinGroupBlackFriend.operateNick]];
+            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : inviteJoinGroupBlackFriend.operateNick]];
         }
             break;
         case IMServerMessage_ServerMsgType_AvatarGroupMessage://变更群头像  该消息只转发给在线的所有群成员
@@ -2211,7 +2211,7 @@
             NSString *msgContent = [NSString stringWithFormat:MultilingualTranslation(@"“%@”修改了群头像"), groupMemberModel ? groupMemberModel.showName : avatarGroup.nick];
             serverMsgAttStr = [[NSMutableAttributedString alloc] initWithString:msgContent];
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
-            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : avatarGroup.nick]];
+            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : avatarGroup.nick]];
         }
             break;
             
@@ -2223,7 +2223,7 @@
             serverMsgAttStr = [[NSMutableAttributedString alloc] initWithString:msgContent];
             //颜色
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
-            [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : groupNoticeDel.nick]];
+            [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:groupMemberModel ? groupMemberModel.showName : groupNoticeDel.nick]];
         }
             break;
         case IMServerMessage_ServerMsgType_ScheduleDeleteMessage://消息定时自动删除
@@ -2273,7 +2273,7 @@
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, msgContent.length)];
             if (![messageTimeDelete.userId isEqualToString:UserManager.userInfo.userUID]) {
                 //颜色
-                [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[msgContent rangeOfString:userName]];
+                [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[msgContent rangeOfString:userName]];
             }
             
         }
@@ -2301,7 +2301,7 @@
             [serverMsgAttStr configAttStrLightColor:COLOR_66 darkColor:COLOR_66_DARK range:NSMakeRange(0, groupStatusInfo.length)];
             if (![groupStatus.uid isEqualToString:UserManager.userInfo.userUID]) {
                 //颜色
-                [serverMsgAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[groupStatusInfo rangeOfString:userName]];
+                [serverMsgAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[groupStatusInfo rangeOfString:userName]];
             }
             
         }

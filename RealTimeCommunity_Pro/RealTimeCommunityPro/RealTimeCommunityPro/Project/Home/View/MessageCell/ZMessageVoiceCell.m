@@ -45,7 +45,7 @@
     
     _voiceDuringLbl = [[UILabel alloc] init];
     _voiceDuringLbl.text = @"";
-    _voiceDuringLbl.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    _voiceDuringLbl.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     _voiceDuringLbl.font = FONTN(16);
     _voiceDuringLbl.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:_voiceDuringLbl];
@@ -144,7 +144,7 @@
             make.height.mas_equalTo(DWScale(22) + 9*2);
         }];
         
-        _voiceDuringLbl.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _voiceDuringLbl.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         if (_isAnimation == YES) {
             //[_voicePlayBtn setImage:ImgNamed(@"remsg_icon_voice_msg_play_left") forState:UIControlStateNormal];
             _voicePlayImgView.image = ImgNamed(@"remsg_icon_voice_msg_play_left");

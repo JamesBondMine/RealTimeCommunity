@@ -130,9 +130,9 @@
     CGFloat msgTitleWidth = [MultilingualTranslation(@"消息") widthForFont:FONTN(14)];
     _messageBtn = [[UIButton alloc] init];
     [_messageBtn setTitle:MultilingualTranslation(@"消息") forState:UIControlStateNormal];
-    [_messageBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF] forState:UIControlStateNormal];
+    [_messageBtn setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF] forState:UIControlStateNormal];
     [_messageBtn setImage:ImgNamed(@"remsg_icon_chat_link_message") forState:UIControlStateNormal];
-    _messageBtn.tkThemebackgroundColors = @[[COLOR_81D8CF colorWithAlphaComponent:0.2], [COLOR_81D8CF colorWithAlphaComponent:0.2]];
+    _messageBtn.tkThemebackgroundColors = @[[COLOR_4791FF colorWithAlphaComponent:0.2], [COLOR_4791FF colorWithAlphaComponent:0.2]];
     [_messageBtn rounded:DWScale(4)];
     _messageBtn.titleLabel.font = FONTN(14);
     //_messageBtn.userInteractionEnabled = NO;
@@ -472,7 +472,7 @@
     msgAlertView.lblContent.textAlignment = NSTextAlignmentLeft;
     [msgAlertView.btnSure setTitle:MultilingualTranslation(@"删除") forState:UIControlStateNormal];
     [msgAlertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-    msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     [msgAlertView.btnCancel setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];
     [msgAlertView.btnCancel setTkThemeTitleColor:@[COLOR_66, COLOR_66_DARK] forState:UIControlStateNormal];
     msgAlertView.btnCancel.tkThemebackgroundColors = @[COLOR_F6F6F6, COLOR_F6F6F6_DARK];

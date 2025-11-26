@@ -215,7 +215,7 @@
     
     // 2. 设置填充颜色（主色调）
 //    [attributedString addAttribute:NSForegroundColorAttributeName 
-//                             value:COLOR_81D8CF 
+//                             value:COLOR_4791FF 
 //                             range:fullRange];
     
     // 3. 设置描边效果（负值表示同时显示描边和填充）

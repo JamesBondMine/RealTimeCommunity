@@ -57,7 +57,7 @@
     
     self.navBtnRight.hidden = NO;
     [self.navBtnRight setTitle:MultilingualTranslation(@"新建团队") forState:UIControlStateNormal];
-    [self.navBtnRight setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [self.navBtnRight setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     
     // 上方导航条透明
     self.navView.tkThemebackgroundColors = @[UIColor.clearColor, UIColor.clearColor];

@@ -45,11 +45,11 @@
     NSString *contentText = [NSString stringWithFormat:MultilingualTranslation(@"我已阅读并同意%@和%@"), serveText, privateText];
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:contentText];
     [text configAttStrLightColor:COLOR_99 darkColor:COLOR_99_DARK range:NSMakeRange(0, contentText.length)];
-    [text yy_setTextHighlightRange:[contentText rangeOfString:serveText] color:COLOR_81D8CF backgroundColor:COLOR_CLEAR tapAction:^(UIView * _Nonnull containerView, NSAttributedString * _Nonnull text, NSRange range, CGRect rect) {
+    [text yy_setTextHighlightRange:[contentText rangeOfString:serveText] color:COLOR_4791FF backgroundColor:COLOR_CLEAR tapAction:^(UIView * _Nonnull containerView, NSAttributedString * _Nonnull text, NSRange range, CGRect rect) {
         //服务协议
         [ZTOOL setupServeAgreement];
     }];
-    [text yy_setTextHighlightRange:[contentText rangeOfString:privateText] color:COLOR_81D8CF backgroundColor:COLOR_CLEAR tapAction:^(UIView * _Nonnull containerView, NSAttributedString * _Nonnull text, NSRange range, CGRect rect) {
+    [text yy_setTextHighlightRange:[contentText rangeOfString:privateText] color:COLOR_4791FF backgroundColor:COLOR_CLEAR tapAction:^(UIView * _Nonnull containerView, NSAttributedString * _Nonnull text, NSRange range, CGRect rect) {
         //隐私政策
         [ZTOOL setupPrivePolicy];
     }];

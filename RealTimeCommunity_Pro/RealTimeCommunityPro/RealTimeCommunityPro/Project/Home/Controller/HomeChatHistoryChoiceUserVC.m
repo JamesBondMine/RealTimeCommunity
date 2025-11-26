@@ -189,7 +189,7 @@
     self.navBtnRight.tkThemebackgroundColors = @[COLOR_CCCCCC, COLOR_CCCCCC_DARK];
     if (self.choicedList.count > 0) {
         [self.navBtnRight setTitle:[NSString stringWithFormat:MultilingualTranslation(@"完成(%ld)"),self.choicedList.count] forState:UIControlStateNormal];
-        self.navBtnRight.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        self.navBtnRight.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         self.navBtnRight.enabled = YES;
     }else {
         [self.navBtnRight setTitle:MultilingualTranslation(@"完成") forState:UIControlStateNormal];

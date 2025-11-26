@@ -24,7 +24,7 @@
 #pragma mark - 界面布局
 - (void)setupUI {
     _btnMore = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_btnMore setTitleColor:COLOR_81D8CF forState:UIControlStateNormal];
+    [_btnMore setTitleColor:COLOR_4791FF forState:UIControlStateNormal];
     _btnMore.tkThemebackgroundColors = @[HEXCOLOR(@"EDF4FF"),COLOR_EEEEEE_DARK];
     _btnMore.titleLabel.font = FONTR(12);
     [_btnMore addTarget:self action:@selector(btnMoreClick) forControlEvents:UIControlEventTouchUpInside];

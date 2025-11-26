@@ -9,14 +9,13 @@
 #define ZColorHeader_h
 
 /** 浅色模式 */
+#define COLOR_CLEAR         [UIColor clearColor]
+#define COLORWHITE          HEXCOLOR(@"FFFFFF")
 #define COLOR_00            HEXCOLOR(@"000000")
 #define COLOR_22            HEXCOLOR(@"222222")
 #define COLOR_33            HEXCOLOR(@"333333")
 #define COLOR_66            HEXCOLOR(@"666666")
 #define COLOR_99            HEXCOLOR(@"999999")
-
-#define COLOR_CLEAR         [UIColor clearColor]
-#define COLORWHITE          HEXCOLOR(@"FFFFFF")
 #define COLOR_EDEDED        HEXCOLOR(@"EDEDED")
 #define COLOR_E6E6E6        HEXCOLOR(@"E6E6E6")
 #define COLOR_F4F5F6        HEXCOLOR(@"F4F5F6")
@@ -24,6 +23,7 @@
 #define COLOR_F6F8FA        HEXCOLOR(@"F6F8FA")
 #define COLOR_EAEAEA        HEXCOLOR(@"EAEAEA")
 #define COLOR_F6F6F6        HEXCOLOR(@"F6F6F6")
+#define COLOR_4791FF        HEXCOLOR(@"4791FF")
 #define COLOR_A3C8FF        HEXCOLOR(@"A3C8FF")
 #define COLOR_4069B9        HEXCOLOR(@"4069B9")
 #define COLOR_D1D1D1        HEXCOLOR(@"D1D1D1")
@@ -56,9 +56,7 @@
 #define COLOR_F2F3F5        HEXCOLOR(@"F2F3F5")
 #define COLOR_FFECE5        HEXCOLOR(@"FFECE5")
 #define COLOR_FF4C00        HEXCOLOR(@"FF4C00")
-#define COLOR_81D8CF        HEXCOLOR(@"81D8CF")
-
-
+#define COLOR_4791FF        HEXCOLOR(@"4791FF")
 #define COLOR_D7E6FF        HEXCOLOR(@"D7E6FF")
 #define COLOR_F3F3F3        HEXCOLOR(@"F3F3F3")
 #define COLOR_ECECEC        HEXCOLOR(@"ECECEC")
@@ -80,8 +78,6 @@
 #define COLOR_0848A7        HEXCOLOR(@"0848A7")
 #define COLOR_F81205        HEXCOLOR(@"F81205")
 #define COLOR_E8E8E8        HEXCOLOR(@"E8E8E8")
-
-
 /** 暗黑模式 */
 #define COLOR_CLEAR_DARK        [UIColor clearColor]
 #define COLORWHITE_DARK         HEXCOLOR(@"000000")
@@ -96,8 +92,7 @@
 #define COLOR_555555_DARK       HEXCOLOR(@"555555")
 #define COLOR_F5F6F9_DARK       HEXCOLOR(@"444444")
 #define COLOR_F6F6F6_DARK       HEXCOLOR(@"222222")
-#define COLOR_81D8CF_DARK       HEXCOLOR(@"81D8CF")
-
+#define COLOR_4791FF_DARK       HEXCOLOR(@"4791FF")
 #define COLOR_4E4E4E_DARK       HEXCOLOR(@"4E4E4E")
 #define COLOR_4069B9_DARK       HEXCOLOR(@"4069B9")
 #define COLOR_D1D1D1_DARK       HEXCOLOR(@"D1D1D1")

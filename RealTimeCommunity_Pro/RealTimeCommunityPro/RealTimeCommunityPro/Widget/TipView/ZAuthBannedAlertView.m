@@ -111,7 +111,7 @@
         //申请解封
         _btnSure = [UIButton buttonWithType:UIButtonTypeCustom];
         [_btnSure setTitle:MultilingualTranslation(@"申请解封") forState:UIControlStateNormal];
-        [_btnSure setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+        [_btnSure setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
         [_btnSure setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_EEEEEE],[UIImage ImageForColor:COLOR_EEEEEE_DARK]] forState:UIControlStateSelected];
         [_btnSure setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_EEEEEE],[UIImage ImageForColor:COLOR_EEEEEE_DARK]] forState:UIControlStateHighlighted];
         _btnSure.titleLabel.font = FONTN(12);

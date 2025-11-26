@@ -93,7 +93,7 @@
     _btnSure.layer.masksToBounds = YES;
     [_btnSure setTitle:MultilingualTranslation(@"确定") forState:UIControlStateNormal];
     [_btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE_DARK] forState:UIControlStateNormal];
-    _btnSure.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    _btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     [_btnSure setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateSelected];
     [_btnSure setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
     [_btnSure addTarget:self action:@selector(sureBtnAction) forControlEvents:UIControlEventTouchUpInside];

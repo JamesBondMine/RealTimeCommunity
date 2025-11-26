@@ -101,7 +101,7 @@
         if (![NSString isNil:searchStr]) {
             NSRange rangeName = [userModel.showName rangeOfString:searchStr options:NSCaseInsensitiveSearch];//不区分大小写
             [attStrName yy_setFont:FONTR(16) range:rangeName];
-            [attStrName yy_setColor:COLOR_81D8CF range:rangeName];
+            [attStrName yy_setColor:COLOR_4791FF range:rangeName];
         }
         _lblUserName.attributedText = attStrName;
     }
@@ -147,7 +147,7 @@
         if (![NSString isNil:searchStr]) {
             NSRange rangeName = [groupMemeberModel.showName rangeOfString:searchStr options:NSCaseInsensitiveSearch];//不区分大小写
             [attStrName yy_setFont:FONTR(16) range:rangeName];
-            [attStrName yy_setColor:COLOR_81D8CF range:rangeName];
+            [attStrName yy_setColor:COLOR_4791FF range:rangeName];
         }
         _lblUserName.attributedText = attStrName;
     }

@@ -263,12 +263,12 @@
     [_saveBtn setTitle:MultilingualTranslation(@"保存") forState:UIControlStateNormal];
     [_saveBtn setTitleColor:COLORWHITE forState:UIControlStateNormal];
     _saveBtn.titleLabel.font = FONTB(16);
-    _saveBtn.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    _saveBtn.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     [_saveBtn setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9], [UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateSelected];
     [_saveBtn setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9], [UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
     _saveBtn.layer.cornerRadius = DWScale(6);
     _saveBtn.layer.masksToBounds = NO;
-    _saveBtn.layer.shadowColor = COLOR_81D8CF.CGColor;
+    _saveBtn.layer.shadowColor = COLOR_4791FF.CGColor;
     _saveBtn.layer.shadowOffset = CGSizeMake(0, 3);
     _saveBtn.layer.shadowOpacity = 0.25;
     _saveBtn.layer.shadowRadius = 6;

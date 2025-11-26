@@ -1046,7 +1046,7 @@
                 if (segRange.length < 2) { continue; } // 至少包含 '@' 与末尾空格
                 if (NSMaxRange(segRange) > string.length) { continue; } // 越界保护
                 NSRange highlightRange = NSMakeRange(segRange.location, segRange.length - 1);
-                [string addAttribute:NSForegroundColorAttributeName value:COLOR_81D8CF range:highlightRange];
+                [string addAttribute:NSForegroundColorAttributeName value:COLOR_4791FF range:highlightRange];
             }
         }
         

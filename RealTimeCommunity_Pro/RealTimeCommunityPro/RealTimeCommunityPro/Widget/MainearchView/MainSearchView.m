@@ -32,7 +32,7 @@
     
     UIButton * searchBtn = [[UIButton alloc] init];
     [searchBtn setImage:ImgNamed(@"recon_cim_contacts_search_icon") forState:UIControlStateNormal];
-    searchBtn.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    searchBtn.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     [searchBtn addTarget:self action:@selector(btnSearchClick) forControlEvents:UIControlEventTouchUpInside];
     [searchView addSubview:searchBtn];
     

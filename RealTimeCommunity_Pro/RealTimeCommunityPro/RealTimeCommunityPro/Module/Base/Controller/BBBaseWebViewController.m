@@ -62,7 +62,7 @@ typedef NS_ENUM(NSUInteger, CurrentLoadType) {
 - (void)setProgressView {
     //进度条
     _viewProgress = [[UIProgressView alloc] initWithFrame:CGRectMake(0, DNavStatusBarH, DScreenWidth, 1)];
-    _viewProgress.tkThemeTrackTintColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    _viewProgress.tkThemeTrackTintColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     _viewProgress.tkThemetintColors = @[COLOR_CLEAR, COLOR_CLEAR];
     _viewProgress.hidden = YES;
     [self.view addSubview:_viewProgress];
@@ -351,7 +351,7 @@ typedef NS_ENUM(NSUInteger, CurrentLoadType) {
     msgAlertView.lblContent.textAlignment = NSTextAlignmentLeft;
     [msgAlertView.btnSure setTitle:MultilingualTranslation(@"在浏览器打开") forState:UIControlStateNormal];
     [msgAlertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-    msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    msgAlertView.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     [msgAlertView.btnCancel setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];
     [msgAlertView.btnCancel setTkThemeTitleColor:@[COLOR_33, COLOR_33_DARK] forState:UIControlStateNormal];
     msgAlertView.btnCancel.tkThemebackgroundColors = @[COLOR_F6F6F6, COLOR_F5F6F9_DARK];

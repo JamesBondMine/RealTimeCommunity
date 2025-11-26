@@ -150,9 +150,9 @@
     if (!_randomGenerationButton) {
         _randomGenerationButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_randomGenerationButton setTitle:MultilingualTranslation(@"随机生成") forState:UIControlStateNormal];
-        [_randomGenerationButton setTitleColor:COLOR_81D8CF forState:UIControlStateNormal];
+        [_randomGenerationButton setTitleColor:COLOR_4791FF forState:UIControlStateNormal];
         _randomGenerationButton.titleLabel.font = FONTR(14);
-        _randomGenerationButton.titleLabel.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _randomGenerationButton.titleLabel.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         _randomGenerationButton.contentEdgeInsets = UIEdgeInsetsMake(16, 14, 14, 16);
     }
     return _randomGenerationButton;
@@ -184,7 +184,7 @@
     if (!_topSwitch) {
         _topSwitch = [UISwitch new];
         // 开启颜色
-        _topSwitch.tkThemeonTintColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _topSwitch.tkThemeonTintColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         _topSwitch.tkThemetintColors = @[HEXCOLOR(@"D4D4D4"), HEXCOLOR(@"D4D4D4")];
     }
     return _topSwitch;
@@ -196,7 +196,7 @@
         [_saveButton setTitle:MultilingualTranslation(@"保存") forState:UIControlStateNormal];
         _saveButton.titleLabel.font = FONTM(16);
         _saveButton.titleLabel.tkThemetextColors = @[COLORWHITE, COLORWHITE];
-        _saveButton.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _saveButton.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         _saveButton.enabled = NO;
         _saveButton.alpha = 0.5;
     }

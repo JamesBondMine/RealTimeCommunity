@@ -461,7 +461,7 @@
     // 获取验证码按钮
     _phoneGetVercodeBtn = [[UIButton alloc] init];
     [_phoneGetVercodeBtn setTitle:MultilingualTranslation(@"获取验证码") forState:UIControlStateNormal];
-    [_phoneGetVercodeBtn setTitleColor:COLOR_81D8CF forState:UIControlStateNormal];
+    [_phoneGetVercodeBtn setTitleColor:COLOR_4791FF forState:UIControlStateNormal];
     _phoneGetVercodeBtn.titleLabel.font = FONTN(13);
     [_phoneGetVercodeBtn addTarget:self action:@selector(phoneGetVercodeAction) forControlEvents:UIControlEventTouchUpInside];
     [phoneVercodeBg addSubview:_phoneGetVercodeBtn];
@@ -672,7 +672,7 @@
     // 获取验证码按钮
     _emailGetVercodeBtn = [[UIButton alloc] init];
     [_emailGetVercodeBtn setTitle:MultilingualTranslation(@"获取验证码") forState:UIControlStateNormal];
-    [_emailGetVercodeBtn setTitleColor:COLOR_81D8CF forState:UIControlStateNormal];
+    [_emailGetVercodeBtn setTitleColor:COLOR_4791FF forState:UIControlStateNormal];
     _emailGetVercodeBtn.titleLabel.font = FONTN(13);
     [_emailGetVercodeBtn addTarget:self action:@selector(emailGetVercodeAction) forControlEvents:UIControlEventTouchUpInside];
     [emailVercodeBg addSubview:_emailGetVercodeBtn];
@@ -979,7 +979,7 @@
     [_registerBtn setTitle:MultilingualTranslation(@"注册账号") forState:UIControlStateNormal];
     [_registerBtn setTitleColor:COLORWHITE forState:UIControlStateNormal];
     _registerBtn.titleLabel.font = FONTB(17);
-    _registerBtn.backgroundColor = COLOR_81D8CF;
+    _registerBtn.backgroundColor = COLOR_4791FF;
     _registerBtn.layer.cornerRadius = DWScale(25);
     [_registerBtn addTarget:self action:@selector(registerAction) forControlEvents:UIControlEventTouchUpInside];
     [_registerBtn addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
@@ -1025,7 +1025,7 @@
 - (void)setupToLoginButton {
 //    _toLoginBtn = [[UIButton alloc] init];
 //    [_toLoginBtn setTitle:MultilingualTranslation(@"已有账号？去登录") forState:UIControlStateNormal];
-//    [_toLoginBtn setTitleColor:COLOR_81D8CF forState:UIControlStateNormal];
+//    [_toLoginBtn setTitleColor:COLOR_4791FF forState:UIControlStateNormal];
 //    _toLoginBtn.titleLabel.font = FONTN(14);
 //    [_toLoginBtn addTarget:self action:@selector(toLoginAction) forControlEvents:UIControlEventTouchUpInside];
 //    [_contentScrollView addSubview:_toLoginBtn];
@@ -1225,9 +1225,9 @@
     
     _registerBtn.enabled = enabled;
     if (enabled) {
-        _registerBtn.backgroundColor = COLOR_81D8CF;
+        _registerBtn.backgroundColor = COLOR_4791FF;
     } else {
-        _registerBtn.backgroundColor = [COLOR_81D8CF colorWithAlphaComponent:0.3];
+        _registerBtn.backgroundColor = [COLOR_4791FF colorWithAlphaComponent:0.3];
     }
 }
 
@@ -1458,8 +1458,8 @@
         NSString *privateText = MultilingualTranslation(@"《隐私政策》");
         NSString *contentText = [NSString stringWithFormat:MultilingualTranslation(@"请阅读并同意%@和%@"), serveText, privateText];
         NSMutableAttributedString *attText = [[NSMutableAttributedString alloc] initWithString:contentText];
-        [attText addAttribute:NSForegroundColorAttributeName value:COLOR_81D8CF range:[contentText rangeOfString:serveText]];
-        [attText addAttribute:NSForegroundColorAttributeName value:COLOR_81D8CF range:[contentText rangeOfString:privateText]];
+        [attText addAttribute:NSForegroundColorAttributeName value:COLOR_4791FF range:[contentText rangeOfString:serveText]];
+        [attText addAttribute:NSForegroundColorAttributeName value:COLOR_4791FF range:[contentText rangeOfString:privateText]];
         
         ZAlertTipView *alertView = [ZAlertTipView new];
         alertView.lblTitle.text = MultilingualTranslation(@"提示");

@@ -610,7 +610,7 @@
         
         [viewTip.btnCancel setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];
         [viewTip.btnCancel setTkThemeTitleColor:@[COLORWHITE,COLORWHITE] forState:UIControlStateNormal];
-        viewTip.btnCancel.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+        viewTip.btnCancel.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
         [viewTip.btnCancel setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateSelected];
         [viewTip.btnCancel setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
         viewTip.btnCancel.titleLabel.font = FONTN(17);
@@ -647,7 +647,7 @@
             viewTip.lblContent.text = MultilingualTranslation(@"您是当前群聊的群主，需移交群主权限后才可操作退群。");
             viewTip.btnCancel.tkThemebackgroundColors = @[COLOR_F6F6F6, COLOR_F5F6F9_DARK];
             [viewTip.btnCancel setTkThemeTitleColor:@[COLOR_66, COLOR_66_DARK] forState:UIControlStateNormal];
-            viewTip.btnSure.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+            viewTip.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
             [viewTip.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
             [viewTip.btnSure setTitle:MultilingualTranslation(@"移交群主") forState:UIControlStateNormal];
             viewTip.sureBtnBlock = ^{

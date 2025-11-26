@@ -130,7 +130,7 @@
     [_btnSure setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];
     [_btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE_DARK] forState:UIControlStateNormal];
     _btnSure.titleLabel.font = FONTR(16);
-    [_btnSure setTkThemebackgroundColors:@[COLOR_81D8CF, COLOR_81D8CF_DARK]];
+    [_btnSure setTkThemebackgroundColors:@[COLOR_4791FF, COLOR_4791FF_DARK]];
     _btnSure.layer.cornerRadius = DWScale(14);
     _btnSure.layer.masksToBounds = YES;
     [_btnSure addTarget:self action:@selector(btnSureClick) forControlEvents:UIControlEventTouchUpInside];

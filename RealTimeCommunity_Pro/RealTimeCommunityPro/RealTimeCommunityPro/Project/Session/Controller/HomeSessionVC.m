@@ -713,7 +713,7 @@
                 }];
             }else {
                 //置顶
-                btnTop = [MGSwipeButton buttonWithTitle:MultilingualTranslation(@"置顶") icon:ImgNamed(@"s_top_yes") backgroundColor:COLOR_81D8CF callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
+                btnTop = [MGSwipeButton buttonWithTitle:MultilingualTranslation(@"置顶") icon:ImgNamed(@"s_top_yes") backgroundColor:COLOR_4791FF callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
                     [weakSelf sessionTopWith:model];
                     return NO;
                 }];
@@ -835,7 +835,7 @@
                 }];
             }else {
                 //置顶
-                btnTop = [MGSwipeButton buttonWithTitle:MultilingualTranslation(@"置顶") icon:ImgNamed(@"s_top_yes") backgroundColor:COLOR_81D8CF callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
+                btnTop = [MGSwipeButton buttonWithTitle:MultilingualTranslation(@"置顶") icon:ImgNamed(@"s_top_yes") backgroundColor:COLOR_4791FF callback:^BOOL(MGSwipeTableCell * _Nonnull cell) {
                     [weakSelf sessionTopWith:model];
                     return NO;
                 }];

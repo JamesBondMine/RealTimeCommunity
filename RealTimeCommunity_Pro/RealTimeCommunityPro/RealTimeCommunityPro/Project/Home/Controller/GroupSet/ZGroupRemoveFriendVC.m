@@ -90,7 +90,7 @@
     [self.baseTableView registerClass:[NVFriendListSectionHeaderView class] forHeaderFooterViewReuseIdentifier:NSStringFromClass([NVFriendListSectionHeaderView class])];
     
     SCIndexViewConfiguration *configuration = [SCIndexViewConfiguration configurationWithIndexViewStyle:SCIndexViewStyleDefault];
-    configuration.indexItemSelectedBackgroundColor = COLOR_81D8CF;
+    configuration.indexItemSelectedBackgroundColor = COLOR_4791FF;
     configuration.indexItemsSpace = DWScale(6);
     self.baseTableView.sc_indexViewConfiguration = configuration;
     self.baseTableView.sc_translucentForTableViewInNavigationBar = NO;
@@ -183,7 +183,7 @@
     if (_selectedFriendList.count > 0) {
         [self.navBtnRight setTitle:[NSString stringWithFormat:MultilingualTranslation(@"完成(%ld)"),_selectedFriendList.count] forState:UIControlStateNormal];
         if ((self.reqFriendList.count - _selectedFriendList.count) >= GroupMemberMinValue) {
-            self.navBtnRight.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+            self.navBtnRight.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         }
     } else {
         [self.navBtnRight setTitle:MultilingualTranslation(@"完成") forState:UIControlStateNormal];

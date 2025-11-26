@@ -27,7 +27,7 @@
 
     self.navBtnRight.hidden = NO;
     [self.navBtnRight setTitle:MultilingualTranslation(@"确定") forState:UIControlStateNormal];
-    [self.navBtnRight setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [self.navBtnRight setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     [self.navBtnRight setTkThemebackgroundColors:@[COLORWHITE, COLOR_33]];
     [self.navBtnRight mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.navBtnBack);

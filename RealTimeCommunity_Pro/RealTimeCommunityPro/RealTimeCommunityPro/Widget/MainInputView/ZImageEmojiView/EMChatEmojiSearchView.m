@@ -104,7 +104,7 @@
     
     _moreEmojiBtn = [[UIButton alloc] init];
     [_moreEmojiBtn setTitle:MultilingualTranslation(@"更多表情 >") forState:UIControlStateNormal];
-    [_moreEmojiBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF] forState:UIControlStateNormal];
+    [_moreEmojiBtn setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF] forState:UIControlStateNormal];
     _moreEmojiBtn.titleLabel.font = FONTN(14);
     _moreEmojiBtn.hidden = NO;
     [_moreEmojiBtn addTarget:self action:@selector(moreEmojiClick) forControlEvents:UIControlEventTouchUpInside];

@@ -39,7 +39,7 @@
         [_btnFinish setTitle:MultilingualTranslation(@"完成") forState:UIControlStateNormal];
         _btnFinish.titleLabel.font = FONTR(18);
         [_btnFinish setTkThemeTitleColor:@[COLOR_CCCCCC, COLOR_CCCCCC_DARK] forState:UIControlStateNormal];
-        [_btnFinish setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateSelected];
+        [_btnFinish setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateSelected];
         _btnFinish.selected = NO;
         [_btnFinish addTarget:self action:@selector(navBtnBackClicked) forControlEvents:UIControlEventTouchUpInside];
         [self.navView addSubview:_btnFinish];
@@ -72,7 +72,7 @@
     
     UILabel *lblAdd = [UILabel new];
     lblAdd.text = MultilingualTranslation(@"添加分组");
-    lblAdd.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    lblAdd.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     lblAdd.font = FONTR(16);
     [viewAdd addSubview:lblAdd];
     [lblAdd mas_makeConstraints:^(MASConstraintMaker *make) {

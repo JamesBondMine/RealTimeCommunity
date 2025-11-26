@@ -79,7 +79,7 @@
         if (handleType == 9) {
             //签到
             self.handleTypeLbl.text = MultilingualTranslation(@"签到");
-            self.IntergralLbl.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF];
+            self.IntergralLbl.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF];
             self.IntergralLbl.text = [NSString stringWithFormat:@"+%lld", intergralNum];
         } else if (handleType == 18) {
             //系统扣减

@@ -161,7 +161,7 @@
     
     _btnAdd = [UIButton buttonWithType:UIButtonTypeCustom];
     [_btnAdd setTitle:MultilingualTranslation(@"加入") forState:UIControlStateNormal];
-    [_btnAdd setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [_btnAdd setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     _btnAdd.titleLabel.font = FONTR(16);
     [_btnAdd addTarget:self action:@selector(btnAddClick) forControlEvents:UIControlEventTouchUpInside];
     [_viewMemberBg addSubview:_btnAdd];

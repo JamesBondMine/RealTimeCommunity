@@ -285,7 +285,7 @@
                 //暗黑
                 accessAttributeString  = [[NSMutableAttributedString alloc] initWithString:string attributes:@{
                     NSFontAttributeName:FONTR(16),
-                    NSForegroundColorAttributeName:COLOR_81D8CF,
+                    NSForegroundColorAttributeName:COLOR_4791FF,
                     NSParagraphStyleAttributeName: paragraphStyle,
                 }];
             }
@@ -294,7 +294,7 @@
             default: {
                 accessAttributeString  = [[NSMutableAttributedString alloc] initWithString:string attributes:@{
                     NSFontAttributeName:FONTR(16),
-                    NSForegroundColorAttributeName:COLOR_81D8CF,
+                    NSForegroundColorAttributeName:COLOR_4791FF,
                     NSParagraphStyleAttributeName: paragraphStyle,
                 }];
             }

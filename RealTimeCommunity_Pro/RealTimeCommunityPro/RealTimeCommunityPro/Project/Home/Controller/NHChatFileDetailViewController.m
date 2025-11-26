@@ -358,7 +358,7 @@
 
 - (ZProgressButton *)fileHandleBtn {
     if (!_fileHandleBtn) {
-        _fileHandleBtn = [ZProgressButton crearProgressButtonWithFrame:CGRectMake(0, 0, DWScale(220), DWScale(48)) title:@"" lineWidth:DWScale(48) lineColor:COLOR_81D8CF textColor:COLORWHITE backColor:COLOR_81D8CF isRound:NO];
+        _fileHandleBtn = [ZProgressButton crearProgressButtonWithFrame:CGRectMake(0, 0, DWScale(220), DWScale(48)) title:@"" lineWidth:DWScale(48) lineColor:COLOR_4791FF textColor:COLORWHITE backColor:COLOR_4791FF isRound:NO];
         _fileHandleBtn.titleLabel.font = FONTN(17);
         [_fileHandleBtn addTarget:self action:@selector(fileHandleClick) forControlEvents:UIControlEventTouchUpInside];
     }

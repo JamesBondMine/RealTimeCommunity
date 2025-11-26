@@ -607,7 +607,7 @@ typedef void(^LongPressQRImageViewActionBlock)(UIImage *image);
         [_configureTopButton setTitle:MultilingualTranslation(@"设为置顶") forState:UIControlStateNormal];
         _configureTopButton.titleLabel.font = FONTM(14);
         _configureTopButton.titleLabel.tkThemetextColors = @[COLORWHITE, COLORWHITE];
-        _configureTopButton.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _configureTopButton.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         _configureTopButton.titleEdgeInsets = UIEdgeInsetsMake(6, 16, 6, 12);
     }
     return _configureTopButton;
@@ -806,7 +806,7 @@ typedef void(^LongPressQRImageViewActionBlock)(UIImage *image);
     }
     
     // 2. 设置容器视图的阴影
-    self.configureTopContainerView.layer.shadowColor = COLOR_81D8CF
+    self.configureTopContainerView.layer.shadowColor = COLOR_4791FF
         .CGColor;
     self.configureTopContainerView.layer.shadowOffset = CGSizeMake(4, 4);
     self.configureTopContainerView.layer.shadowOpacity = 0.4;

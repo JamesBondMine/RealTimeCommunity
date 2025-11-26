@@ -60,8 +60,8 @@
         _topStateButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_topStateButton setTitle:MultilingualTranslation(@"已置顶") forState:UIControlStateNormal];
         _topStateButton.titleLabel.font = FONTR(11);
-        [_topStateButton setTitleColor:COLOR_81D8CF forState:UIControlStateNormal];
-        _topStateButton.titleLabel.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        [_topStateButton setTitleColor:COLOR_4791FF forState:UIControlStateNormal];
+        _topStateButton.titleLabel.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         _topStateButton.tkThemebackgroundColors = @[HEXACOLOR(@"4791FF", 0.2), HEXACOLOR(@"4791FF", 0.2)];
         _topStateButton.titleEdgeInsets = UIEdgeInsetsMake(0, 16, 0, 16);
         _topStateButton.userInteractionEnabled = NO;

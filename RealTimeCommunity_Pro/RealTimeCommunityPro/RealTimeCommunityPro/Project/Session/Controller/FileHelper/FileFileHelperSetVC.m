@@ -141,7 +141,7 @@
             
             [msgAlertView.btnCancel setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];
             [msgAlertView.btnCancel setTkThemeTitleColor:@[COLORWHITE,COLORWHITE] forState:UIControlStateNormal];
-            msgAlertView.btnCancel.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+            msgAlertView.btnCancel.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
             [msgAlertView.btnCancel setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateSelected];
             [msgAlertView.btnCancel setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
             [msgAlertView alertShow];

@@ -339,7 +339,7 @@
     self.navBtnRight.tkThemebackgroundColors = @[COLOR_CCCCCC, COLOR_CCCCCC_DARK];
     if (self.selectedList.count > 0) {
         [self.navBtnRight setTitle:[NSString stringWithFormat:MultilingualTranslation(@"完成(%ld)"),self.selectedList.count] forState:UIControlStateNormal];
-        self.navBtnRight.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        self.navBtnRight.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         self.navBtnRight.enabled = YES;
     }else {
         [self.navBtnRight setTitle:MultilingualTranslation(@"完成") forState:UIControlStateNormal];
@@ -475,7 +475,7 @@
 - (void)reloadBtnStateUI {
     if (_selectedList.count > 0) {
         [self.navBtnRight setTitle:[NSString stringWithFormat:MultilingualTranslation(@"完成(%ld)"),_selectedList.count] forState:UIControlStateNormal];
-        self.navBtnRight.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        self.navBtnRight.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         
     }else {
         [self.navBtnRight setTitle:MultilingualTranslation(@"完成") forState:UIControlStateNormal];

@@ -155,7 +155,7 @@
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView {
     NSString *string = MultilingualTranslation(@"快去发送文件吧");
-    NSMutableAttributedString *accessAttributeString  = [[NSMutableAttributedString alloc] initWithString:string attributes:@{NSFontAttributeName:FONTR(16),NSForegroundColorAttributeName:COLOR_81D8CF}];
+    NSMutableAttributedString *accessAttributeString  = [[NSMutableAttributedString alloc] initWithString:string attributes:@{NSFontAttributeName:FONTR(16),NSForegroundColorAttributeName:COLOR_4791FF}];
     return accessAttributeString;
 }
 

@@ -134,7 +134,7 @@
 - (UIView *)tipLineView {
     if (!_tipLineView) {
         _tipLineView = [[UIView alloc] init];
-        _tipLineView.backgroundColor = COLOR_81D8CF;
+        _tipLineView.backgroundColor = COLOR_4791FF;
         [_tipLineView rounded:2];
     }
     return _tipLineView;

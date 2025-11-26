@@ -71,7 +71,7 @@
     _lblMessageTip = [UILabel new];
     _lblMessageTip.hidden = YES;
     _lblMessageTip.text = MultilingualTranslation(@"发消息");
-    _lblMessageTip.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    _lblMessageTip.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     _lblMessageTip.font = FONTR(14);
     [self.view addSubview:_lblMessageTip];
     [_lblMessageTip mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -81,7 +81,7 @@
     
     _btnPass = [UIButton buttonWithType:UIButtonTypeCustom];
     _btnPass.hidden = YES;
-    [_btnPass setBackgroundColor:COLOR_81D8CF];
+    [_btnPass setBackgroundColor:COLOR_4791FF];
     [_btnPass setTitle:MultilingualTranslation(@"通过验证") forState:UIControlStateNormal];
     [_btnPass setTitleColor:COLORWHITE forState:UIControlStateNormal];
     _btnPass.titleLabel.font = FONTR(16);
@@ -97,7 +97,7 @@
     
     _btnAdd = [UIButton buttonWithType:UIButtonTypeCustom];
     _btnAdd.hidden = YES;
-    _btnAdd.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+    _btnAdd.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
     [_btnAdd setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
     [_btnAdd setTitle:MultilingualTranslation(@"添加好友") forState:UIControlStateNormal];
     [_btnAdd setTitleColor:COLORWHITE forState:UIControlStateNormal];

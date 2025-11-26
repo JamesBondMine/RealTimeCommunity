@@ -68,7 +68,7 @@
     _btnCancel.layer.masksToBounds = YES;
     [_btnCancel setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];
     [_btnCancel setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-    _btnCancel.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+    _btnCancel.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
     [_btnCancel setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateSelected];
     [_btnCancel setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
     [_btnCancel addTarget:self action:@selector(cancelBtnAction) forControlEvents:UIControlEventTouchUpInside];

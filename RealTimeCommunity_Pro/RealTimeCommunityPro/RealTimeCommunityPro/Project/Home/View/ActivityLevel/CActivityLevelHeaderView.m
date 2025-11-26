@@ -48,7 +48,7 @@
     [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"RoDINPlus-Bold" size:40] range:NSMakeRange(0, levelContent.length)];//设置字体
     [attributedString addAttribute:NSStrokeColorAttributeName value:COLORWHITE range:NSMakeRange(0, levelContent.length)];// 设置描边颜色为白色
     [attributedString addAttribute:NSStrokeWidthAttributeName value:@(-3) range:NSMakeRange(0, levelContent.length)];//设置描边宽度，负数表示描边和填充同时显示
-    [attributedString addAttribute:NSForegroundColorAttributeName value:COLOR_81D8CF range:NSMakeRange(0, levelContent.length)];//设置填充颜色为蓝色
+    [attributedString addAttribute:NSForegroundColorAttributeName value:COLOR_4791FF range:NSMakeRange(0, levelContent.length)];//设置填充颜色为蓝色
     _levelLbl.attributedText = attributedString;
     [levelBackImgView addSubview:_levelLbl];
     [_levelLbl mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -243,7 +243,7 @@
         [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"DINPro" size:40] range:NSMakeRange(0, levelContent.length)];//设置字体
         [attributedString addAttribute:NSStrokeColorAttributeName value:COLORWHITE range:NSMakeRange(0, levelContent.length)];// 设置描边颜色为白色
         [attributedString addAttribute:NSStrokeWidthAttributeName value:@(-3) range:NSMakeRange(0, levelContent.length)];//设置描边宽度，负数表示描边和填充同时显示
-        [attributedString addAttribute:NSForegroundColorAttributeName value:COLOR_81D8CF range:NSMakeRange(0, levelContent.length)];//设置填充颜色为蓝色
+        [attributedString addAttribute:NSForegroundColorAttributeName value:COLOR_4791FF range:NSMakeRange(0, levelContent.length)];//设置填充颜色为蓝色
         _levelLbl.attributedText = attributedString;
         
         _scoreLbl.text = [NSString stringWithFormat:@"%@%ld", MultilingualTranslation(@"分值: "), (long)_myLevelScroe];

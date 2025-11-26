@@ -112,9 +112,9 @@
     nav.tabBarItem.tkThemeChangeBlock = ^(id  _Nullable itself, NSUInteger themeIndex) {
         UIColor *color = nil;
         if (themeIndex == 0) {
-            color = COLOR_81D8CF;
+            color = COLOR_4791FF;
         } else {
-            color = COLOR_81D8CF_DARK;
+            color = COLOR_4791FF_DARK;
         }
         [(UITabBarItem *)itself setTitleTextAttributes:@{NSForegroundColorAttributeName:color,NSFontAttributeName : FONTR(11)} forState:UIControlStateSelected];
     };

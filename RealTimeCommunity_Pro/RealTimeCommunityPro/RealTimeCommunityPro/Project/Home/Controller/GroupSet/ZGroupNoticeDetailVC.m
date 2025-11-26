@@ -87,7 +87,7 @@
     
     self.editButton.titleLabel.font = FONTM(16);
     
-    [self.editButton setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [self.editButton setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     [self.editButton setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLORWHITE],[UIImage ImageForColor:COLORWHITE_DARK]] forState:UIControlStateNormal];
     
     [self.editButton addTarget:self action:@selector(editNotifyEvent) forControlEvents:UIControlEventTouchUpInside];
@@ -95,7 +95,7 @@
     self.editButton.layer.cornerRadius = DWScale(8);
     self.editButton.layer.masksToBounds = YES;
     self.editButton.layer.borderWidth = DWScale(1);
-    self.editButton.layer.tkThemeborderColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    self.editButton.layer.tkThemeborderColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     
     [self.view addSubview:self.editButton];
     [self.editButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -120,13 +120,13 @@
     }];
     
     self.leadingView = [[UIView alloc] init];
-    self.leadingView.tkThemebackgroundColors = @[[COLOR_81D8CF colorWithAlphaComponent:0.2],[COLOR_81D8CF_DARK colorWithAlphaComponent:0.2]];
+    self.leadingView.tkThemebackgroundColors = @[[COLOR_4791FF colorWithAlphaComponent:0.2],[COLOR_4791FF_DARK colorWithAlphaComponent:0.2]];
     [self.containerView addSubview:self.leadingView];
     
     UILabel *label = [[UILabel alloc] init];
     label.text = MultilingualTranslation(@"置顶");
     label.font = [UIFont systemFontOfSize:11 weight:UIFontWeightRegular];
-    label.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    label.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     [self.leadingView addSubview:label];
     
     [self.leadingView mas_makeConstraints:^(MASConstraintMaker *make) {

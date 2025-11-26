@@ -539,9 +539,9 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     
     self.confirmButton.enabled = isAvailable;
     if (isAvailable) {
-        self.confirmButton.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        self.confirmButton.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     } else {
-        self.confirmButton.tkThemebackgroundColors = @[[COLOR_81D8CF colorWithAlphaComponent:0.3], [COLOR_81D8CF_DARK colorWithAlphaComponent:0.3]];
+        self.confirmButton.tkThemebackgroundColors = @[[COLOR_4791FF colorWithAlphaComponent:0.3], [COLOR_4791FF_DARK colorWithAlphaComponent:0.3]];
     }
 }
 
@@ -706,7 +706,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
         _companyIdBtn = [[UIButton alloc] init];
         [_companyIdBtn setTitle:MultilingualTranslation(@"企业号") forState:UIControlStateNormal];
         [_companyIdBtn setTkThemeTitleColor:@[COLOR_66, COLOR_66_DARK] forState:UIControlStateNormal];
-        [_companyIdBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateSelected];
+        [_companyIdBtn setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateSelected];
         _companyIdBtn.titleLabel.font = FONTN(18);
         _companyIdBtn.selected = YES;
         _companyIdBtn.tag = ServerConfigTypeCompanyId;
@@ -720,7 +720,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
         _ipDomainBtn = [[UIButton alloc] init];
         [_ipDomainBtn setTitle:MultilingualTranslation(@"IP/域名") forState:UIControlStateNormal];
         [_ipDomainBtn setTkThemeTitleColor:@[COLOR_66, COLOR_66_DARK] forState:UIControlStateNormal];
-        [_ipDomainBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateSelected];
+        [_ipDomainBtn setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateSelected];
         _ipDomainBtn.titleLabel.font = FONTN(16);
         _ipDomainBtn.selected = NO;
         _ipDomainBtn.tag = ServerConfigTypeIPDomain;
@@ -732,7 +732,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
 - (UIView *)bottomLine {
     if (!_bottomLine) {
         _bottomLine = [[UIView alloc] init];
-        _bottomLine.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _bottomLine.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     }
     return _bottomLine;
 }
@@ -791,7 +791,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
         _scanButton = [[UIButton alloc] init];
         [_scanButton setTitle:MultilingualTranslation(@"扫一扫加入服务器") forState:UIControlStateNormal];
         [_scanButton setImage:ImgNamed(@"relogimg_icon_sso_scan_reb") forState:UIControlStateNormal];
-        [_scanButton setTitleColor:COLOR_81D8CF forState:UIControlStateNormal];
+        [_scanButton setTitleColor:COLOR_4791FF forState:UIControlStateNormal];
         _scanButton.titleLabel.font = FONTN(14);
         [_scanButton setBtnImageAlignmentType:ButtonImageAlignmentTypeLeft imageSpace:DWScale(10)];
         [_scanButton addTarget:self action:@selector(ssoInpfoScanAction) forControlEvents:UIControlEventTouchUpInside];
@@ -815,7 +815,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
         [_confirmButton setTitle:MultilingualTranslation(@"确定") forState:UIControlStateNormal];
         [_confirmButton setTitleColor:COLORWHITE forState:UIControlStateNormal];
         _confirmButton.enabled = NO;
-        _confirmButton.tkThemebackgroundColors = @[[COLOR_81D8CF colorWithAlphaComponent:0.3], [COLOR_81D8CF_DARK colorWithAlphaComponent:0.3]];
+        _confirmButton.tkThemebackgroundColors = @[[COLOR_4791FF colorWithAlphaComponent:0.3], [COLOR_4791FF_DARK colorWithAlphaComponent:0.3]];
         _confirmButton.titleLabel.font = FONTN(16);
         [_confirmButton rounded:DWScale(12)];
         [_confirmButton addTarget:self action:@selector(confirmAction) forControlEvents:UIControlEventTouchUpInside];

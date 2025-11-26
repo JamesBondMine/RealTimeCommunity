@@ -134,7 +134,7 @@
                 }else {
                     //验证通过，同意对方的好友申请
                     [self.statusButton setTitle:MultilingualTranslation(@"通过验证") forState:UIControlStateNormal];
-                    self.statusButton.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+                    self.statusButton.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
                     [self.statusButton setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
                     [self.statusButton setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
                     [self.statusButton mas_remakeConstraints:^(MASConstraintMaker *make) {

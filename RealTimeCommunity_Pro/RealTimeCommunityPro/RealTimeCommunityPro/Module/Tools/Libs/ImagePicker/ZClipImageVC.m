@@ -107,7 +107,7 @@
     _navBtnRight = [UIButton buttonWithType:UIButtonTypeCustom];
     _navBtnRight.layer.cornerRadius = 12;
     _navBtnRight.layer.masksToBounds = YES;
-    _navBtnRight.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    _navBtnRight.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     [_navBtnRight setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateSelected];
     [_navBtnRight setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
     [_navBtnRight setTitle:MultilingualTranslation(@"完成") forState:UIControlStateNormal];

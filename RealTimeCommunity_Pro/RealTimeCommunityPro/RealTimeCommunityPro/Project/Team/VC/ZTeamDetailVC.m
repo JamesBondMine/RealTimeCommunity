@@ -55,7 +55,7 @@
     } else {
         self.navBtnRight.userInteractionEnabled = YES;
         [self.navBtnRight setTitle:MultilingualTranslation(@"设置默认") forState:UIControlStateNormal];
-        [self.navBtnRight setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+        [self.navBtnRight setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     }
 }
 
@@ -163,7 +163,7 @@
     [btnShare setTitle:MultilingualTranslation(@"分享") forState:UIControlStateNormal];
     [btnShare setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
     btnShare.titleLabel.font = FONTR(14);
-    [btnShare setTkThemebackgroundColors:@[COLOR_81D8CF, COLOR_81D8CF_DARK]];
+    [btnShare setTkThemebackgroundColors:@[COLOR_4791FF, COLOR_4791FF_DARK]];
     [btnShare addTarget:self action:@selector(btnShareClick) forControlEvents:UIControlEventTouchUpInside];
     [btnShare rounded: DWScale(9)];
     [viewTeamCenter addSubview:btnShare];
@@ -524,7 +524,7 @@
            alertView.lblContent.textColor = color;
         };
         [alertView.btnSure setTitle:MultilingualTranslation(@"确定") forState:UIControlStateNormal];
-        [alertView.btnSure setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+        [alertView.btnSure setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
         [alertView.btnCancel setTkThemeTitleColor:@[COLOR_33, COLOR_33_DARK] forState:UIControlStateNormal];
         [alertView alertTipViewSHow];
         alertView.sureBtnBlock = ^{
@@ -574,7 +574,7 @@
             self.navBtnRight.userInteractionEnabled = NO;
         }else {
             [self.navBtnRight setTitle:MultilingualTranslation(@"设置默认") forState:UIControlStateNormal];
-            [self.navBtnRight setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+            [self.navBtnRight setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
             self.navBtnRight.userInteractionEnabled = YES;
         }
     }

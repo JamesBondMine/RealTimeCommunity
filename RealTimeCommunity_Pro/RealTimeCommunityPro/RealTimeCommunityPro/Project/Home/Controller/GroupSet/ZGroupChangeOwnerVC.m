@@ -75,7 +75,7 @@
     [self.baseTableView registerClass:[NVFriendListSectionHeaderView class] forHeaderFooterViewReuseIdentifier:NSStringFromClass([NVFriendListSectionHeaderView class])];
     
     SCIndexViewConfiguration *configuration = [SCIndexViewConfiguration configurationWithIndexViewStyle:SCIndexViewStyleDefault];
-    configuration.indexItemSelectedBackgroundColor = COLOR_81D8CF;
+    configuration.indexItemSelectedBackgroundColor = COLOR_4791FF;
     configuration.indexItemsSpace = DWScale(6);
     self.baseTableView.sc_indexViewConfiguration = configuration;
     self.baseTableView.sc_translucentForTableViewInNavigationBar = NO;

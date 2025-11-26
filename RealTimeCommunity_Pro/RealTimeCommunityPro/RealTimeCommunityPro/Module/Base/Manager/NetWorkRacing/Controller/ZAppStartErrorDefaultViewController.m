@@ -60,7 +60,7 @@
     [relaodButton setTitleColor:COLORWHITE forState:UIControlStateNormal];
     [relaodButton setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateSelected];
     [relaodButton setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
-    relaodButton.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+    relaodButton.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
     relaodButton.titleLabel.font = FONTN(16);
     [relaodButton rounded:DWScale(14)];
     [relaodButton addTarget:self action:@selector(reloadInstallNodeAction) forControlEvents:UIControlEventTouchUpInside];

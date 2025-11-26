@@ -139,7 +139,7 @@
     if (!_singleForwardBtn) {
         _singleForwardBtn = [[UIButton alloc] init];
         [_singleForwardBtn setTitle:MultilingualTranslation(@"逐条转发") forState:UIControlStateNormal];
-        [_singleForwardBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+        [_singleForwardBtn setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
         [_singleForwardBtn setImage:ImgNamed(@"recat_m_multi_item_forward") forState:UIControlStateNormal];
         _singleForwardBtn.tkThemebackgroundColors = @[COLORWHITE, COLOR_33];
         _singleForwardBtn.titleLabel.font = FONTN(12);

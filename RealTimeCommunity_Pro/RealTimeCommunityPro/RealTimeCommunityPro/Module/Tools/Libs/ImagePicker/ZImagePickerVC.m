@@ -593,7 +593,7 @@ typedef void(^ZDownloadAsset) (PHAsset *);
         weakSelf.lblTotalMB.text = [NSString stringWithFormat:MultilingualTranslation(@"共%ld个文件"),IMAGEPICKER.zSelectedAssets.count];
         [weakSelf.navBtnRight setTitle:[NSString stringWithFormat:MultilingualTranslation(@"%ld/%ld发送"),IMAGEPICKER.zSelectedAssets.count,weakSelf.maxSelectNum] forState:UIControlStateNormal];
         if (IMAGEPICKER.zSelectedAssets.count > 0) {
-            [weakSelf.navBtnRight setBackgroundColor:COLOR_81D8CF];
+            [weakSelf.navBtnRight setBackgroundColor:COLOR_4791FF];
         }else {
             [weakSelf.navBtnRight setBackgroundColor:COLOR_99];
         }

@@ -294,7 +294,7 @@
         [_updateBtn setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
         [_updateBtn rounded:DWScale(4)];
         _updateBtn.titleLabel.font = FONTN(14);
-        _updateBtn.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _updateBtn.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         [_updateBtn addTarget:self action:@selector(updateNowAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _updateBtn;

@@ -88,7 +88,7 @@
     
     if(!ZLanguageTOOL.isRTL){
         SCIndexViewConfiguration *configuration = [SCIndexViewConfiguration configurationWithIndexViewStyle:SCIndexViewStyleDefault];
-        configuration.indexItemSelectedBackgroundColor = COLOR_81D8CF;
+        configuration.indexItemSelectedBackgroundColor = COLOR_4791FF;
         self.tkThemeChangeBlock = ^(id  _Nullable itself, NSUInteger themeIndex) {
             if (themeIndex == 0) {
                 configuration.indexItemTextColor = COLOR_66;

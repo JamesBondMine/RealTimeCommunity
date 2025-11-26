@@ -51,7 +51,7 @@
     
     [self.navBtnRight setTitle:MultilingualTranslation(@"新建") forState:UIControlStateNormal];
     [self.navBtnRight setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-    self.navBtnRight.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+    self.navBtnRight.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
     self.navBtnRight.titleLabel.font = FONTM(14);
     [self.navBtnRight rounded:DWScale(12)];
     [self.navBtnRight mas_remakeConstraints:^(MASConstraintMaker *make) {

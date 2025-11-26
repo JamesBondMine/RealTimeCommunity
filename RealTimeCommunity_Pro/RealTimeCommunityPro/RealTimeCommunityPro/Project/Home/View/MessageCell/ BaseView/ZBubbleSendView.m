@@ -28,7 +28,7 @@
     if (_bgFillColor) {
         [_bgFillColor setFill];
     } else {
-        [COLOR_81D8CF setFill];
+        [COLOR_4791FF setFill];
     }
     [bubblePath fill];
     

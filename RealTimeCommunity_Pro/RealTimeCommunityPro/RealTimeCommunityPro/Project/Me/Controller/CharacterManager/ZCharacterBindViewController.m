@@ -74,10 +74,10 @@
 - (void)checkBindBtnAvailable {
     if (self.accountInput.textLength > 0 && self.passwordInput.textLength > 0) {
         self.bindBtn.enabled = YES;
-        self.bindBtn.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK ];
+        self.bindBtn.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK ];
     } else {
         self.bindBtn.enabled = NO;
-        self.bindBtn.tkThemebackgroundColors = @[[COLOR_81D8CF colorWithAlphaComponent:0.3], [COLOR_81D8CF_DARK colorWithAlphaComponent:0.3]];
+        self.bindBtn.tkThemebackgroundColors = @[[COLOR_4791FF colorWithAlphaComponent:0.3], [COLOR_4791FF_DARK colorWithAlphaComponent:0.3]];
     }
 }
 
@@ -194,7 +194,7 @@
         NSString *regisTitleStr = MultilingualTranslation(@"还未拥有账户？ 去注册");
         NSMutableAttributedString *titleAttStr = [[NSMutableAttributedString alloc] initWithString:regisTitleStr];
         [titleAttStr configAttStrLightColor:COLOR_99 darkColor:COLOR_99_DARK range:NSMakeRange(0, regisTitleStr.length)];
-        [titleAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF range:[regisTitleStr rangeOfString:MultilingualTranslation(@"去注册")]];
+        [titleAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF range:[regisTitleStr rangeOfString:MultilingualTranslation(@"去注册")]];
         
         _registerBtn = [[UIButton alloc] init];
         [_registerBtn setAttributedTitle:titleAttStr forState:UIControlStateNormal];
@@ -211,7 +211,7 @@
         [_bindBtn setTitle:MultilingualTranslation(@"提交") forState:UIControlStateNormal];
         [_bindBtn setTitleColor:COLORWHITE forState:UIControlStateNormal];
         _bindBtn.enabled = NO;
-        _bindBtn.tkThemebackgroundColors = @[[COLOR_81D8CF colorWithAlphaComponent:0.3], [COLOR_81D8CF_DARK colorWithAlphaComponent:0.3]];
+        _bindBtn.tkThemebackgroundColors = @[[COLOR_4791FF colorWithAlphaComponent:0.3], [COLOR_4791FF_DARK colorWithAlphaComponent:0.3]];
         [_bindBtn setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateSelected];
         [_bindBtn setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
         [_bindBtn rounded:DWScale(16)];

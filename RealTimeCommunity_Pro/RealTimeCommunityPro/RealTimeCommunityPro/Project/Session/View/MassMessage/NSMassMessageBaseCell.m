@@ -69,7 +69,7 @@
     _btnReceiver = [UIButton buttonWithType:UIButtonTypeCustom];
     [_btnReceiver setTitle:MultilingualTranslation(@"查看列表") forState:UIControlStateNormal];
     _btnReceiver.titleLabel.font = FONTR(12);
-    [_btnReceiver setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [_btnReceiver setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     [_btnReceiver addTarget:self action:@selector(btnReceiverClick) forControlEvents:UIControlEventTouchUpInside];
     [_viewContent addSubview:_btnReceiver];
     [_btnReceiver mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -102,7 +102,7 @@
     _btnSendAgain = [UIButton buttonWithType:UIButtonTypeCustom];
     [_btnSendAgain setTitle:MultilingualTranslation(@"再发一条") forState:UIControlStateNormal];
     [_btnSendAgain setTkThemeTitleColor:@[COLORWHITE, COLORWHITE_DARK] forState:UIControlStateNormal];
-    [_btnSendAgain setTkThemebackgroundColors:@[COLOR_81D8CF, COLOR_81D8CF_DARK]];
+    [_btnSendAgain setTkThemebackgroundColors:@[COLOR_4791FF, COLOR_4791FF_DARK]];
     _btnSendAgain.layer.cornerRadius = DWScale(12);
     _btnSendAgain.layer.masksToBounds = YES;
     [_btnSendAgain addTarget:self action:@selector(btnSendAgainClick) forControlEvents:UIControlEventTouchUpInside];
@@ -158,7 +158,7 @@
     _btnFail = [UIButton buttonWithType:UIButtonTypeCustom];
     [_btnFail setTitle:MultilingualTranslation(@"查看列表") forState:UIControlStateNormal];
     _btnFail.titleLabel.font = FONTR(12);
-    [_btnFail setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [_btnFail setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     [_btnFail addTarget:self action:@selector(btnFailClick) forControlEvents:UIControlEventTouchUpInside];
     [_viewContent addSubview:_btnFail];
     [_btnFail mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -176,7 +176,7 @@
     if (![NSString isNil:messageModel.label]) {
         _lblTarget.text = [NSString stringWithFormat:@" %@ ", messageModel.label];
         _lblTarget.tkThemetextColors = @[COLORWHITE, COLORWHITE_DARK];
-        _lblTarget.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _lblTarget.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     }else {
         _lblTarget.text = MultilingualTranslation(@"未命名标签");
         _lblTarget.tkThemetextColors = @[COLOR_99, COLOR_99_DARK];

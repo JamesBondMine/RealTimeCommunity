@@ -242,7 +242,7 @@
     _btnSave = [UIButton buttonWithType:UIButtonTypeCustom];
     [_btnSave setTitle:MultilingualTranslation(@"保存") forState:UIControlStateNormal];
     [_btnSave setTkThemeTitleColor:@[COLORWHITE, COLORWHITE_DARK] forState:UIControlStateNormal];
-    [_btnSave setTkThemebackgroundColors:@[COLOR_81D8CF, COLOR_81D8CF_DARK]];
+    [_btnSave setTkThemebackgroundColors:@[COLOR_4791FF, COLOR_4791FF_DARK]];
     _btnSave.titleLabel.font = FONTR(17);
     _btnSave.layer.cornerRadius = DWScale(22);
     _btnSave.layer.masksToBounds = YES;

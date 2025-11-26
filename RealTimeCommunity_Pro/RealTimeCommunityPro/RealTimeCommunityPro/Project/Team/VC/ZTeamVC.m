@@ -50,7 +50,7 @@
     self.navTitleStr = MultilingualTranslation(@"团队邀请");
     self.navBtnRight.hidden = NO;
     [self.navBtnRight setTitle:MultilingualTranslation(@"分享默认") forState:UIControlStateNormal];
-    [self.navBtnRight setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [self.navBtnRight setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
 }
 
 - (void)setupUI {
@@ -77,7 +77,7 @@
     self.quickCreateBtn = [UIButton new];
     [self.quickCreateBtn setTitle:MultilingualTranslation(@"一键建群") forState:UIControlStateNormal];
     [self.quickCreateBtn setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-    self.quickCreateBtn.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+    self.quickCreateBtn.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
     self.quickCreateBtn.titleLabel.font = FONTN(14);
     [self.quickCreateBtn rounded:DWScale(8)];
     [self.quickCreateBtn addTarget:self action:@selector(defaultTeamQuickCreateGroupClick) forControlEvents:UIControlEventTouchUpInside];
@@ -216,7 +216,7 @@
            alertView.lblContent.textColor = color;
         };
         [alertView.btnSure setTitle:MultilingualTranslation(@"确定") forState:UIControlStateNormal];
-        [alertView.btnSure setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+        [alertView.btnSure setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
         [alertView.btnCancel setTkThemeTitleColor:@[COLOR_33, COLOR_33_DARK] forState:UIControlStateNormal];
         [alertView alertTipViewSHow];
         alertView.sureBtnBlock = ^{

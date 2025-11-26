@@ -42,7 +42,7 @@
     //新建团队
     _btnCreate = [UIButton buttonWithType:UIButtonTypeCustom];
     [_btnCreate setTitle:MultilingualTranslation(@"新建") forState:UIControlStateNormal];
-    [_btnCreate setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [_btnCreate setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     _btnCreate.titleLabel.font = FONTR(12);
     [_btnCreate addTarget:self action:@selector(btnCreateClick) forControlEvents:UIControlEventTouchUpInside];
     [self.navView addSubview:_btnCreate];
@@ -58,7 +58,7 @@
     _btnEdit = [UIButton buttonWithType:UIButtonTypeCustom];
     [_btnEdit setTitle:MultilingualTranslation(@"编辑") forState:UIControlStateNormal];
     [_btnEdit setTitle:MultilingualTranslation(@"取消") forState:UIControlStateSelected];
-    [_btnEdit setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [_btnEdit setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     _btnEdit.titleLabel.font = FONTR(12);
     [_btnEdit addTarget:self action:@selector(btnEditClick) forControlEvents:UIControlEventTouchUpInside];
     [self.navView addSubview:_btnEdit];
@@ -187,7 +187,7 @@
        alertView.lblContent.textColor = color;
     };
     [alertView.btnSure setTitle:MultilingualTranslation(@"确定") forState:UIControlStateNormal];
-    [alertView.btnSure setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+    [alertView.btnSure setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
     [alertView.btnCancel setTkThemeTitleColor:@[COLOR_33, COLOR_33_DARK] forState:UIControlStateNormal];
     [alertView alertTipViewSHow];
     alertView.sureBtnBlock = ^{

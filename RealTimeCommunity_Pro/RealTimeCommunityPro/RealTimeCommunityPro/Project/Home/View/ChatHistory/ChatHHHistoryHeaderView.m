@@ -78,13 +78,13 @@
     if (userInfoList.count > 0) {
         _userInfoList = userInfoList;
         if (_userInfoList.count == 1) {
-            self.fromTitleLbl.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+            self.fromTitleLbl.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
             ZBaseUserModel *userModel = (ZBaseUserModel *)[_userInfoList firstObject];
             self.avatorImgView.hidden = NO;
             [self.avatorImgView sd_setImageWithURL:[userModel.avatar getImageFullUrl] placeholderImage:DefaultAvatar options:SDWebImageAllowInvalidSSLCertificates];
         }
         if (_userInfoList.count > 1) {
-            self.fromTitleLbl.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+            self.fromTitleLbl.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
             ZBaseUserModel *userModel = (ZBaseUserModel *)[_userInfoList lastObject];
             self.avatorImgView.hidden = NO;
             [self.avatorImgView  sd_setImageWithURL:[userModel.avatar getImageFullUrl] placeholderImage:DefaultAvatar options:SDWebImageAllowInvalidSSLCertificates];
@@ -163,7 +163,7 @@
         _moreNumLbl = [[UILabel alloc] init];
         _moreNumLbl.text = @"+1";
         _moreNumLbl.font = FONTN(12);
-        _moreNumLbl.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _moreNumLbl.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         _moreNumLbl.hidden = YES;
     }
     return _moreNumLbl;
@@ -181,7 +181,7 @@
     if (_resetButton == nil) {
         _resetButton = [[UIButton alloc] init];
         [_resetButton setTitle:MultilingualTranslation(@"重置") forState:UIControlStateNormal];
-        [_resetButton setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+        [_resetButton setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
         [_resetButton addTarget:self action:@selector(resetButtonClick) forControlEvents:UIControlEventTouchUpInside];
         _resetButton.titleLabel.font = FONTN(14);
         _resetButton.hidden = YES;

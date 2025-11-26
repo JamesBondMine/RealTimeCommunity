@@ -69,7 +69,7 @@
         [_networkDetectionSwitchBtn setTitle:MultilingualTranslation(@"开始检测") forState:UIControlStateNormal];
         _networkDetectionSwitchBtn.titleLabel.font = FONTM(16);
         _networkDetectionSwitchBtn.titleLabel.tkThemetextColors = @[COLORWHITE, COLORWHITE];
-        _networkDetectionSwitchBtn.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _networkDetectionSwitchBtn.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         _networkDetectionSwitchBtn.layer.cornerRadius = 8.0;
         _networkDetectionSwitchBtn.layer.masksToBounds = YES;
     }

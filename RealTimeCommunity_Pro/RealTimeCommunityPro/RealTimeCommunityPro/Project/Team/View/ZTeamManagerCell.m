@@ -42,7 +42,7 @@
     _operatorBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_operatorBtn setTitle:MultilingualTranslation(@"默认团队") forState:UIControlStateNormal];
     [_operatorBtn setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-    [_operatorBtn setTkThemebackgroundColors:@[COLOR_81D8CF, COLOR_81D8CF_DARK]];
+    [_operatorBtn setTkThemebackgroundColors:@[COLOR_4791FF, COLOR_4791FF_DARK]];
     _operatorBtn.titleLabel.font = FONTR(10);
     if([ZLanguageTOOL.currentLanguage.languageName_zn isEqualToString:@"简体中文"]||
        [ZLanguageTOOL.currentLanguage.languageName_zn isEqualToString:@"繁体中文"]){
@@ -99,7 +99,7 @@
         NSString *memberNumStr = [NSString stringWithFormat:@"%@%@", numTitleStr, numStr];
         NSMutableAttributedString *memberNumAttStr = [[NSMutableAttributedString alloc] initWithString:memberNumStr];
         [memberNumAttStr configAttStrLightColor:COLOR_33 darkColor:COLOR_33_DARK range:NSMakeRange(0, memberNumStr.length)];
-        [memberNumAttStr configAttStrLightColor:COLOR_81D8CF darkColor:COLOR_81D8CF_DARK range:NSMakeRange(numTitleStr.length, numStr.length)];
+        [memberNumAttStr configAttStrLightColor:COLOR_4791FF darkColor:COLOR_4791FF_DARK range:NSMakeRange(numTitleStr.length, numStr.length)];
         [memberNumAttStr addAttribute:NSFontAttributeName value:FONTN(10) range:NSMakeRange(0, memberNumStr.length)];
         [memberNumAttStr addAttribute:NSFontAttributeName value:FONTN(14) range:NSMakeRange(numTitleStr.length, numStr.length)];
         _teamMemberLbl.attributedText = memberNumAttStr;
@@ -108,12 +108,12 @@
             _operatorBtn.userInteractionEnabled = NO;
             [_operatorBtn setTitle:MultilingualTranslation(@"默认团队") forState:UIControlStateNormal];
             [_operatorBtn setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
-            [_operatorBtn setTkThemebackgroundColors:@[COLOR_81D8CF, COLOR_81D8CF_DARK]];
+            [_operatorBtn setTkThemebackgroundColors:@[COLOR_4791FF, COLOR_4791FF_DARK]];
         } else {
             if (managerType == ZTeamManagerTypeNone) {
                 _operatorBtn.userInteractionEnabled = YES;
                 [_operatorBtn setTitle:MultilingualTranslation(@"选为默认") forState:UIControlStateNormal];
-                [_operatorBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+                [_operatorBtn setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
                 [_operatorBtn setTkThemebackgroundColors:@[COLOR_F6F6F6, COLOR_F6F6F6_DARK]];
             } else {
                 _operatorBtn.userInteractionEnabled = YES;

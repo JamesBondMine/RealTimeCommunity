@@ -154,8 +154,8 @@
     if (_kickOutButton == nil) {
         _kickOutButton = [[UIButton alloc] init];
         [_kickOutButton setTitle:MultilingualTranslation(@"踢出团队") forState:UIControlStateNormal];
-        [_kickOutButton setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
-        _kickOutButton.tkThemebackgroundColors = @[[COLOR_81D8CF colorWithAlphaComponent:0.1], [COLOR_81D8CF_DARK colorWithAlphaComponent:0.1]];
+        [_kickOutButton setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
+        _kickOutButton.tkThemebackgroundColors = @[[COLOR_4791FF colorWithAlphaComponent:0.1], [COLOR_4791FF_DARK colorWithAlphaComponent:0.1]];
         [_kickOutButton addTarget:self action:@selector(kickOutEvent) forControlEvents:UIControlEventTouchUpInside];
         [_kickOutButton rounded:DWScale(18)];
         _kickOutButton.titleLabel.font = FONTR(14);

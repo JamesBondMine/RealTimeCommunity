@@ -169,14 +169,14 @@
             {
                 //暗黑
                 weakSelf.viewCategory.titleColor = COLOR_99;
-                weakSelf.viewCategory.titleSelectedColor = COLOR_81D8CF;
+                weakSelf.viewCategory.titleSelectedColor = COLOR_4791FF;
             }
                 break;
                 
             default:
             {
                 weakSelf.viewCategory.titleColor = COLOR_99;
-                weakSelf.viewCategory.titleSelectedColor = COLOR_81D8CF;
+                weakSelf.viewCategory.titleSelectedColor = COLOR_4791FF;
             }
                 break;
         }

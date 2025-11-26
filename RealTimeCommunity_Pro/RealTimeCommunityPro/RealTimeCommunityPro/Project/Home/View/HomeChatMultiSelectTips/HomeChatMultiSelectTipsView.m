@@ -91,7 +91,7 @@
     [btnSend setTitle:MultilingualTranslation(@"发送") forState:UIControlStateNormal];
     [btnSend setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
     btnSend.titleLabel.font = FONTR(17);
-    btnSend.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+    btnSend.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     [btnSend setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateSelected];
     [btnSend setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
     btnSend.layer.cornerRadius = DWScale(22);

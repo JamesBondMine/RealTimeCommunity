@@ -74,7 +74,7 @@
         _packageAddBtn.enabled = NO;
     } else {
         [_packageAddBtn setTitle:MultilingualTranslation(@"添加") forState:UIControlStateNormal];
-        _packageAddBtn.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+        _packageAddBtn.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
         _packageAddBtn.enabled = YES;
     }
 }

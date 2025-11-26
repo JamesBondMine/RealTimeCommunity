@@ -66,7 +66,7 @@
     _btnOpen.titleLabel.font = FONTR(17);
     _btnOpen.layer.cornerRadius = DWScale(22);
     _btnOpen.layer.masksToBounds = YES;
-    [_btnOpen setBackgroundColor:COLOR_81D8CF];
+    [_btnOpen setBackgroundColor:COLOR_4791FF];
     [_btnOpen setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
     [_btnOpen addTarget:self action:@selector(btnOpenClick) forControlEvents:UIControlEventTouchUpInside];
     [_viewBg addSubview:_btnOpen];

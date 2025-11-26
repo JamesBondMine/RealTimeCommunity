@@ -89,8 +89,8 @@
     // 使用基类提供的右侧按钮
     self.navBtnRight.hidden = NO;
     [self.navBtnRight setTitle:MultilingualTranslation(@"完成") forState:UIControlStateNormal];
-    [self.navBtnRight setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
-    [self.navBtnRight setTkThemeTitleColor:@[[COLOR_81D8CF colorWithAlphaComponent:0.5], [COLOR_81D8CF_DARK colorWithAlphaComponent:0.5]] forState:UIControlStateDisabled];
+    [self.navBtnRight setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
+    [self.navBtnRight setTkThemeTitleColor:@[[COLOR_4791FF colorWithAlphaComponent:0.5], [COLOR_4791FF_DARK colorWithAlphaComponent:0.5]] forState:UIControlStateDisabled];
     self.navBtnRight.titleLabel.font = FONTB(16);
     self.navBtnRight.enabled = NO; // 初始禁用，等输入后启用
     
@@ -146,7 +146,7 @@
     // 配置测试连接按钮
     if (self.checkBtn) {
         [self.checkBtn setTitle:MultilingualTranslation(@"测试连接") forState:UIControlStateNormal];
-        [self.checkBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateNormal];
+        [self.checkBtn setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateNormal];
         self.checkBtn.titleLabel.font = FONTR(16);
         [self.checkBtn addTarget:self action:@selector(checkBtnClick) forControlEvents:UIControlEventTouchUpInside];
     }

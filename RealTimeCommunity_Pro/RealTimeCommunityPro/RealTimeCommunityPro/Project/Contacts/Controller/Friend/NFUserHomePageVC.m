@@ -151,7 +151,7 @@
     [_btnAddFriend setTitle:MultilingualTranslation(@"添加好友") forState:UIControlStateNormal];
     [_btnAddFriend setTitleColor:COLORWHITE forState:UIControlStateNormal];
     _btnAddFriend.titleLabel.font = FONTR(16);
-    _btnAddFriend.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF];
+    _btnAddFriend.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF];
     [_btnAddFriend setTkThemeBackgroundImage:@[[UIImage ImageForColor:COLOR_4069B9],[UIImage ImageForColor:COLOR_4069B9_DARK]] forState:UIControlStateHighlighted];
     [_btnAddFriend addTarget:self action:@selector(btnAddFriendClick) forControlEvents:UIControlEventTouchUpInside];
     _btnAddFriend.layer.cornerRadius = DWScale(14);
@@ -685,7 +685,7 @@
         _btnSingleMessage.hidden = YES;
         [_btnSingleMessage setImage:ImgNamed(@"recon_single_call_text") forState:UIControlStateNormal];
         [_btnSingleMessage setTitle:MultilingualTranslation(@"发消息") forState:UIControlStateNormal];
-        _btnSingleMessage.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _btnSingleMessage.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         [_btnSingleMessage rounded:DWScale(14)];
         [_btnSingleMessage setBtnImageAlignmentType:ButtonImageAlignmentTypeLeft imageSpace:10];
         [_btnSingleMessage addTarget:self action:@selector(btnMessageClick) forControlEvents:UIControlEventTouchUpInside];
@@ -708,7 +708,7 @@
         _lblAudioTip = [UILabel new];
         _lblAudioTip.hidden = YES;
         _lblAudioTip.text = MultilingualTranslation(@"语音通话");
-        _lblAudioTip.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _lblAudioTip.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         if ([ZLanguageTOOL.currentLanguage.languageName_zn isEqualToString:@"俄语"]) {
             _lblAudioTip.font = FONTR(10);
         } else {
@@ -733,7 +733,7 @@
         _lblMessageTip = [UILabel new];
         _lblMessageTip.hidden = YES;
         _lblMessageTip.text = MultilingualTranslation(@"发消息");
-        _lblMessageTip.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _lblMessageTip.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         if ([ZLanguageTOOL.currentLanguage.languageName_zn isEqualToString:@"俄语"]) {
             _lblMessageTip.font = FONTR(10);
         } else {
@@ -758,7 +758,7 @@
         _lblVideoTip = [UILabel new];
         _lblVideoTip.hidden = YES;
         _lblVideoTip.text = MultilingualTranslation(@"视频通话");
-        _lblVideoTip.tkThemetextColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _lblVideoTip.tkThemetextColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
         if ([ZLanguageTOOL.currentLanguage.languageName_zn isEqualToString:@"俄语"]) {
             _lblVideoTip.font = FONTR(10);
         } else {

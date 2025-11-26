@@ -94,7 +94,7 @@
             menuBtn.tag = 100 + i;
             [menuBtn setTitle:[NSString getAuthContetnWithAuthType:authType] forState:UIControlStateNormal];
             [menuBtn setTkThemeTitleColor:@[COLOR_66, COLOR_66_DARK] forState:UIControlStateNormal];
-            [menuBtn setTkThemeTitleColor:@[COLOR_81D8CF, COLOR_81D8CF_DARK] forState:UIControlStateSelected];
+            [menuBtn setTkThemeTitleColor:@[COLOR_4791FF, COLOR_4791FF_DARK] forState:UIControlStateSelected];
             [menuBtn addTarget:self action:@selector(mencClickAction:) forControlEvents:UIControlEventTouchUpInside];
             [self addSubview:menuBtn];
             
@@ -236,7 +236,7 @@
 - (UIView *)bottomLine {
     if (!_bottomLine) {
         _bottomLine = [[UIView alloc] init];
-        _bottomLine.tkThemebackgroundColors = @[COLOR_81D8CF, COLOR_81D8CF_DARK];
+        _bottomLine.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
     }
     return _bottomLine;
 }

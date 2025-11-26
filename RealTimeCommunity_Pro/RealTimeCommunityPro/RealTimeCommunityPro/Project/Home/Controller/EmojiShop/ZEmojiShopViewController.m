@@ -62,7 +62,7 @@
     };
     //指示器
     NJCategoryIndicatorLineView *lineView = [[NJCategoryIndicatorLineView alloc] init];
-    lineView.indicatorColor = COLOR_81D8CF;
+    lineView.indicatorColor = COLOR_4791FF;
     lineView.componentPosition = JXCategoryComponentPosition_Bottom;
     lineView.verticalMargin = 5;
     _viewCategory.indicators = @[lineView];
