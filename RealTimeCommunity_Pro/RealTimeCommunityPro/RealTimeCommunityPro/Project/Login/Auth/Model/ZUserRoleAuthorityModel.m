@@ -15,7 +15,10 @@
 @implementation ZUserRoleAuthorityModel
 
 + (NSDictionary *)mj_replacedKeyFromPropertyName {
-    return @{ @"translationSwitch": @"translation_switch" };
+    return @{
+        @"translationSwitch": @"translation_switch",
+        @"groupMsgPinning": @"group_msg_pinning"
+    };
 }
 // 映射完成后补齐默认值，避免使用处解包为 nil
 - (void)mj_keyValuesDidFinishConvertingToObject {
@@ -57,6 +60,12 @@
         self.translationSwitch = m;
     } else if ([NSString isNil:self.translationSwitch.configValue]) {
         self.translationSwitch.configValue = @"true";
+    }
+    // 群消息置顶开关：默认关闭
+    if (!self.groupMsgPinning) {
+        self.groupMsgPinning = DefaultAuth();
+    } else if ([NSString isNil:self.groupMsgPinning.configValue]) {
+        self.groupMsgPinning.configValue = @"false";
     }
 }
 

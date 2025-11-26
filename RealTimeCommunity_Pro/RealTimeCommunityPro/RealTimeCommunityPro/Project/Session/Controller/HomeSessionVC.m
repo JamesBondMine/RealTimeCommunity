@@ -202,7 +202,7 @@
         // 创建小程序WebVC
         NSMiniAppWebVC *vc = [[NSMiniAppWebVC alloc] init];
         vc.webViewUrl = miniAppModel.qaAppUrl;
-        vc.webType = ZMiniAppWebVCTypeMiniApp;
+        vc.webType = NSMiniAppWebVCTypeMiniApp;
         vc.floatMiniAppModel = floadModel;
         
         // 跳转

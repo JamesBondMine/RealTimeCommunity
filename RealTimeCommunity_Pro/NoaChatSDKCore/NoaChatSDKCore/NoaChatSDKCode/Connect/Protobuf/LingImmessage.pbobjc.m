@@ -57,6 +57,7 @@ GPBObjCClassDeclaration(GroupAllForbidMessage);
 GPBObjCClassDeclaration(GroupCloseSearchUserMessage);
 GPBObjCClassDeclaration(GroupHairMessage);
 GPBObjCClassDeclaration(GroupInfo);
+GPBObjCClassDeclaration(GroupMessageTop);
 GPBObjCClassDeclaration(GroupNotice);
 GPBObjCClassDeclaration(GroupShock);
 GPBObjCClassDeclaration(GroupShockMessage);
@@ -3908,6 +3909,7 @@ typedef struct RedPacketMessage__storage_ {
 @dynamic paymentNoticeMessage;
 @dynamic receiveRedPacketMessage;
 @dynamic groupAllForbidMessage;
+@dynamic groupMessageTop;
 @dynamic toSource;
 
 typedef struct IMServerMessage__storage_ {
@@ -3976,6 +3978,7 @@ typedef struct IMServerMessage__storage_ {
   PaymentNoticeMessage *paymentNoticeMessage;
   ReceiveRedPacketMessage *receiveRedPacketMessage;
   GroupAllForbidMessage *groupAllForbidMessage;
+  GroupMessageTop *groupMessageTop;
   int64_t sendTime;
 } IMServerMessage__storage_;
 
@@ -4570,6 +4573,15 @@ typedef struct IMServerMessage__storage_ {
         .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
         .dataType = GPBDataTypeMessage,
       },
+      {
+        .name = "groupMessageTop",
+        .dataTypeSpecific.clazz = GPBObjCClass(GroupMessageTop),
+        .number = IMServerMessage_FieldNumber_GroupMessageTop,
+        .hasIndex = -1,
+        .offset = (uint32_t)offsetof(IMServerMessage__storage_, groupMessageTop),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
+        .dataType = GPBDataTypeMessage,
+      },
     };
     GPBDescriptor *localDescriptor =
         [GPBDescriptor allocDescriptorForClass:[IMServerMessage class]
@@ -4587,11 +4599,11 @@ typedef struct IMServerMessage__storage_ {
                    firstHasIndex:-1];
 #if !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
     static const char *extraTextFormatInfo =
-        "8\010\022\000\t\023\000\n\027\000\013\017\000\014\020\000\r\017\000\016\024\000\017\022\000\020\022\000\021\020\000\022\021\000\023\031\000\024\031\000"
+        "9\010\022\000\t\023\000\n\027\000\013\017\000\014\020\000\r\017\000\016\024\000\017\022\000\020\022\000\021\020\000\022\021\000\023\031\000\024\031\000"
         "\025\023\000\026\033\000\030\023\000\031\024\000\032\020\000\033\020\000\034\r\000\035\021\000\036\016\000\037\026\000 \021\000\"\016\000#\020\000$"
         "\r\000%\017\000&\030\000\'\r\000(\020\000*\013\000+\023\000.\021\000/\020\0000\013\0002\022\0003\022\0004\036\0005\022"
         "\0006\016\0007\025\0008\020\0009\020\000:\022\000;\023\000<\026\000=\031\000>\025\000\?\037\001\000A\037\002\000B\023\000C"
-        "\037\000D\024\000E\027\000F\025\000";
+        "\037\000D\024\000E\027\000F\025\000G\017\000";
     [localDescriptor setupExtraTextInfo:extraTextFormatInfo];
 #endif  // !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
     #if defined(DEBUG) && DEBUG
@@ -4662,7 +4674,7 @@ GPBEnumDescriptor *IMServerMessage_ServerMsgType_EnumDescriptor(void) {
         "entMessage\000UserGroupUserEventMessage\000Dia"
         "logReadTagChangeEventMessage\000PaymentNoti"
         "ceMessage\000ReceiveRedPacketMessage\000GroupA"
-        "llForbidMessage\000";
+        "llForbidMessage\000GroupMessageTop\000";
     static const int32_t values[] = {
         IMServerMessage_ServerMsgType_NoticeMessage,
         IMServerMessage_ServerMsgType_RegisterWelcomeMessage,
@@ -4733,8 +4745,9 @@ GPBEnumDescriptor *IMServerMessage_ServerMsgType_EnumDescriptor(void) {
         IMServerMessage_ServerMsgType_PaymentNoticeMessage,
         IMServerMessage_ServerMsgType_ReceiveRedPacketMessage,
         IMServerMessage_ServerMsgType_GroupAllForbidMessage,
+        IMServerMessage_ServerMsgType_GroupMessageTop,
     };
-    static const char *extraTextFormatInfo = "E\000\r\000\001\026\000\002\016\000\003\013\000\004\r\000\005\020\000\006\032\000\007\037\001\000\010\021\000\t\023\000\n\024\000\013\020\000\014\020\000\r\021\000\016\022\000\017\022\000\020\023\000\021\027\000\022\017\000\023\020\000\024\017\000\025\024\000\026\024\000\027\022\000\030\025\000\031\020\000\032\021\000\033\022\000\034\026\000\035\031\000\036\031\000\037\024\000 \020\000!\022\000\"\016\000#\017\000$\030\000%\030\000&\023\000\'\023\000(\026\000)\021\000*\036\000+\022\000,\025\000-\020\000.\032\000/\025\0000\022\0001\037\002\0002\024\0003\037\006\0004\033\0005\021\0006\020\0007\020\0008\020\0009\023\000:\020\000;\013\000<\022\000=\016\000>\t\000?\026\000@\031\000A\037\000B\024\000C\027\000D\025\000";
+    static const char *extraTextFormatInfo = "F\000\r\000\001\026\000\002\016\000\003\013\000\004\r\000\005\020\000\006\032\000\007\037\001\000\010\021\000\t\023\000\n\024\000\013\020\000\014\020\000\r\021\000\016\022\000\017\022\000\020\023\000\021\027\000\022\017\000\023\020\000\024\017\000\025\024\000\026\024\000\027\022\000\030\025\000\031\020\000\032\021\000\033\022\000\034\026\000\035\031\000\036\031\000\037\024\000 \020\000!\022\000\"\016\000#\017\000$\030\000%\030\000&\023\000\'\023\000(\026\000)\021\000*\036\000+\022\000,\025\000-\020\000.\032\000/\025\0000\022\0001\037\002\0002\024\0003\037\006\0004\033\0005\021\0006\020\0007\020\0008\020\0009\023\000:\020\000;\013\000<\022\000=\016\000>\t\000?\026\000@\031\000A\037\000B\024\000C\027\000D\025\000E\017\000";
     GPBEnumDescriptor *worker =
         [GPBEnumDescriptor allocDescriptorForName:GPBNSStringifySymbol(IMServerMessage_ServerMsgType)
                                        valueNames:valueNames
@@ -4821,6 +4834,7 @@ BOOL IMServerMessage_ServerMsgType_IsValidValue(int32_t value__) {
     case IMServerMessage_ServerMsgType_PaymentNoticeMessage:
     case IMServerMessage_ServerMsgType_ReceiveRedPacketMessage:
     case IMServerMessage_ServerMsgType_GroupAllForbidMessage:
+    case IMServerMessage_ServerMsgType_GroupMessageTop:
       return YES;
     default:
       return NO;
@@ -7785,6 +7799,95 @@ typedef struct NoticeGroupMessage__storage_ {
         "\003\005\010\000\006\n\000\t\002\247\000";
     [localDescriptor setupExtraTextInfo:extraTextFormatInfo];
 #endif  // !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
+    #if defined(DEBUG) && DEBUG
+      NSAssert(descriptor == nil, @"Startup recursed!");
+    #endif  // DEBUG
+    descriptor = localDescriptor;
+  }
+  return descriptor;
+}
+
+@end
+
+#pragma mark - GroupMessageTop
+
+@implementation GroupMessageTop
+
+@dynamic uid;
+@dynamic nick;
+@dynamic gid;
+@dynamic sMsgId;
+@dynamic type;
+
+typedef struct GroupMessageTop__storage_ {
+  uint32_t _has_storage_[1];
+  int32_t type;
+  NSString *uid;
+  NSString *nick;
+  NSString *gid;
+  NSString *sMsgId;
+} GroupMessageTop__storage_;
+
+// This method is threadsafe because it is initially called
+// in +initialize for each subclass.
++ (GPBDescriptor *)descriptor {
+  static GPBDescriptor *descriptor = nil;
+  if (!descriptor) {
+    static GPBMessageFieldDescription fields[] = {
+      {
+        .name = "uid",
+        .dataTypeSpecific.clazz = Nil,
+        .number = GroupMessageTop_FieldNumber_Uid,
+        .hasIndex = 0,
+        .offset = (uint32_t)offsetof(GroupMessageTop__storage_, uid),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "nick",
+        .dataTypeSpecific.clazz = Nil,
+        .number = GroupMessageTop_FieldNumber_Nick,
+        .hasIndex = 1,
+        .offset = (uint32_t)offsetof(GroupMessageTop__storage_, nick),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "gid",
+        .dataTypeSpecific.clazz = Nil,
+        .number = GroupMessageTop_FieldNumber_Gid,
+        .hasIndex = 2,
+        .offset = (uint32_t)offsetof(GroupMessageTop__storage_, gid),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "sMsgId",
+        .dataTypeSpecific.clazz = Nil,
+        .number = GroupMessageTop_FieldNumber_SMsgId,
+        .hasIndex = 3,
+        .offset = (uint32_t)offsetof(GroupMessageTop__storage_, sMsgId),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "type",
+        .dataTypeSpecific.clazz = Nil,
+        .number = GroupMessageTop_FieldNumber_Type,
+        .hasIndex = 4,
+        .offset = (uint32_t)offsetof(GroupMessageTop__storage_, type),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeInt32,
+      },
+    };
+    GPBDescriptor *localDescriptor =
+        [GPBDescriptor allocDescriptorForClass:[GroupMessageTop class]
+                                     rootClass:[LingImmessageRoot class]
+                                          file:LingImmessageRoot_FileDescriptor()
+                                        fields:fields
+                                    fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
+                                   storageSize:sizeof(GroupMessageTop__storage_)
+                                         flags:(GPBDescriptorInitializationFlags)(GPBDescriptorInitializationFlag_UsesClassRefs | GPBDescriptorInitializationFlag_Proto3OptionalKnown)];
     #if defined(DEBUG) && DEBUG
       NSAssert(descriptor == nil, @"Startup recursed!");
     #endif  // DEBUG

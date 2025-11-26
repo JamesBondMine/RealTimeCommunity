@@ -446,61 +446,61 @@
             break;
         case IMServerMessage_ServerMsgType_KickGroupMessage://群成员被踢
         {
-            KickGroupMessage *kickmember = serverMessage.kickGroupMessage;
-            if (kickmember.informUidArray != nil) {
-                if (kickmember.informUidArray.count == 0) {
-                    if ([kickmember.uid isEqualToString:UserManager.userInfo.userUID]) {
-                        sessionAttStr = [[NSMutableAttributedString alloc] initWithString:MultilingualTranslation(@"你已被踢出群聊")];
-                    }else {
-                        //被踢成员
-                        LingIMGroupMemberModel *groupMemberKickModel = [IMSDKManager imSdkCheckGroupMemberWith:kickmember.uid groupID:kickmember.gid];
-                        //操作人
-                        LingIMGroupMemberModel *groupMemberOperateModel = [IMSDKManager imSdkCheckGroupMemberWith:kickmember.operateUid groupID:kickmember.gid];
-                        sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”将“%@”踢出群聊"),groupMemberOperateModel ? groupMemberOperateModel.showName : kickmember.operateNick, groupMemberKickModel ? groupMemberKickModel.showName : kickmember.nick]];
-                    }
-                } else {
-                    if ([kickmember.informUidArray containsObject:UserManager.userInfo.userUID]) {
-                        if ([kickmember.uid isEqualToString:UserManager.userInfo.userUID]) {
-                            sessionAttStr = [[NSMutableAttributedString alloc] initWithString:MultilingualTranslation(@"你已被踢出群聊")];
-                        }else {
-                            //被踢成员
-                            LingIMGroupMemberModel *groupMemberKickModel = [IMSDKManager imSdkCheckGroupMemberWith:kickmember.uid groupID:kickmember.gid];
-                            //操作人
-                            LingIMGroupMemberModel *groupMemberOperateModel = [IMSDKManager imSdkCheckGroupMemberWith:kickmember.operateUid groupID:kickmember.gid];
-                            sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”将“%@”踢出群聊"),groupMemberOperateModel ? groupMemberOperateModel.showName : kickmember.operateNick, groupMemberKickModel ? groupMemberKickModel.showName : kickmember.nick]];
-                        }
-                    }
-                }
-            } else {
-                if ([kickmember.uid isEqualToString:UserManager.userInfo.userUID]) {
-                    sessionAttStr = [[NSMutableAttributedString alloc] initWithString:MultilingualTranslation(@"你已被踢出群聊")];
-                }else {
-                    //被踢成员
-                    LingIMGroupMemberModel *groupMemberKickModel = [IMSDKManager imSdkCheckGroupMemberWith:kickmember.uid groupID:kickmember.gid];
-                    //操作人
-                    LingIMGroupMemberModel *groupMemberOperateModel = [IMSDKManager imSdkCheckGroupMemberWith:kickmember.operateUid groupID:kickmember.gid];
-                    sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”将“%@”踢出群聊"),groupMemberOperateModel ? groupMemberOperateModel.showName : kickmember.operateNick, groupMemberKickModel ? groupMemberKickModel.showName : kickmember.nick]];
-                }
-            }
+//            KickGroupMessage *kickmember = serverMessage.kickGroupMessage;
+//            if (kickmember.informUidArray != nil) {
+//                if (kickmember.informUidArray.count == 0) {
+//                    if ([kickmember.uid isEqualToString:UserManager.userInfo.userUID]) {
+//                        sessionAttStr = [[NSMutableAttributedString alloc] initWithString:MultilingualTranslation(@"你已被踢出群聊")];
+//                    }else {
+//                        //被踢成员
+//                        LingIMGroupMemberModel *groupMemberKickModel = [IMSDKManager imSdkCheckGroupMemberWith:kickmember.uid groupID:kickmember.gid];
+//                        //操作人
+//                        LingIMGroupMemberModel *groupMemberOperateModel = [IMSDKManager imSdkCheckGroupMemberWith:kickmember.operateUid groupID:kickmember.gid];
+//                        sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”将“%@”踢出群聊"),groupMemberOperateModel ? groupMemberOperateModel.showName : kickmember.operateNick, groupMemberKickModel ? groupMemberKickModel.showName : kickmember.nick]];
+//                    }
+//                } else {
+//                    if ([kickmember.informUidArray containsObject:UserManager.userInfo.userUID]) {
+//                        if ([kickmember.uid isEqualToString:UserManager.userInfo.userUID]) {
+//                            sessionAttStr = [[NSMutableAttributedString alloc] initWithString:MultilingualTranslation(@"你已被踢出群聊")];
+//                        }else {
+//                            //被踢成员
+//                            LingIMGroupMemberModel *groupMemberKickModel = [IMSDKManager imSdkCheckGroupMemberWith:kickmember.uid groupID:kickmember.gid];
+//                            //操作人
+//                            LingIMGroupMemberModel *groupMemberOperateModel = [IMSDKManager imSdkCheckGroupMemberWith:kickmember.operateUid groupID:kickmember.gid];
+//                            sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”将“%@”踢出群聊"),groupMemberOperateModel ? groupMemberOperateModel.showName : kickmember.operateNick, groupMemberKickModel ? groupMemberKickModel.showName : kickmember.nick]];
+//                        }
+//                    }
+//                }
+//            } else {
+//                if ([kickmember.uid isEqualToString:UserManager.userInfo.userUID]) {
+//                    sessionAttStr = [[NSMutableAttributedString alloc] initWithString:MultilingualTranslation(@"你已被踢出群聊")];
+//                }else {
+//                    //被踢成员
+//                    LingIMGroupMemberModel *groupMemberKickModel = [IMSDKManager imSdkCheckGroupMemberWith:kickmember.uid groupID:kickmember.gid];
+//                    //操作人
+//                    LingIMGroupMemberModel *groupMemberOperateModel = [IMSDKManager imSdkCheckGroupMemberWith:kickmember.operateUid groupID:kickmember.gid];
+//                    sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”将“%@”踢出群聊"),groupMemberOperateModel ? groupMemberOperateModel.showName : kickmember.operateNick, groupMemberKickModel ? groupMemberKickModel.showName : kickmember.nick]];
+//                }
+//            }
             
             
         }
             break;
         case IMServerMessage_ServerMsgType_OutGroupMessage://群成员退群
         {
-            OutGroupMessage *outGroupMember = serverMessage.outGroupMessage;
-            LingIMGroupMemberModel *groupMemberModel = [IMSDKManager imSdkCheckGroupMemberWith:outGroupMember.uid groupID:outGroupMember.gid];
-            if (outGroupMember.informUidArray != nil) {
-                if (outGroupMember.informUidArray.count == 0) {
-                    sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”退出了群聊"),groupMemberModel ? groupMemberModel.showName : outGroupMember.nick]];
-                } else {
-                    if ([outGroupMember.informUidArray containsObject:UserManager.userInfo.userUID]) {
-                        sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”退出了群聊"),groupMemberModel ? groupMemberModel.showName : outGroupMember.nick]];
-                    }
-                }
-            } else  {
-                sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”退出了群聊"),groupMemberModel ? groupMemberModel.showName : outGroupMember.nick]];
-            }
+//            OutGroupMessage *outGroupMember = serverMessage.outGroupMessage;
+//            LingIMGroupMemberModel *groupMemberModel = [IMSDKManager imSdkCheckGroupMemberWith:outGroupMember.uid groupID:outGroupMember.gid];
+//            if (outGroupMember.informUidArray != nil) {
+//                if (outGroupMember.informUidArray.count == 0) {
+//                    sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”退出了群聊"),groupMemberModel ? groupMemberModel.showName : outGroupMember.nick]];
+//                } else {
+//                    if ([outGroupMember.informUidArray containsObject:UserManager.userInfo.userUID]) {
+//                        sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”退出了群聊"),groupMemberModel ? groupMemberModel.showName : outGroupMember.nick]];
+//                    }
+//                }
+//            } else  {
+//                sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”退出了群聊"),groupMemberModel ? groupMemberModel.showName : outGroupMember.nick]];
+//            }
             
         }
             break;
@@ -658,9 +658,9 @@
             break;
         case IMServerMessage_ServerMsgType_DelGroupMessage://解散群组  该消息只转发给在线的所有群成员
         {
-            DelGroupMessage *groupDissolve = serverMessage.delGroupMessage;
-            LingIMGroupMemberModel *groupMemberModel = [IMSDKManager imSdkCheckGroupMemberWith:groupDissolve.uid groupID:groupDissolve.gid];
-            sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”解散了该群"), groupMemberModel ? groupMemberModel.showName : groupDissolve.nick]];
+//            DelGroupMessage *groupDissolve = serverMessage.delGroupMessage;
+//            LingIMGroupMemberModel *groupMemberModel = [IMSDKManager imSdkCheckGroupMemberWith:groupDissolve.uid groupID:groupDissolve.gid];
+//            sessionAttStr = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:MultilingualTranslation(@"“%@”解散了该群"), groupMemberModel ? groupMemberModel.showName : groupDissolve.nick]];
         }
             break;
         case IMServerMessage_ServerMsgType_InviteJoinGroupNoFriendMessage://邀请好友进群，但是好友不存在，该消息只转发给邀请加入的用户

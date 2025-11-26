@@ -69,6 +69,8 @@ typedef NS_ENUM(NSUInteger, MessageMenuItemActionType) {
     MessageMenuItemActionTypeStickersAdd = 13,      //表情添加
     MessageMenuItemActionTypeStickersPackage = 14,   //表情包
     MessageMenuItemActionTypeMutePlayback = 15,   //静音播放
+    MessageMenuItemActionTypeGroupTop = 16,   //置顶
+    MessageMenuItemActionTypeGroupTopCancel = 17, //取消置顶
 };
 
 //发送文件消息时，所选文件的来源
@@ -210,12 +212,13 @@ typedef NS_ENUM(NSUInteger, ZDNSLocalModelType) {
 //event_message_upload
 
 typedef NS_ENUM(NSUInteger, ZSentryUploadType) {
-    ZSentryUploadTypeMessage = 1,   //消息发送失败
-    ZSentryUploadTypeHttp = 2,   //接口调用失败
+    ZSentryUploadTypeMessage = 1,       //消息发送失败
+    ZSentryUploadTypeHttp = 2,          //接口调用失败
     ZSentryUploadTypeEnterprise = 3,    //企业号加入失败
-    ZSentryUploadTypeImage = 4,   //图片加载失败
-    ZSentryUploadTypeUpload = 5,     //媒体消息上传失败
-    ZSentryUploadTypeEnterpriseSuccess = 6 //导航获取成功
+    ZSentryUploadTypeImage = 4,         //图片加载失败
+    ZSentryUploadTypeUpload = 5,        //媒体消息上传失败
+    ZSentryUploadTypeSocketConnect = 6, //socket连接
+    ZSentryUploadTypeEnterpriseSuccess = 7 //导航获取成功
 };
 
 typedef NS_ENUM(NSInteger, ProxyType) {

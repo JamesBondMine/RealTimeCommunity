@@ -57,6 +57,7 @@ CF_EXTERN_C_BEGIN
 @class GroupCloseSearchUserMessage;
 @class GroupHairMessage;
 @class GroupInfo;
+@class GroupMessageTop;
 @class GroupNotice;
 @class GroupShock;
 @class GroupShockMessage;
@@ -640,6 +641,9 @@ typedef GPB_ENUM(IMServerMessage_ServerMsgType) {
 
   /** 群组全体禁言 */
   IMServerMessage_ServerMsgType_GroupAllForbidMessage = 515,
+
+  /** 群组置顶消息变更  该消息只转发给在线的所有群成员 */
+  IMServerMessage_ServerMsgType_GroupMessageTop = 516,
 };
 
 GPBEnumDescriptor *IMServerMessage_ServerMsgType_EnumDescriptor(void);
@@ -2063,6 +2067,7 @@ typedef GPB_ENUM(IMServerMessage_FieldNumber) {
   IMServerMessage_FieldNumber_PaymentNoticeMessage = 68,
   IMServerMessage_FieldNumber_ReceiveRedPacketMessage = 69,
   IMServerMessage_FieldNumber_GroupAllForbidMessage = 70,
+  IMServerMessage_FieldNumber_GroupMessageTop = 71,
 };
 
 typedef GPB_ENUM(IMServerMessage_MessageBody_OneOfCase) {
@@ -2123,6 +2128,7 @@ typedef GPB_ENUM(IMServerMessage_MessageBody_OneOfCase) {
   IMServerMessage_MessageBody_OneOfCase_PaymentNoticeMessage = 68,
   IMServerMessage_MessageBody_OneOfCase_ReceiveRedPacketMessage = 69,
   IMServerMessage_MessageBody_OneOfCase_GroupAllForbidMessage = 70,
+  IMServerMessage_MessageBody_OneOfCase_GroupMessageTop = 71,
 };
 
 GPB_FINAL @interface IMServerMessage : GPBMessage
@@ -2240,7 +2246,7 @@ GPB_FINAL @interface IMServerMessage : GPBMessage
 /** 阅后即焚 该消息转发给好友双方 */
 @property(nonatomic, readwrite, strong, null_resettable) SnapchatMessage *snapchatMessage;
 
-/** 群组单个成员禁言 	该消息转发给禁言的用户 */
+/** 群组单个成员禁言     该消息转发给禁言的用户 */
 @property(nonatomic, readwrite, strong, null_resettable) GroupSingleForbidMessage *groupSingleForbidMessage;
 
 /** 好友不存在 */
@@ -2320,6 +2326,9 @@ GPB_FINAL @interface IMServerMessage : GPBMessage
 
 /** 通知全体群成员 删除禁言用户记录刷新消息 */
 @property(nonatomic, readwrite, strong, null_resettable) GroupAllForbidMessage *groupAllForbidMessage;
+
+/** 变更群组置顶消息  该消息只转发给在线的所有群成员 */
+@property(nonatomic, readwrite, strong, null_resettable) GroupMessageTop *groupMessageTop;
 
 /** 接受者用户设备ID, 空:给所有设备发; -1234,负号开头是给其他设备发 */
 @property(nonatomic, readwrite, copy, null_resettable) NSString *toSource;
@@ -3438,6 +3447,38 @@ GPB_FINAL @interface NoticeGroupMessage : GPBMessage
 
 /** 翻译群组公告 */
 @property(nonatomic, readwrite, copy, null_resettable) NSString *transNotice;
+
+@end
+
+#pragma mark - GroupMessageTop
+
+typedef GPB_ENUM(GroupMessageTop_FieldNumber) {
+  GroupMessageTop_FieldNumber_Uid = 1,
+  GroupMessageTop_FieldNumber_Nick = 2,
+  GroupMessageTop_FieldNumber_Gid = 3,
+  GroupMessageTop_FieldNumber_SMsgId = 4,
+  GroupMessageTop_FieldNumber_Type = 5,
+};
+
+/**
+ * 变更群组全局置顶消息
+ **/
+GPB_FINAL @interface GroupMessageTop : GPBMessage
+
+/** 发布群群组全局置顶消息的用户ID */
+@property(nonatomic, readwrite, copy, null_resettable) NSString *uid;
+
+/** 发布群群组全局置顶消息的用户昵称 */
+@property(nonatomic, readwrite, copy, null_resettable) NSString *nick;
+
+/** 群聊ID */
+@property(nonatomic, readwrite, copy, null_resettable) NSString *gid;
+
+/** 群组全局置顶消息ID = 4; */
+@property(nonatomic, readwrite, copy, null_resettable) NSString *sMsgId;
+
+/** 操作类型 1:置顶 2:取消置顶 */
+@property(nonatomic, readwrite) int32_t type;
 
 @end
 

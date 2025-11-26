@@ -463,7 +463,7 @@
                 WeakSelf
                 ZMessageAlertView *msgAlertView = [[ZMessageAlertView alloc] initWithMsgAlertType:ZMessageAlertTypeTitle supView:nil];
                 msgAlertView.lblTitle.text = MultilingualTranslation(@"解散群聊");
-                msgAlertView.lblContent.text = MultilingualTranslation(@"解散当前群聊并清空群内聊天记录");
+                msgAlertView.lblContent.text = MultilingualTranslation(@"无感解散当前群聊并清空群内聊天记录？");
                 msgAlertView.lblContent.textAlignment = NSTextAlignmentLeft;
                 [msgAlertView.btnSure setTitle:MultilingualTranslation(@"确认") forState:UIControlStateNormal];
                 [msgAlertView.btnCancel setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];

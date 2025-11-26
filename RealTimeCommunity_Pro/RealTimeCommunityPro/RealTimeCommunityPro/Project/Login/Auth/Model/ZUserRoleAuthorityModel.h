@@ -38,6 +38,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// 翻译设置总开关（后端字段：translation_switch）
 @property (nonatomic, strong) ZUsereAuthModel *translationSwitch;
 
+/// 群消息置顶开关（后端字段：group_msg_pinning）
+@property (nonatomic, strong) ZUsereAuthModel *groupMsgPinning;
+
 @end
 
 NS_ASSUME_NONNULL_END

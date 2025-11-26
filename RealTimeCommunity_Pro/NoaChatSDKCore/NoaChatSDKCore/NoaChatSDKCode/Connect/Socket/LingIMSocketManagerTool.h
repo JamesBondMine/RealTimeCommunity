@@ -31,6 +31,9 @@ NS_ASSUME_NONNULL_BEGIN
 //app的Build ID
 @property (nonatomic, copy) NSString *appBuildIdStr;
 
+/// 是否认证通过，未认证通过，不发送消息
+@property (nonatomic, assign) BOOL isAuth;
+
 #pragma mark - <<<<<<单例>>>>>>
 + (instancetype)sharedManager;
 

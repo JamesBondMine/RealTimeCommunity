@@ -16,8 +16,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy)void(^menuClick)(MessageMenuItemActionType actionType);
 
+
 - (instancetype)initWithMenu:(NSArray *)menuArr targetRect:(CGRect)targetRect isFromMy:(BOOL)isFromMy isBottom:(BOOL)isBottom msgContentSize:(CGSize)msgContentSize;
 
+/// 动态更新菜单项
+- (void)updateMenuItems:(NSArray *)menuArr;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -11,8 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SyncMutableArray : NSObject
 
-//只读
-- (NSMutableArray *)safeArray;
+//只读（不可变快照）
+- (NSArray *)safeArray;
 //判断是否包含对象
 - (BOOL)containsObject:(id)anObject;
 //集合元素数量
@@ -46,6 +46,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSUInteger)indexOfObject:(id)anObject;
 //枚举
 - (void)enumerateObjectsUsingBlock:(void (^)(id obj, NSUInteger idx, BOOL *stop))block;
+
+// 批量写：将多次变更合并在一次 barrier 中执行
+- (void)performBatchWrite:(void (^)(NSMutableArray *inner))block;
+// 一次性替换为新数组
+- (void)replaceAllObjectsWithArray:(NSArray *)array;
 
 /// 过滤用户消息(用户消息删除后过滤)
 /// - Parameter keepPredicate: 过滤条件

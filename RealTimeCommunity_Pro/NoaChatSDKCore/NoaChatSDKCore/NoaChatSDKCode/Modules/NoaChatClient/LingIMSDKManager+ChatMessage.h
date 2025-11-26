@@ -69,6 +69,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param message 消息内容
 - (BOOL)toolInsertOrUpdateChatMessageWith:(LingIMChatMessageModel *)message;
 
+/// 批量更新 或 新增 消息到 消息表
+/// @param messageList 消息列表
+- (void)toolInsertOrUpdateChatMessagesWith:(NSArray <LingIMChatMessageModel *>*)messageList;
+
 /// 删除数据库某消息
 /// @param message 消息内容
 - (BOOL)toolDeleteChatMessageWith:(LingIMChatMessageModel *)message;
@@ -96,6 +100,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param smsgID 服务端消息ID
 /// @param sessionID 会话对方ID(好友ID/群聊ID)
 - (LingIMChatMessageModel *)toolGetOneChatMessageWithServiceMessageID:(NSString *)smsgID sessionID:(NSString *)sessionID;
+
+/// 根据某个服务端消息ID获取消息（排除删除和撤回的消息）
+/// @param smsgID 服务端消息ID
+/// @param sessionID 会话对方ID(好友ID/群聊ID)
+- (LingIMChatMessageModel *)toolGetOneChatMessageWithServiceMessageIDExcludeDeleted:(NSString *)smsgID sessionID:(NSString *)sessionID;
 
 /// 获取某个会话的最新消息
 /// @param sessionID 会话对方ID(好友ID/群聊ID)
@@ -301,6 +310,19 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param onSuccess success
 /// @param onFailure failure
 - (void)MessagePushMsg:(NSData * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure;
+
+/// 查询群置顶消息列表
+/// @param params 操作参数 {groupId:群组ID, userUid:操作用户ID, pageNumber:起始页(从1开始), pageSize:每页数据大小, pageStart:起始索引(从0开始)}
+- (void)MessageQueryGroupTopMsgListWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure;
+
+/// 查询群消息是否可以置顶
+/// @param params 操作参数 {groupId:群组ID, smsgId:服务端消息ID, userUid:操作用户ID}
+- (void)MessageQueryGroupMsgStatusWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure;
+
+/// 查询群置顶消息悬浮列表
+/// @param params 操作参数 {groupId:群组ID, userUid:操作用户ID}
+- (void)MessageQueryGroupTopMsgsWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure;
+
 @end
 
 NS_ASSUME_NONNULL_END

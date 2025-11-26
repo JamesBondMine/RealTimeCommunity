@@ -699,6 +699,8 @@
 		2A6558EC2EB0D34700ACC799 /* LoginCusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A6558EB2EB0D34700ACC799 /* LoginCusViewController.m */; };
 		2A6558F02EB1B95900ACC799 /* LoginServerConfigView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A6558EE2EB1B95900ACC799 /* LoginServerConfigView.m */; };
 		2A6558F32EB2290800ACC799 /* RegisterCusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A6558F22EB2290800ACC799 /* RegisterCusViewController.m */; };
+		2AD9E3502ED70DAA00C4E6A3 /* ZGroupTopMessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD9E34E2ED70DAA00C4E6A3 /* ZGroupTopMessageView.m */; };
+		2AD9E3532ED711D700C4E6A3 /* ZGroupTopMessageListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD9E3522ED711D700C4E6A3 /* ZGroupTopMessageListViewController.m */; };
 		2D63D3D72EA4DF48001D8698 /* ZNetworkDetectionMainResultCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D63D3D62EA4DF48001D8698 /* ZNetworkDetectionMainResultCell.m */; };
 		2D7B4B002E9FD4C100E71727 /* ZNetworkDetectionSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D7B4AFF2E9FD4C100E71727 /* ZNetworkDetectionSectionHeaderView.m */; };
 		2D7B4B032E9FD4E100E71727 /* ZNetworkDetectionSubResultCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D7B4B022E9FD4E100E71727 /* ZNetworkDetectionSubResultCell.m */; };
@@ -2189,6 +2191,10 @@
 		2A6558EE2EB1B95900ACC799 /* LoginServerConfigView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginServerConfigView.m; sourceTree = "<group>"; };
 		2A6558F12EB2290800ACC799 /* RegisterCusViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RegisterCusViewController.h; sourceTree = "<group>"; };
 		2A6558F22EB2290800ACC799 /* RegisterCusViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RegisterCusViewController.m; sourceTree = "<group>"; };
+		2AD9E34D2ED70DAA00C4E6A3 /* ZGroupTopMessageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupTopMessageView.h; sourceTree = "<group>"; };
+		2AD9E34E2ED70DAA00C4E6A3 /* ZGroupTopMessageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupTopMessageView.m; sourceTree = "<group>"; };
+		2AD9E3512ED711D700C4E6A3 /* ZGroupTopMessageListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZGroupTopMessageListViewController.h; sourceTree = "<group>"; };
+		2AD9E3522ED711D700C4E6A3 /* ZGroupTopMessageListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZGroupTopMessageListViewController.m; sourceTree = "<group>"; };
 		2D63D3D52EA4DF48001D8698 /* ZNetworkDetectionMainResultCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZNetworkDetectionMainResultCell.h; sourceTree = "<group>"; };
 		2D63D3D62EA4DF48001D8698 /* ZNetworkDetectionMainResultCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZNetworkDetectionMainResultCell.m; sourceTree = "<group>"; };
 		2D7B4AFB2E9FCFD800E71727 /* RealTimeCommunityPro.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RealTimeCommunityPro.xcodeproj; path = ../RealTimeCommunityPro.xcodeproj; sourceTree = "<group>"; };
@@ -3229,6 +3235,7 @@
 		045F1EAB28DD65CA003D2818 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				2AD9E34F2ED70DAA00C4E6A3 /* ZGroupTopMessageView */,
 				1838384F2A95A91C0056D345 /* SignIn */,
 				041EEB5029EFC68200CDCC1A /* MassMessage */,
 				045F1EAD28DD65FB003D2818 /* NSInviteFriendCell.h */,
@@ -5122,6 +5129,8 @@
 		1899A0D028C1C5560045A652 /* Session */ = {
 			isa = PBXGroup;
 			children = (
+				2AD9E3512ED711D700C4E6A3 /* ZGroupTopMessageListViewController.h */,
+				2AD9E3522ED711D700C4E6A3 /* ZGroupTopMessageListViewController.m */,
 				04A03FB52D2277660006B3CF /* Tools */,
 				045F1EAC28DD65D5003D2818 /* Model */,
 				045F1EAB28DD65CA003D2818 /* View */,
@@ -5534,6 +5543,15 @@
 				043D2D4928D17FE500DF6A83 /* Tabbar */,
 			);
 			path = Project;
+			sourceTree = "<group>";
+		};
+		2AD9E34F2ED70DAA00C4E6A3 /* ZGroupTopMessageView */ = {
+			isa = PBXGroup;
+			children = (
+				2AD9E34D2ED70DAA00C4E6A3 /* ZGroupTopMessageView.h */,
+				2AD9E34E2ED70DAA00C4E6A3 /* ZGroupTopMessageView.m */,
+			);
+			path = ZGroupTopMessageView;
 			sourceTree = "<group>";
 		};
 		2D88CB312E9F8E2200490906 /* Controller */ = {
@@ -6361,6 +6379,7 @@
 				048D75B02AF341B30011B5AF /* ZTranslateManagerCell.m in Sources */,
 				04840B1A28C9FC3400936BFA /* ZPresentItem.m in Sources */,
 				04CEDBDC29F7CF5800080E17 /* ZMergeMessageRecordCell.m in Sources */,
+				2AD9E3532ED711D700C4E6A3 /* ZGroupTopMessageListViewController.m in Sources */,
 				04F6F43E299346A60021D136 /* ZMediaCallMoreFloatView.m in Sources */,
 				045362242A6CCDF300BF5713 /* ZChatTextUrlCell.m in Sources */,
 				04D6792028E137D100EB3967 /* ZCommonProgressView.m in Sources */,
@@ -6474,6 +6493,7 @@
 				041EEB4F29EFC31700CDCC1A /* NSMassMessageUserCell.m in Sources */,
 				184043DE2B0C54E400E575B0 /* YYTextMagnifier.m in Sources */,
 				04C2D5682A4EBAA900ECC447 /* NMShareInviteViewController.m in Sources */,
+				2AD9E3502ED70DAA00C4E6A3 /* ZGroupTopMessageView.m in Sources */,
 				045F1EEB28DEEFB0003D2818 /* ZBaseVideoPlayerView.m in Sources */,
 				045DDC0A2918FD850031F7F5 /* ZGroupSetBasicInfoVC.m in Sources */,
 				04E51930295BE4B200EF0500 /* MainLanguageManager.m in Sources */,

@@ -95,6 +95,11 @@
     [[LingIMHttpManager sharedManager] groupGetMemberActiviteScoreWith:params onSuccess:onSuccess onFailure:onFailure];
 }
 
+#pragma mark - 设置/取消 消息置顶
+- (void)groupSetMsgTopWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure {
+    [[LingIMHttpManager sharedManager] groupSetMsgTopWith:params onSuccess:onSuccess onFailure:onFailure];
+}
+
 #pragma mark - 清空群聊 聊天记录
 - (void)groupClearAllChatMessageWith:(NSMutableDictionary *)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure{
     [[LingIMHttpManager sharedManager] groupClearAllChatMessageWith:params onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {

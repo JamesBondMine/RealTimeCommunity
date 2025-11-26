@@ -1607,3 +1607,4 @@
 "企业号设置成功" = "Enterprise setup successful";
 
 "当前群不支持二维码入群" = "This group doesn’t support QR code joining";
+"无感解散当前群聊并清空群内聊天记录？" = "Disolver y borrar chat?";

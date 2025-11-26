@@ -56,7 +56,11 @@
 #define COLOR_F2F3F5        HEXCOLOR(@"F2F3F5")
 #define COLOR_FFECE5        HEXCOLOR(@"FFECE5")
 #define COLOR_FF4C00        HEXCOLOR(@"FF4C00")
-#define COLOR_4791FF        HEXCOLOR(@"4791FF")
+
+//#define COLOR_4791FF        HEXCOLOR(@"4791FF")
+#define COLOR_4791FF        HEXCOLOR(@"81D8CF")
+
+
 #define COLOR_D7E6FF        HEXCOLOR(@"D7E6FF")
 #define COLOR_F3F3F3        HEXCOLOR(@"F3F3F3")
 #define COLOR_ECECEC        HEXCOLOR(@"ECECEC")

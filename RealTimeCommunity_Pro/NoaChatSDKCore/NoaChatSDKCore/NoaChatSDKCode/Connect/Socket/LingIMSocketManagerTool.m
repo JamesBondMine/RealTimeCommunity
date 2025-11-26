@@ -205,6 +205,16 @@ typedef NS_ENUM(NSUInteger, LingIMUserAuthStatus) {
                 }
                 return;
             }
+            
+            if (!weakSelf.isAuth) {
+                // 未认证成功，认为失败
+                [weakSelf messageSendFailLoganWith:@"authNotSuccess" messageId:msgID];
+                if ([weakSelf.messageDelegate respondsToSelector:@selector(cimMessageSendFail:)]) {
+                    [weakSelf.messageDelegate cimMessageSendFail:msgID];
+                }
+                return;
+            }
+            
             NSMutableDictionary * dic = weakSelf.sendMessageDic[msgID];
             NSInteger reSendCount;
             if(dic == nil){
@@ -410,8 +420,14 @@ typedef NS_ENUM(NSUInteger, LingIMUserAuthStatus) {
             //更新本次鉴权的socket连接唯一标识
             self.socketUUID = authMessageAck.sessionId;
             
+            // 标记认证通过
+            self.isAuth = YES;
+            
             //开始心跳机制
             [SOCKETMANAGER startSocketHeartbeat];
+            
+            // 将之前缓存的请求发送
+            [SOCKETMANAGERTOOL cimGetSessionIdSuccess];
             
             //执行用户鉴权成功的代理回调
             if ([self.userDelegate respondsToSelector:@selector(cimUserConnectSuccess)]) {
@@ -422,7 +438,6 @@ typedef NS_ENUM(NSUInteger, LingIMUserAuthStatus) {
         case LingIMUserAuthStatusTokenTimeout://token过期
         case LingIMUserAuthStatusTokenInvalid://token无效
         case LingIMUserAuthStatusTokenError://token鉴权错误
-        case LingIMUserAuthStatusNoAuth://用户未鉴权，用户未发送鉴权信息
         case LingIMUserAuthStatusUserError://身份信息验证失败
         {
 //            //断开连接
@@ -432,6 +447,12 @@ typedef NS_ENUM(NSUInteger, LingIMUserAuthStatus) {
 //            if ([self.userDelegate respondsToSelector:@selector(cimUserAuthTokenNeedRefresh)]) {
 //                [self.userDelegate cimUserAuthTokenNeedRefresh];
 //            }
+            self.isTokenExpired = YES;
+        }
+            break;
+        case LingIMUserAuthStatusNoAuth://用户未鉴权，用户未发送鉴权信息
+        {
+            // 认为token过期，因为认证失败，去重试获取token必然失败，然后就会跳转登录页面
             self.isTokenExpired = YES;
         }
             break;
@@ -555,6 +576,7 @@ typedef NS_ENUM(NSUInteger, LingIMUserAuthStatus) {
         case IMServerMessage_ServerMsgType_GroupMessageInform://是否开启群提示
         case IMServerMessage_ServerMsgType_GroupCloseSearchUserMessage://关闭搜索用户消息通知
         case IMServerMessage_ServerMsgType_UpdateGroupInformStatusForAdminSystem://关闭群通知 开关状态变化
+        case IMServerMessage_ServerMsgType_GroupMessageTop://群聊置顶消息变化
         {
             //群组相关
             [self dealServerMessageOfGroup:serverMessage];

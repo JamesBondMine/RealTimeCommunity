@@ -137,7 +137,7 @@
         NSMiniAppWebVC *vc = [[NSMiniAppWebVC alloc] init];
         vc.webViewUrl = floadModel.url;
         vc.floatMiniAppModel = floadModel;
-        vc.webType = ZMiniAppWebVCTypeMiniApp;
+        vc.webType = NSMiniAppWebVCTypeMiniApp;
         [CurrentVC.navigationController pushViewController:vc animated:YES];
     }
     [self miniAppFloatListDismiss];

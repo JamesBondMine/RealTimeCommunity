@@ -311,9 +311,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
 * 群成员活跃积分分页列表-增量
-* @param params 请求参数:{groupId:群组ID, lastSyncTime:最后一次同步时间, pageNumber:起始页(从1开始), pageSize:每页数据大小, pageStart:起始索引(从0开始)}
+* @param params 请求参数:{groupId:群组ID, "userUid":"",  设置消息置顶的用户ID, pageNumber:起始页(从1开始), pageSize:每页数据大小}
 */
 - (void)groupGetMemberActiviteScoreWith:(NSMutableDictionary *)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure;
+
+/*
+* 设置/取消 消息置顶
+* @param params 请求参数:{groupId:群组ID, smsgId:需要置顶的服务端消息ID, msgStatus:1 必传 消息状态 1 全局置顶，2用户个人置顶，3取消全局置顶，4取消个人置顶, userUid:操作用户ID}
+*/
+- (void)groupSetMsgTopWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure;
 
 @end
 

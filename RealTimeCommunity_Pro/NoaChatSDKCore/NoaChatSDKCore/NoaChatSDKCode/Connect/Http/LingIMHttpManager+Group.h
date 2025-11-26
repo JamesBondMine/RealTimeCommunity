@@ -101,6 +101,9 @@ NS_ASSUME_NONNULL_BEGIN
 //群成员活跃积分分页列表-增量
 #define Group_Get_Member_Activite_Score_Url             @"/biz/groupMember/activity/page"
 
+//设置/取消 消息置顶
+#define Group_Set_Msg_Top_Url             @"/biz/group/setMsgTop"
+
 @interface LingIMHttpManager (Group)
 
 /*
@@ -380,6 +383,12 @@ NS_ASSUME_NONNULL_BEGIN
 * @param params 请求参数:{groupId:群组ID, lastSyncTime:最后一次同步时间, pageNumber:起始页(从1开始), pageSize:每页数据大小, pageStart:起始索引(从0开始)}
 */
 - (void)groupGetMemberActiviteScoreWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure;
+
+/*
+* 设置/取消 消息置顶
+* @param params 请求参数:{groupId:群组ID, msgId:消息ID, status:置顶状态(1:置顶,0:取消置顶), userUid:操作用户ID}
+*/
+- (void)groupSetMsgTopWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure;
 
 @end
 

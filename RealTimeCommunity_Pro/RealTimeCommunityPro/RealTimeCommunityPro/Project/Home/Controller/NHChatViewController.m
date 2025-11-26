@@ -76,12 +76,16 @@
 // 网络检测页面
 #import "ZNetworkDetectionVC.h"
 
+#import "ZGroupTopMessageView.h"
+
+#import "ZGroupTopMessageListViewController.h"
+
 
 #define ChatTopTitleWidth DWScale(180)
 #define Multi_Selected_Max_Num      100
 
 
-@interface NHChatViewController () <ZChatInputViewDelegate, UITableViewDelegate, UITableViewDataSource, ZMessageBaseCellDelegate, CIMToolMessageDelegate, CIMToolUserDelegate, ZImagePickerVCDelegate, UIDocumentInteractionControllerDelegate, KNPhotoBrowserDelegate, HomeChatGroupNoticeTipViewDelegate, HomeMssageTimeDeleteViewDelegate, ZMsgMultiSelectDelegate, UIGestureRecognizerDelegate, ZFileUploadTaskDelegate>
+@interface NHChatViewController () <ZChatInputViewDelegate, UITableViewDelegate, UITableViewDataSource, ZMessageBaseCellDelegate, CIMToolMessageDelegate, CIMToolUserDelegate, ZImagePickerVCDelegate, UIDocumentInteractionControllerDelegate, KNPhotoBrowserDelegate, HomeChatGroupNoticeTipViewDelegate, HomeMssageTimeDeleteViewDelegate, ZMsgMultiSelectDelegate, UIGestureRecognizerDelegate, ZFileUploadTaskDelegate,ZGroupTopMessageViewDelegate>
 
 //显示刷新界面的专门队列(消息更新)
 @property (nonatomic, strong) dispatch_queue_t chatMessageUpdateQueue;
@@ -116,6 +120,7 @@
 //@property (nonatomic, strong) ZMessageAlertView *translateAlertView;//翻译状态弹窗
 @property (nonatomic, strong) SyncMutableArray *unReadSmsgidList;//存储等待上班的sMsgId
 @property (nonatomic, strong) NSTimer *uploadReadedTimer;//上报消息已读定时器
+@property (nonatomic, strong) NSTimer *loadingTimeoutTimer;//loading超时计时器（30秒）
 
 /// 能否联网
 @property (nonatomic, assign) BOOL isReachable;
@@ -123,6 +128,13 @@
 @property (nonatomic, strong) ZTranslateDefaultModel *defaultModel;
 @property (nonatomic, strong) HomeMssageMultiSelectView *messageMutiSelectView;
 @property (nonatomic, assign) NSInteger pageNumber;
+
+// 刷新防抖
+@property (nonatomic, copy) dispatch_block_t pendingChatReloadBlock;
+// 排序防抖
+@property (nonatomic, copy) dispatch_block_t pendingSortBlock;
+
+@property (nonatomic, strong) ZGroupTopMessageView *groupTopMessageView;//群置顶消息 View
 
 @end
 
@@ -207,6 +219,9 @@
     
     //上报消息已读定时器开始继续
     [self startUploadChatMsgReadedTimer];
+    
+    // 更新 header 高度，确保页面显示时 header 高度正确
+    [self updateTableViewContentInset];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -215,6 +230,9 @@
     //离开聊天界面立即上报已读消息并暂停定时器
     [self refreshUploadChatMessageReaded];
     [self pauseUploadChatMsgReadedTimer];
+    
+    // 取消loading超时计时器
+    [self stopLoadingTimeoutTimer];
 
     //立刻聊天界面关闭键盘
     [self.viewInput inputViewResignFirstResponder];
@@ -292,6 +310,8 @@
     
     //消息请求加载
     [HUD showActivityMessage:@"" inView:self.view];
+    // 启动20秒超时计时器，防止loading一直显示
+    [self startLoadingTimeoutTimer];
     [self requestHistoryList];
     
     //请求标签栏
@@ -312,6 +332,8 @@
         [self.view addSubview:self.viewGroupCallTip];
         //请求一下群成员接口更新一下数据库
         [self requestAllGroupMember];
+        //请求群置顶消息列表
+        [self requestGroupTopMessages];
     }
     
     [self.view addSubview:self.multiSelectBottomView];
@@ -436,7 +458,7 @@
             webVC.webViewTitle = clickTagModel.tagName;
             webVC.webViewUrl = clickTagModel.tagUrl;
             webVC.floatMiniAppModel = floadModel;
-            webVC.webType = ZMiniAppWebVCTypeMiniApp;
+            webVC.webType = NSMiniAppWebVCTypeMiniApp;
             [weakSelf.navigationController pushViewController:webVC animated:YES];
         }
     };
@@ -447,6 +469,7 @@
         vc.currentSsoNumber = ssoModel.liceseId;
         [weakSelf.navigationController pushViewController:vc animated:YES];
     };
+    
     self.baseTableView.delegate = self;
     self.baseTableView.dataSource = self;
     self.baseTableView.estimatedRowHeight = 0;
@@ -461,7 +484,7 @@
     //滚动到底部快捷键
     self.btnBottom = [UIButton buttonWithType:UIButtonTypeCustom];
     self.btnBottom.hidden = YES;
-    [self.btnBottom setImage:ImgNamed(@"recat_c_go_bottom") forState:UIControlStateNormal];
+    [self.btnBottom setImage:ImgNamed(@"c_go_bottom") forState:UIControlStateNormal];
     [self.btnBottom addTarget:self action:@selector(btnBottomClick) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.btnBottom];
 }
@@ -527,6 +550,8 @@
             obj.hidden = NO;
         }
     }];
+    // 更新 header 高度
+    [self updateTableViewContentInset];
 }
 
 //创建底部输入框UI
@@ -648,7 +673,40 @@
             make.bottom.equalTo(self.viewInput.mas_top);
         }];
     }
-    self.baseTableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    // 更新 contentInset
+    [self updateTableViewContentInset];
+}
+
+// 获取空白 header 的高度，用于在 tableView 顶部留出空间给 viewGroupNotice 或 groupTopMessageView
+- (CGFloat)getHeaderSpacerHeight {
+    // 检查 viewGroupNotice 是否显示
+    BOOL hasGroupNotice = [self hasGroupNoticeDisplayed];
+    
+    // 检查 groupTopMessageView 是否显示
+    BOOL hasGroupTopMessage = NO;
+    if (self.groupTopMessageView && !self.groupTopMessageView.hidden && !self.multiSelectStatus) {
+        hasGroupTopMessage = YES;
+    }
+    
+    // 计算需要的高度
+    CGFloat headerHeight = 0;
+    if (hasGroupNotice) {
+        // viewGroupNotice: y = DWScale(10), height = DWScale(42), 底部 = DWScale(52)
+        headerHeight = DWScale(10) + DWScale(42);
+    } else if (hasGroupTopMessage) {
+        // groupTopMessageView: y = DWScale(8), height = DWScale(48), 底部 = DWScale(56)
+        headerHeight = DWScale(8) + DWScale(48);
+    }
+    
+    return headerHeight;
+}
+
+// 更新 tableView 的 contentInset，为 viewGroupNotice 或 groupTopMessageView 留出空间
+- (void)updateTableViewContentInset {
+    CGFloat topInset = [self getHeaderSpacerHeight];
+    
+    self.baseTableView.contentInset = UIEdgeInsetsMake(topInset, 0, 0, 0);
+    self.baseTableView.scrollIndicatorInsets = UIEdgeInsetsMake(topInset, 0, 0, 0);
 }
 
 #pragma mark - 各种通知监听处理
@@ -666,6 +724,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userRoleAuthorityUploadImageVideoChange) name:@"UserRoleAuthorityUpImageVideoFileChangeNotification" object:nil];
     //用户角色权限发生变化(是否允许删除消息)
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userRoleAuthorityDeleteMessageChange) name:@"UserRoleAuthorityDeleteMessageChangeNotification" object:nil];
+    //群置顶消息定位通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(groupTopMessageLocation:) name:@"GroupTopMessageLocationNotification" object:nil];
     //专属监听
     if (self.chatType == CIMChatType_SingleChat) {
         //单聊
@@ -759,6 +819,86 @@
     }
 }
 
+#pragma mark - 群置顶消息定位通知
+- (void)groupTopMessageLocation:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSString *smsgId = [userInfo objectForKeySafe:@"smsgId"];
+    NSString *groupId = [userInfo objectForKeySafe:@"groupId"];
+    
+    // 检查是否是当前会话
+    if (![groupId isEqualToString:self.sessionID]) {
+        return;
+    }
+    
+    if (!smsgId.length) {
+        return;
+    }
+    
+    // 先尝试从数据库获取消息，以获取 sendTime（排除删除和撤回的消息）
+    LingIMChatMessageModel *targetMessage = [IMSDKManager toolGetOneChatMessageWithServiceMessageIDExcludeDeleted:smsgId sessionID:self.sessionID];
+    if (!targetMessage) {
+        [HUD showMessage:MultilingualTranslation(@"找不到本条消息") inView:self.view];
+        return;
+    }
+    
+    long long startTime = targetMessage.sendTime;
+    
+    // 当前显示的第一条消息发送时间
+    long long nowFirstMessageTime = 0;
+    if (self.messageModels.count > 0) {
+        ZMessageModel *model = [self.messageModels objectAtIndex:0];
+        nowFirstMessageTime = model.message.sendTime;
+    }
+    
+    __block NSInteger modelIndex = 0;
+    if (startTime < nowFirstMessageTime) {
+        // 被选中的消息，不在当前列表里，查询此时间范围内消息。为了界面体验，多请求一点数据
+        __block NSMutableArray *newMessageList = [[NSMutableArray alloc] init];
+        // 查询到的数据
+        NSMutableArray *history = [IMSDKManager toolGetChatMessageHistoryWith:_sessionID startTime:startTime endTime:nowFirstMessageTime].mutableCopy;
+        // 多请求一点数据
+        NSArray *moreHistory = [IMSDKManager toolGetChatMessageHistoryWith:_sessionID offset:history.count + self.messageModels.count];
+        NSRange moreRange = NSMakeRange(0, moreHistory.count);
+        NSIndexSet *moreIndex = [NSIndexSet indexSetWithIndexesInRange:moreRange];
+        [history insertObjects:moreHistory atIndexes:moreIndex];
+        
+        [history enumerateObjectsUsingBlock:^(LingIMChatMessageModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            ZMessageModel *newMsgModel = [[ZMessageModel alloc] initWithMessageModel:obj];
+            [newMessageList addObject:newMsgModel];
+            if ([obj.serviceMsgID isEqualToString:smsgId]) {
+                modelIndex = idx;
+            }
+        }];
+        NSRange range = NSMakeRange(0, newMessageList.count);
+        NSIndexSet *nsindex = [NSIndexSet indexSetWithIndexesInRange:range];
+        [self.messageModels insertObjects:newMessageList atIndexes:nsindex];
+    } else {
+        [self.messageModels enumerateObjectsUsingBlock:^(ZMessageModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj.message.serviceMsgID isEqualToString:smsgId]) {
+                modelIndex = idx;
+                *stop = YES;
+            }
+        }];
+    }
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:modelIndex inSection:0];
+    _chatHistorySelectIndex = indexPath;
+    [self.baseTableView reloadData];
+    
+    // 当前总行数下标 防止越界崩溃
+    NSInteger totalRowIndex = [self.baseTableView numberOfRowsInSection:0] - 1;
+    if (_chatHistorySelectIndex.row > totalRowIndex) {
+        _chatHistorySelectIndex = [NSIndexPath indexPathForRow:totalRowIndex inSection:0];
+    }
+    // 延迟执行滚动到指定位置
+    WeakSelf
+    dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC));
+    dispatch_after(delayTime, dispatch_get_main_queue(), ^{
+        [weakSelf.baseTableView scrollToRowAtIndexPath:weakSelf.chatHistorySelectIndex atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+        [weakSelf checkVisibleCellDoAnimation];
+    });
+}
+
 //systemconfig每5分钟刷新是否音视频通过权限
 - (void)appSystemConfigEnableAudioAndVideoCalls {
     [self.viewGroupCallTip updateUI];
@@ -778,6 +918,7 @@
         [dict setObjectSafe:UserManager.userInfo.userUID forKey:@"userUid"];
     }
     [IMSDKManager MessageChatTagListWith:dict onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+        [HUD hideHUD];
         if ([data isKindOfClass:[NSDictionary class]]) {
             NSDictionary *dataDict = (NSDictionary *)data;
             NSArray *tagList =  (NSArray *)[dataDict objectForKey:@"conversationTagVos"];
@@ -785,7 +926,9 @@
             weakSelf.topView.isShowGroupNotice = [[dataDict objectForKey:@"groupNotice"] boolValue];
         }
     } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
-        [HUD showMessageWithCode:code errorMsg:msg inView:weakSelf.view];
+        [ZTOOL doInMain:^{
+            [HUD showMessageWithCode:code errorMsg:msg inView:weakSelf.view];
+        }];
     }];
 }
 
@@ -798,6 +941,7 @@
         [dict setObjectSafe:UserManager.userInfo.userUID forKey:@"userUid"];
     }
     [[LingIMHttpManager sharedManager] groupGetUserNotalkStateWith:dict onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+        [HUD hideHUD];
         if (data && [data isKindOfClass:[NSDictionary class]]) {
             if(weakSelf.groupInfo.userGroupRole == 0) {
                 //isGroupChat;//群组是否被禁言 0否 1是
@@ -817,6 +961,9 @@
             [weakSelf reloadBottomView];
         }
     } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
+        [ZTOOL doInMain:^{
+            [HUD hideHUD];
+        }];
     }];
 }
 
@@ -833,7 +980,8 @@
         } else if (groupModel.groupStatus == 2) {
             if (self.groupInfo.groupInformStatus == 1) {
                 //群状态 解散
-                [self showTipAlertView:MultilingualTranslation(@"群聊已解散") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:YES];
+                [self deleteSessionAndChatMessage];
+//                [self showTipAlertView:MultilingualTranslation(@"群聊已解散") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:YES];
             } else {
                 [self deleteSessionAndChatMessage];
                 WeakSelf
@@ -906,11 +1054,13 @@
                 //判断一下当前群组状态 0封禁 1正常 2解散
                 if (weakSelf.groupInfo.groupStatus == 0) {
                     //群封禁
-                    [self showTipAlertView:MultilingualTranslation(@"该群已被封禁，如需申诉请联系管理员") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:NO];
+                    [weakSelf deleteSessionAndChatMessage];
+//                    [self showTipAlertView:MultilingualTranslation(@"该群已被封禁，如需申诉请联系管理员") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:NO];
                 } else if (weakSelf.groupInfo.groupStatus == 2) {
                     if (self.groupInfo.groupInformStatus == 1) {
                         //群解散
-                        [weakSelf showTipAlertView:MultilingualTranslation(@"群聊已解散") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:YES];
+                        [weakSelf deleteSessionAndChatMessage];
+//                        [weakSelf showTipAlertView:MultilingualTranslation(@"群聊已解散") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:YES];
                     } else {
                         [weakSelf deleteSessionAndChatMessage];
                         [weakSelf.navigationController.childViewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -930,7 +1080,8 @@
                 } else if (weakSelf.groupInfo.groupStatus == 2) {
                     if (self.groupInfo.groupInformStatus == 1) {
                         //群解散
-                        [weakSelf showTipAlertView:MultilingualTranslation(@"群聊已解散") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:YES];
+                        [weakSelf deleteSessionAndChatMessage];
+//                        [weakSelf showTipAlertView:MultilingualTranslation(@"群聊已解散") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:YES];
                     } else {
                         [weakSelf deleteSessionAndChatMessage];
                         [weakSelf.navigationController.childViewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -1008,6 +1159,7 @@
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setValue:_sessionID forKey:@"userUid"];
     [IMSDKManager getUserInfoWith:dict onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+        [HUD hideHUD];
         if ([data isKindOfClass:[NSDictionary class]]) {
             NSDictionary *userDict = (NSDictionary *)data;
             weakSelf.userModel = [ZUserModel mj_objectWithKeyValues:userDict];
@@ -1031,10 +1183,67 @@
     }];
 }
 //获取群组成员信息，然后再获取群组成员的活跃积分
+//请求群置顶消息列表
+// 判断是否有群公告显示
+- (BOOL)hasGroupNoticeDisplayed {
+    return _viewGroupNotice != nil && !_viewGroupNotice.hidden && !self.multiSelectStatus;
+}
+
+- (void)requestGroupTopMessages {
+    if (self.chatType != CIMChatType_GroupChat || !self.sessionID.length) {
+        return;
+    }
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObjectSafe:UserManager.userInfo.userUID forKey:@"userUid"];
+    [params setObjectSafe:self.sessionID forKey:@"groupId"];
+    
+    WeakSelf
+    [IMSDKManager MessageQueryGroupTopMsgsWith:params onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+        [HUD hideHUD];
+        // 如果有群公告显示，则隐藏群置顶消息
+        if ([weakSelf hasGroupNoticeDisplayed]) {
+            weakSelf.groupTopMessageView.hidden = YES;
+            // 更新 header 高度
+            [weakSelf updateTableViewContentInset];
+            return;
+        }
+        
+        // data 直接就是数组
+        NSArray *rows = nil;
+        if ([data isKindOfClass:[NSArray class]]) {
+            rows = (NSArray *)data;
+        }
+        
+        if ([rows isKindOfClass:[NSArray class]] && rows.count > 0) {
+            // 取出所有数据，不再限制数量，直接传递字典数组
+            [weakSelf.groupTopMessageView updateWithTopMessages:rows sessionID:weakSelf.sessionID];
+        } else {
+            [weakSelf.groupTopMessageView updateWithTopMessages:nil sessionID:weakSelf.sessionID];
+        }
+        // 延迟更新 header 高度，等待 groupTopMessageView 的显示/隐藏动画完成（动画时间 0.3 秒）
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.35 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [weakSelf updateTableViewContentInset];
+        });
+    } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
+        [ZTOOL doInMain:^{
+            [HUD hideHUD];
+            // 请求失败，隐藏置顶消息 View
+            [weakSelf.groupTopMessageView updateWithTopMessages:nil sessionID:weakSelf.sessionID];
+            // 延迟更新 header 高度，等待 groupTopMessageView 的显示/隐藏动画完成（动画时间 0.3 秒）
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.35 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [weakSelf updateTableViewContentInset];
+            });
+        }];
+        
+    }];
+}
+
 - (void)requestAllGroupMember {
     WeakSelf;
     [ZTOOL doInBackground:^{
         [IMSDKManager imSdkCreatSaveGroupMemberTableWith:self.sessionID syncGroupMemberSuccess:^{
+            [HUD hideHUD];
             LingIMGroupModel *localGroupInfo = [IMSDKManager toolCheckMyGroupWith:weakSelf.sessionID];
             long long currentTime = [NSDate getCurrentTimeIntervalWithSecond];
             if ((currentTime - localGroupInfo.lastSyncActiviteScoreime)/1000 > [ZHostTool.appSysSetModel.member_active_points_interval longLongValue]) {
@@ -1043,6 +1252,7 @@
                 [weakSelf.baseTableView reloadData];
             }
         } syncGroupMemberFaiule:^{
+            [HUD hideHUD];
         }];
     }];
 }
@@ -1124,7 +1334,9 @@
             }
         }
     } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
-        [HUD showMessageWithCode:code errorMsg:msg inView:weakSelf.view];
+        [ZTOOL doInMain:^{
+            [HUD showMessageWithCode:code errorMsg:msg inView:weakSelf.view];
+        }];
     }];
 }
 
@@ -1192,8 +1404,8 @@
             [weakSelf dealChatMessageHistoryWith:chatMessageHistory offset:offset];
         } else {
             [ZTOOL doInMain:^{
-                [weakSelf.baseTableView.mj_header endRefreshing];
                 [HUD hideHUD];
+                [weakSelf.baseTableView.mj_header endRefreshing];
             }];
         }
     }];
@@ -1254,7 +1466,7 @@
         
         [ZTOOL doInMain:^{
             [weakSelf.baseTableView.mj_header endRefreshing];
-            [weakSelf.baseTableView reloadData];
+            [weakSelf debounceChatReload];
             
             if (offset == 0) {
                 //首次加载滚动到底部
@@ -1442,11 +1654,15 @@
         long long messageCanDeleteTimeLine = messageDeleteTime - messageDeleteType * 24 * 60 * 60 * 1000;
         dispatch_async(_chatMessageUpdateQueue, ^{
             [IMSDKManager toolMessageDeleteBeforTime:messageCanDeleteTimeLine withSessionID:weakSelf.sessionID];
-            [weakSelf.messageModels enumerateObjectsUsingBlock:^(ZMessageModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                if (obj.message.sendTime <= messageCanDeleteTimeLine) {
-                    [weakSelf.messageModels removeObject:obj];
+            NSArray *snapshot = [weakSelf.messageModels safeArray];
+            NSMutableArray *kept = [NSMutableArray arrayWithCapacity:snapshot.count];
+            [snapshot enumerateObjectsUsingBlock:^(ZMessageModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                if (obj.message.sendTime > messageCanDeleteTimeLine) {
+                    [kept addObject:obj];
                 }
             }];
+            [weakSelf.messageModels removeAllObjects];
+            [weakSelf.messageModels addObjectsFromArray:kept];
             //处理消息是否显示时间
             [weakSelf computeVisibleTime];
             [ZTOOL doInMain:^{
@@ -1527,7 +1743,15 @@
     
     if (self.multiSelectStatus) {
         _viewGroupNotice.hidden = YES;
+    } else {
+        // 显示群公告时，隐藏群置顶消息（群公告优先级更高）
+        if (self.groupTopMessageView) {
+            self.groupTopMessageView.hidden = YES;
+        }
     }
+    
+    // 更新 header 高度
+    [self updateTableViewContentInset];
 }
 
 #pragma mark - 禁言定时器
@@ -1602,55 +1826,49 @@
     }
     NSString *referenceId = @"";
     if (atUsersDictList.count > 0 && atUserSegmentList.count > 0) {
-        //@用户消息（按出现顺序逐一范围替换，避免全量误替换）
+        //@用户消息（使用正则匹配@昵称，避免富文本和字符串位置不匹配的问题）
         NSString *originalStr = [NSString stringWithString:sendStr];
-        // 使用 atUserSegmentList 替代正则匹配，段应为按出现顺序的 { uid, range }，range 覆盖“@昵称+空格”
-        // 1) 规范化与排序
-        NSMutableArray<NSDictionary *> *segments = [NSMutableArray arrayWithCapacity:atUserSegmentList.count];
-        for (NSDictionary *seg in atUserSegmentList) {
-            if (![seg isKindOfClass:NSDictionary.class]) { continue; }
-            id rangeObj = seg[@"range"];
-            NSRange segRange = NSMakeRange(NSNotFound, 0);
-            if ([rangeObj isKindOfClass:NSString.class]) {
-                segRange = NSRangeFromString((NSString *)rangeObj);
-            } else if ([rangeObj isKindOfClass:NSValue.class]) {
-                segRange = [(NSValue *)rangeObj rangeValue];
-            }
-            if (segRange.location == NSNotFound || NSMaxRange(segRange) > originalStr.length) { continue; }
-            NSString *uid = (NSString *)seg[@"uid"]; // 可为空字符串
-            [segments addObject:@{ @"uid": uid ?: @"", @"range": NSStringFromRange(segRange) }];
-        }
-        [segments sortUsingComparator:^NSComparisonResult(NSDictionary *a, NSDictionary *b) {
-            NSRange ra = NSRangeFromString(a[@"range"]);
-            NSRange rb = NSRangeFromString(b[@"range"]);
-            if (ra.location == rb.location) { return NSOrderedSame; }
-            return (ra.location < rb.location) ? NSOrderedAscending : NSOrderedDescending;
-        }];
-
-        NSMutableString *resultStr = [NSMutableString string];
-        NSUInteger lastLocation = 0;
+        
+        // 构建@昵称到uid的映射表
+        NSMutableDictionary<NSString *, NSString *> *atNameToUidMap = [NSMutableDictionary dictionary];
         NSUInteger atIndex = 0;
-        for (NSDictionary *seg in segments) {
-            NSRange r = NSRangeFromString(seg[@"range"]);
-            // 追加非 @ 片段
-            if (r.location > lastLocation) {
-                [resultStr appendString:[originalStr substringWithRange:NSMakeRange(lastLocation, r.location - lastLocation)]];
-            }
-            // 取对应的 at 用户（按出现顺序一一映射）
-            if (atIndex < atUsersDictList.count) {
-                NSDictionary *obj = (NSDictionary *)[atUsersDictList objectAtIndex:atIndex];
-                NSArray *atKeyArr = [obj allKeys];
-                NSString *atKey = (NSString *)[atKeyArr firstObject];
-                [resultStr appendFormat:@"\v%@\v ", atKey];
+        for (NSDictionary *atUserDic in atUsersDictList) {
+            if (atIndex >= atUserSegmentList.count) break;
+            NSDictionary *seg = atUserSegmentList[atIndex];
+            if (![seg isKindOfClass:NSDictionary.class]) {
                 atIndex++;
-            } else {
-                // 安全回退：当列表不足时保留原文
-                [resultStr appendString:[originalStr substringWithRange:r]];
+                continue;
             }
-            lastLocation = r.location + r.length;
+            NSArray *atKeyArr = [atUserDic allKeys];
+            NSString *atKey = (NSString *)[atKeyArr firstObject];
+            NSString *atName = (NSString *)[atUserDic objectForKey:atKey];
+            if ([atKey isEqualToString:UserManager.userInfo.userUID]) {
+                atName = MultilingualTranslation(@"我自己");
+            }
+            if (atName && atKey) {
+                NSString *atPattern = [NSString stringWithFormat:@"@%@ ", atName];
+                [atNameToUidMap setObject:atKey forKey:atPattern];
+            }
+            atIndex++;
         }
-        if (lastLocation < originalStr.length) {
-            [resultStr appendString:[originalStr substringFromIndex:lastLocation]];
+        
+        // 使用正则表达式匹配所有@昵称，按出现顺序替换
+        NSMutableString *resultStr = [NSMutableString stringWithString:originalStr];
+        NSError *error = nil;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"@[\\u4e00-\\u9fa5\\w\\-\\_，]+ " options:0 error:&error];
+        if (!error) {
+            NSArray<NSTextCheckingResult *> *matches = [regex matchesInString:originalStr options:0 range:NSMakeRange(0, originalStr.length)];
+            // 倒序替换，避免索引偏移
+            for (NSInteger i = matches.count - 1; i >= 0; i--) {
+                NSTextCheckingResult *match = matches[i];
+                NSString *matchedText = [originalStr substringWithRange:match.range];
+                NSString *uid = [atNameToUidMap objectForKey:matchedText];
+                if (uid) {
+                    [resultStr replaceCharactersInRange:match.range withString:[NSString stringWithFormat:@"\v%@\v ", uid]];
+                    // 移除已使用的映射，避免重复匹配
+                    [atNameToUidMap removeObjectForKey:matchedText];
+                }
+            }
         }
         NSString *atContentStr = resultStr;
 
@@ -1685,7 +1903,7 @@
                     weakSelf.viewInput.inputContentStr = @"";
                     [weakSelf.viewInput configAtUserInfoList:@[]];
                     [weakSelf.viewInput configAtSegmentsInfoList:@[]];
-                    [weakSelf.viewInput setSendButtonHighlighted:NO];
+//                    [weakSelf.viewInput setSendButtonHighlighted:NO];
                     if (weakSelf.draftDidChange) { weakSelf.draftDidChange(weakSelf.sessionID, @{}); }
                 }
                 [IMSDKManager toolInsertOrUpdateChatMessageWith:atSendMessage];
@@ -1709,7 +1927,7 @@
                 self.viewInput.inputContentStr = @"";
                 [self.viewInput configAtUserInfoList:@[]];
                 [self.viewInput configAtSegmentsInfoList:@[]];
-                [self.viewInput setSendButtonHighlighted:NO];
+//                [self.viewInput setSendButtonHighlighted:NO];
                 if (self.draftDidChange) { self.draftDidChange(self.sessionID, @{}); }
             }
         }
@@ -1753,7 +1971,7 @@
                     weakSelf.viewInput.inputContentStr = @"";
                     [weakSelf.viewInput configAtUserInfoList:@[]];
                     [weakSelf.viewInput configAtSegmentsInfoList:@[]];
-                    [weakSelf.viewInput setSendButtonHighlighted:NO];
+//                    [weakSelf.viewInput setSendButtonHighlighted:NO];
                     if (weakSelf.draftDidChange) { weakSelf.draftDidChange(weakSelf.sessionID, @{}); }
                 }
                 [IMSDKManager toolInsertOrUpdateChatMessageWith:textSendMsg];
@@ -1777,7 +1995,7 @@
                 self.viewInput.inputContentStr = @"";
                 [self.viewInput configAtUserInfoList:@[]];
                 [self.viewInput configAtSegmentsInfoList:@[]];
-                [self.viewInput setSendButtonHighlighted:NO];
+//                [self.viewInput setSendButtonHighlighted:NO];
                 if (self.draftDidChange) { self.draftDidChange(self.sessionID, @{}); }
             }
         }
@@ -2089,11 +2307,16 @@
             [ZTOOL doInMain:^{
                 [HUD hideHUD];
             }];
+            
+            NSMutableArray <LingIMChatMessageModel *> *messageList = [NSMutableArray new];
             [sendChatMsgArr enumerateObjectsUsingBlock:^(LingIMChatMessageModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                //将配置好的消息 1.存储到数据库 2.添加到UI上展示(此时展示的图片或视频还没上传完成，正在上传中...)
-                [IMSDKManager toolInsertOrUpdateChatMessageWith:obj];
+                //将配置好的消息添加到UI上展示(此时展示的图片或视频还没上传完成，正在上传中...)
+                [messageList addObject:obj];
                 [weakSelf chatListAppendMessage:obj];
             }];
+            
+            //将配置好的消息存储到数据库
+            [IMSDKManager toolInsertOrUpdateChatMessagesWith:messageList];
         }];
         [IMAGEPICKER.zSelectedAssets removeAllObjects];
     }
@@ -2214,12 +2437,16 @@
             [ZTOOL doInMain:^{
                 [HUD hideHUD];
             }];
+            
+            NSMutableArray <LingIMChatMessageModel *> *messageList = [NSMutableArray new];
             [sengMessageArr enumerateObjectsUsingBlock:^(LingIMChatMessageModel *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 //将配置好的消息 1.存储到数据库 2.添加到UI上展示
-                [IMSDKManager toolInsertOrUpdateChatMessageWith:obj];
+                [messageList addObject:obj];
                 [weakSelf chatListAppendMessage:obj];
             }];
-
+            
+            //将配置好的消息存储到数据库
+            [IMSDKManager toolInsertOrUpdateChatMessagesWith:messageList];
         });
     }
 }
@@ -2229,15 +2456,15 @@
     if (_chatType == CIMChatType_GroupChat) {//群聊
         //防止获取群信息接口失败，可以进行用户头像点击跳转
         if (!_groupInfo) {
-            //用户没选择了艾特的成员，相当于输入艾特
-            [self.viewInput inputViewInsertAtUserInfo:nil];
+            // 群信息未获取到，尝试调起@列表
+            [self showAtUserListView];
             return;
         }
     
         //群开启了群内禁止私聊，普通群成员不可以点击用户头像跳转
         if (_groupInfo.isPrivateChat && _groupInfo.userGroupRole == 0) {
-            //用户没选择了 @ 的成员，相当于输入 @ 
-            [self.viewInput inputViewInsertAtUserInfo:nil];
+            // 没有权限@别人，不调起@列表（允许输入@，但不调起列表）
+            // 注意：shouldChangeTextInRange 中已经返回 YES，允许输入@符号，但不调起@列表
             return;
         }
         [self showAtUserListView];
@@ -2599,14 +2826,26 @@
             return;
         }
         
-        //当前被移除群聊的是我自己
-        if (newMessage.serverMessage.sMsgType == IMServerMessage_ServerMsgType_KickGroupMessage) {
-            KickGroupMessage *kickmember = newMessage.serverMessage.kickGroupMessage;
-            if ([kickmember.uid isEqualToString:UserManager.userInfo.userUID]) {
-                //当前被移除群聊的是我自己，就不再界面上追加消息了
-                return;
-            }
+        //解散群聊不追加消息
+        if (newMessage.serverMessage.sMsgType == IMServerMessage_ServerMsgType_DelGroupMessage) {
+            return;
         }
+        //移出群聊不追加消息
+        if (newMessage.serverMessage.sMsgType == IMServerMessage_ServerMsgType_KickGroupMessage) {
+            return;
+        }
+        //退出群聊不追加消息
+        if (newMessage.serverMessage.sMsgType == IMServerMessage_ServerMsgType_OutGroupMessage) {
+            return;
+        }
+        //当前被移除群聊的是我自己
+//        if (newMessage.serverMessage.sMsgType == IMServerMessage_ServerMsgType_KickGroupMessage) {
+//            KickGroupMessage *kickmember = newMessage.serverMessage.kickGroupMessage;
+//            if ([kickmember.uid isEqualToString:UserManager.userInfo.userUID]) {
+//                //当前被移除群聊的是我自己，就不再界面上追加消息了
+//                return;
+//            }
+//        }
         
         ZMessageModel *newMsgModel;
         if (newMessage.chatType == CIMChatType_GroupChat) {
@@ -2878,6 +3117,14 @@
         }
     }
     
+    //群消息置顶/取消置顶 该消息转发给在线所有成员
+    if (message.serverMessage.sMsgType == IMServerMessage_ServerMsgType_GroupMessageTop) {
+        if([message.toID isEqualToString:self.sessionID]){
+            [self requestGroupTopMessages];
+            return;
+        }
+    }
+    
     //单聊
     if (message.chatType == CIMChatType_SingleChat) {
         //撤回消息通知、双向删除
@@ -2934,7 +3181,8 @@
         if (self.chatType == CIMChatType_GroupChat && [message.serverMessage.kickGroupMessage.gid isEqualToString:self.groupInfo.groupId]) {
             if ([message.serverMessage.kickGroupMessage.uid isEqualToString:UserManager.userInfo.userUID]) {
                 if (self.groupInfo.groupInformStatus == 1) {
-                    [self showTipAlertView:MultilingualTranslation(@"你已被移出群聊") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:NO];
+                    [self deleteSessionAndChatMessage];
+//                    [self showTipAlertView:MultilingualTranslation(@"你已被移出群聊") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:NO];
                 } else {
                     [self deleteSessionAndChatMessage];
                     [weakSelf.navigationController.childViewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -2973,33 +3221,26 @@
     //判断是否为解散群组
     if (message.serverMessage.sMsgType == IMServerMessage_ServerMsgType_DelGroupMessage) {
         //操作者id不是当前用户，并且删除的群id是当前群
-        if (![message.serverMessage.delGroupMessage.uid isEqualToString:UserManager.userInfo.userUID] && [message.serverMessage.delGroupMessage.gid isEqualToString:self.sessionID]) {
+        if ([message.serverMessage.delGroupMessage.gid isEqualToString:self.sessionID]) {
             if (self.groupInfo.groupInformStatus == 1) {
                 //群解散
-                [self showTipAlertView:MultilingualTranslation(@"群聊已解散") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:NO];
+                [self deleteSessionAndChatMessage];
+//                [self showTipAlertView:MultilingualTranslation(@"群聊已解散") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:NO];
             } else {
                 [self deleteSessionAndChatMessage];
-                [self.navigationController.childViewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    if ([obj isKindOfClass:[HomeSessionVC class]]) {
-                        HomeSessionVC *vc = (HomeSessionVC *)obj;
-                        [weakSelf.navigationController popToViewController:vc animated:YES];
-                        *stop = YES;
-                    }
-                }];
             }
         }
     }
     
     //判断是否为退出群聊
     if (message.serverMessage.sMsgType == IMServerMessage_ServerMsgType_OutGroupMessage) {
-        if ([CurrentVC isKindOfClass:[NHChatViewController class]]) {
-            if ([message.serverMessage.delGroupMessage.uid isEqualToString:UserManager.userInfo.userUID]) {
-                [self showTipAlertView:MultilingualTranslation(@"你已退出该群聊") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:NO];
-            } else {
-                if([message.toID isEqualToString:self.sessionID]){
-                    [IMSDKManager imSdkDeleteGroupMemberWith:message.serverMessage.kickGroupMessage.uid groupID:self.groupInfo.groupId];
-                    [self getGroupInfoFromServer];
-                }
+        if ([message.serverMessage.outGroupMessage.uid isEqualToString:UserManager.userInfo.userUID]) {
+            [self deleteSessionAndChatMessage];
+//                [self showTipAlertView:MultilingualTranslation(@"你已退出该群聊") btnName:MultilingualTranslation(@"我知道了") isNeedDelete:NO];
+        } else {
+            if([message.toID isEqualToString:self.sessionID]){
+                [IMSDKManager imSdkDeleteGroupMemberWith:message.serverMessage.outGroupMessage.uid groupID:self.groupInfo.groupId];
+                [self getGroupInfoFromServer];
             }
         }
     }
@@ -3345,36 +3586,60 @@
             //群聊
             [dict setValue:@(1) forKey:@"dialogType"];
         }
+        __weak typeof(self) weakSelf = self;
         //删除会话
-        [[LingIMSDKManager sharedTool] deleteServerConversation:dict onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {} onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {}];
+        [[LingIMSDKManager sharedTool] deleteServerConversation:dict onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+            //删除本地聊天记录 删除本地会话
+            [IMSDKManager toolDeleteSessionModelWith:model andDeleteAllChatModel:YES];
+            //清除缓存
+            [ZMessageTools clearChatLocalImgAndVideoFromSessionId:self.sessionID];
+            if (self->_chatType == CIMChatType_SingleChat) {
+                //删除好友
+                [IMSDKManager toolDeleteMyFriendWith:self.sessionID];
+            } else if (self->_chatType == CIMChatType_GroupChat) {
+                //删除群组
+                [IMSDKManager toolDeleteMyGroupWith:self.sessionID];
+            }
+            [weakSelf.navigationController popToRootViewControllerAnimated:YES];
+        } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
+            [HUD showMessageWithCode:code errorMsg:msg];
+        }];
     }
     
-    //删除会话
-    [IMSDKManager toolDeleteMySessionWith:self.sessionID deleteAllChatMessage:YES];
-
-    if (_chatType == CIMChatType_SingleChat) {
-        //删除好友
-        [IMSDKManager toolDeleteMyFriendWith:self.sessionID];
-    } else if (_chatType == CIMChatType_GroupChat) {
-        //删除群组
-        [IMSDKManager toolDeleteMyGroupWith:self.sessionID];
-    }
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    
 }
 
 - (void)reviceMessageSortMessagListWithSendTime {
-//    WeakSelf
-//    dispatch_async(_chatMessageUpdateQueue, ^{
-        //对界面上的消息数组进行时间排序，刷新界面
-        NSArray *sortResultArr = [NSMutableArray sortMultiSelectedMessageArr:self.messageModels.safeArray];
-        [self.messageModels removeAllObjects];
-        [self.messageModels addObjectsFromArray:sortResultArr];
-//        [ZTOOL doInMain:^{
-//            [weakSelf.baseTableView reloadData];
-//            //加载滚动到底部
-//            [weakSelf tableViewScrollToBottom:YES duration:0.25];
-//        }];
-//    });
+    WeakSelf
+    if (self.pendingSortBlock) {
+        dispatch_block_cancel(self.pendingSortBlock);
+        self.pendingSortBlock = nil;
+    }
+    dispatch_block_t block = dispatch_block_create(0, ^{
+        dispatch_async(self->_chatMessageUpdateQueue, ^{
+            NSArray *sortResultArr = [NSMutableArray sortMultiSelectedMessageArr:weakSelf.messageModels.safeArray];
+            [weakSelf.messageModels replaceAllObjectsWithArray:sortResultArr];
+            [weakSelf debounceChatReload];
+        });
+    });
+    self.pendingSortBlock = block;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.08 * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
+}
+
+#pragma mark - 刷新/排序防抖
+- (void)debounceChatReload {
+    WeakSelf
+    if (self.pendingChatReloadBlock) {
+        dispatch_block_cancel(self.pendingChatReloadBlock);
+        self.pendingChatReloadBlock = nil;
+    }
+    dispatch_block_t block = dispatch_block_create(0, ^{
+        [UIView performWithoutAnimation:^{
+            [weakSelf.baseTableView reloadData];
+        }];
+    });
+    self.pendingChatReloadBlock = block;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.08 * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
 }
 
 //撤回或者删除了某条消息，并处理引用这条消息的消息里被引用消息展示状态
@@ -3430,7 +3695,13 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    // 不再使用 section header，改用 contentInset
     return CGFLOAT_MIN;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    // 不再使用 section header，改用 contentInset
+    return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
@@ -3671,6 +3942,11 @@
 }
 
 #pragma mark - UIScrollViewDelegate
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    // 滑动聊天消息时收起键盘
+    [self hideKeyBoardAndEmjoy];
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat height = scrollView.frame.size.height;
     CGFloat contentOffsetY = scrollView.contentOffset.y;
@@ -3879,7 +4155,7 @@
         msgAlertView.lblTitle.text = MultilingualTranslation(@"清空用户消息");
         msgAlertView.lblTitle.font = FONTB(18);
         msgAlertView.lblTitle.textAlignment = NSTextAlignmentCenter;
-        msgAlertView.lblContent.text = [NSString stringWithFormat:MultilingualTranslation(@"此操作将永久删除用户“%@”在本群的所有发言记录，且所有群成员将无法查看"), self.atBannedView.userName];
+        msgAlertView.lblContent.text = [NSString stringWithFormat:MultilingualTranslation(@"此操作将永久删除用户“%@”在本群内的所有发言记录，且所有群成员都将无法查看"), self.atBannedView.userName];
         msgAlertView.lblContent.font = FONTN(14);
         msgAlertView.lblContent.tkThemetextColors = @[COLOR_33, COLOR_33_DARK];
         msgAlertView.lblContent.textAlignment = NSTextAlignmentCenter;
@@ -3927,7 +4203,6 @@
     [self.viewInput inputViewResignFirstResponder];
     [self imageVideoBrowserWith:messageModel];
 }
-
 
 #pragma mark - UITableViewDelegate (GIF 播放控制)
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -4501,7 +4776,82 @@
     //显示出弹窗
     ZChatMessageMoreView *msgMoreMenu = [[ZChatMessageMoreView alloc] initWithMenu:menuArr targetRect:targetRect isFromMy:longTapModel.isSelf isBottom:isBottom msgContentSize:CGSizeMake(longTapModel.messageWidth, longTapModel.messageHeight)];
     WeakSelf;
+    
+    // 使用弱引用避免循环引用
+    __weak typeof(msgMoreMenu) weakMsgMoreMenu = msgMoreMenu;
+    
+    // 对于群聊的文字消息和@消息，查询置顶状态并动态添加菜单项
+    // 只有在 groupMsgPinning 是 "true" 时才请求接口动态添加
+    // 引用消息不添加置顶和取消置顶按钮
+    if (self.chatType == CIMChatType_GroupChat &&
+        (longTapModel.message.messageType == CIMChatMessageType_TextMessage || longTapModel.message.messageType == CIMChatMessageType_AtMessage) &&
+        longTapModel.message.serviceMsgID.length > 0 &&
+        [NSString isNil:longTapModel.message.referenceMsgId] && // 引用消息不添加置顶按钮
+        [UserManager.userRoleAuthInfo.groupMsgPinning.configValue isEqualToString:@"true"]) {
+        // 异步查询置顶状态
+        NSMutableDictionary *params = [NSMutableDictionary dictionary];
+        [params setObjectSafe:UserManager.userInfo.userUID forKey:@"userUid"];
+        [params setObjectSafe:self.sessionID forKey:@"groupId"];
+        [params setObjectSafe:longTapModel.message.serviceMsgID forKey:@"smsgId"];
+        
+        // 使用关联对象保存 type 值和消息模型
+        objc_setAssociatedObject(msgMoreMenu, @"msgTopType", nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(msgMoreMenu, @"msgModel", longTapModel, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        
+        [IMSDKManager MessageQueryGroupMsgStatusWith:params onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+            __strong typeof(weakMsgMoreMenu) strongMsgMoreMenu = weakMsgMoreMenu;
+            if (!strongMsgMoreMenu) { return; }
+            
+            if ([data isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *dataDic = (NSDictionary *)data;
+                NSInteger type = [[dataDic objectForKeySafe:@"type"] integerValue];
+                
+                // 保存 type 值到关联对象
+                objc_setAssociatedObject(strongMsgMoreMenu, @"msgTopType", @(type), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+                
+                // 根据 type 值动态添加菜单项
+                NSMutableArray *updatedMenuArr = [menuArr mutableCopy];
+                
+                // 获取用户角色
+                NSInteger userGroupRole = weakSelf.groupInfo ? weakSelf.groupInfo.userGroupRole : 0;
+                
+                if (type == 2 || type == 3) {
+                    // type == 2 或 type == 3：直接添加取消置顶菜单项
+                    if (![updatedMenuArr containsObject:[NSNumber numberWithInteger:MessageMenuItemActionTypeGroupTopCancel]]) {
+                        [updatedMenuArr addObject:[NSNumber numberWithInteger:MessageMenuItemActionTypeGroupTopCancel]];
+                    }
+                } else if (type == 1) {
+                    // type == 1：判断当前身份，如果是群主或管理员才添加
+                    if (userGroupRole == 1 || userGroupRole == 2) {
+                        // 群主或管理员：添加取消置顶菜单项
+                        if (![updatedMenuArr containsObject:[NSNumber numberWithInteger:MessageMenuItemActionTypeGroupTopCancel]]) {
+                            [updatedMenuArr addObject:[NSNumber numberWithInteger:MessageMenuItemActionTypeGroupTopCancel]];
+                        }
+                    }
+                    else {
+                        //群成员添加置顶菜单项可个人置顶
+                        if (![updatedMenuArr containsObject:[NSNumber numberWithInteger:MessageMenuItemActionTypeGroupTop]]) {
+                            [updatedMenuArr addObject:[NSNumber numberWithInteger:MessageMenuItemActionTypeGroupTop]];
+                        }
+                    }
+                    
+                } else {
+                    // 未置顶，添加置顶菜单项
+                    if (![updatedMenuArr containsObject:[NSNumber numberWithInteger:MessageMenuItemActionTypeGroupTop]]) {
+                        [updatedMenuArr addObject:[NSNumber numberWithInteger:MessageMenuItemActionTypeGroupTop]];
+                    }
+                }
+                
+                // 更新菜单显示
+                [strongMsgMoreMenu updateMenuItems:updatedMenuArr];
+            }
+        } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
+            // 查询失败，不添加置顶相关菜单项
+        }];
+    }
+    
     [msgMoreMenu setMenuClick:^(MessageMenuItemActionType actionType) {
+        __strong typeof(weakMsgMoreMenu) strongMsgMoreMenu = weakMsgMoreMenu;
         switch (actionType) {
             case MessageMenuItemActionTypeCopy:
                 //复制
@@ -4562,6 +4912,14 @@
             case MessageMenuItemActionTypeMutePlayback:
                 //听筒播放
                 [weakSelf messageMutePlaybackActionWithMsg:longTapModel cellIndex:cellIndex];
+                break;
+            case MessageMenuItemActionTypeGroupTop:
+                //置顶
+                [weakSelf messageGroupTopActionWithMsg:longTapModel msgMoreMenu:strongMsgMoreMenu];
+                break;
+            case MessageMenuItemActionTypeGroupTopCancel:
+                //取消置顶
+                [weakSelf messageGroupTopCancelActionWithMsg:longTapModel msgMoreMenu:strongMsgMoreMenu];
                 break;
             default:
                 break;
@@ -4831,7 +5189,7 @@
     
     NSMiniAppWebVC *webVC = [[NSMiniAppWebVC alloc] init];
     webVC.webViewUrl = urlStr;
-    webVC.webType = ZMiniAppWebVCTypeMiniApp;
+    webVC.webType = NSMiniAppWebVCTypeMiniApp;
     webVC.floatMiniAppModel = floadModel;
     [self.navigationController pushViewController:webVC animated:YES];
 }
@@ -5571,6 +5929,195 @@
     [self.navigationController pushViewController:vc animated:YES];
 }
 
+//消息置顶
+- (void)messageGroupTopActionWithMsg:(ZMessageModel *)msgModel msgMoreMenu:(ZChatMessageMoreView *)msgMoreMenu {
+    if (!msgModel || !msgModel.message.serviceMsgID.length) {
+        return;
+    }
+    
+    // 根据用户角色显示不同的选择框
+    NSInteger userGroupRole = self.groupInfo.userGroupRole; // 0=普通成员, 1=管理员, 2=群主
+    
+    if (userGroupRole == 0) {
+        // 普通成员：显示普通提示框（带标题）
+        ZMessageAlertView *alertView = [[ZMessageAlertView alloc] initWithMsgAlertType:ZMessageAlertTypeTitle supView:nil];
+        alertView.lblTitle.text = MultilingualTranslation(@"置顶消息");
+        alertView.lblContent.text = MultilingualTranslation(@"你确定置顶本条消息吗?");
+        [alertView.btnSure setTitle:MultilingualTranslation(@"确认") forState:UIControlStateNormal];
+        [alertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
+        alertView.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
+        [alertView.btnCancel setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];
+        [alertView.btnCancel setTkThemeTitleColor:@[COLOR_66, COLOR_66_DARK] forState:UIControlStateNormal];
+        alertView.btnCancel.tkThemebackgroundColors = @[COLOR_F6F6F6, COLOR_F6F6F6_DARK];
+        alertView.sureBtnBlock = ^(BOOL isCheckBox) {
+            // 个人置顶
+            [self doSetMsgTopWithMsgModel:msgModel msgStatus:2];
+        };
+        alertView.cancelBtnBlock = ^{
+        };
+        [alertView alertShow];
+    } else {
+        // 群主/管理：显示带复选框的弹框
+        ZMessageAlertView *alertView = [[ZMessageAlertView alloc] initWithMsgAlertType:ZMessageAlertTypeTitleCheckBoxAboveButton supView:nil];
+        alertView.lblTitle.text = MultilingualTranslation(@"置顶消息");
+        alertView.lblContent.text = MultilingualTranslation(@"你确定置顶本条消息吗?");
+        alertView.checkboxLblContent.text = MultilingualTranslation(@"为所有群成员置顶");
+        [alertView.btnSure setTitle:MultilingualTranslation(@"确认") forState:UIControlStateNormal];
+        [alertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
+        alertView.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
+        [alertView.btnCancel setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];
+        [alertView.btnCancel setTkThemeTitleColor:@[COLOR_66, COLOR_66_DARK] forState:UIControlStateNormal];
+        alertView.btnCancel.tkThemebackgroundColors = @[COLOR_F6F6F6, COLOR_F6F6F6_DARK];
+        alertView.isSelectCheckBox = NO;
+        alertView.sureBtnBlock = ^(BOOL isCheckBox) {
+            // 根据复选框状态决定：勾选=全局置顶(1)，未勾选=个人置顶(2)
+            NSInteger msgStatus = isCheckBox ? 1 : 2;
+            [self doSetMsgTopWithMsgModel:msgModel msgStatus:msgStatus];
+        };
+        alertView.cancelBtnBlock = ^{
+        };
+        [alertView alertShow];
+    }
+}
+
+//消息取消置顶
+- (void)messageGroupTopCancelActionWithMsg:(ZMessageModel *)msgModel msgMoreMenu:(ZChatMessageMoreView *)msgMoreMenu {
+    if (!msgModel || !msgModel.message.serviceMsgID.length) {
+        return;
+    }
+    
+    // 获取保存的 type 值
+    NSNumber *typeNum = objc_getAssociatedObject(msgMoreMenu, @"msgTopType");
+    NSInteger type = typeNum ? typeNum.integerValue : 0;
+    
+    // 获取用户角色
+    NSInteger userGroupRole = self.groupInfo ? self.groupInfo.userGroupRole : 0;
+    
+    // 根据 type 值和用户角色显示不同的提示框
+    if (type == 2) {
+        // type == 2：显示取消个人置顶弹框
+        [self showCancelPersonalTopAlertWithMsgModel:msgModel];
+    } else if (type == 1) {
+        // type == 1：判断身份
+        if (userGroupRole == 1 || userGroupRole == 2) {
+            // 群主或管理员：显示取消全局置顶弹框
+            [self showCancelGlobalTopAlertWithMsgModel:msgModel];
+        }
+        // 普通成员：不弹框
+    } else if (type == 3) {
+        // type == 3：根据身份显示不同弹框
+        if (userGroupRole == 1 || userGroupRole == 2) {
+            // 群主或管理员：显示取消全局置顶弹框
+            [self showCancelGlobalTopAlertWithMsgModel:msgModel];
+        } else {
+            // 群成员：显示取消个人置顶弹框
+            [self showCancelPersonalTopAlertWithMsgModel:msgModel];
+        }
+    } else {
+        // 如果 type 值异常，再次查询
+        NSMutableDictionary *params = [NSMutableDictionary dictionary];
+        [params setObjectSafe:UserManager.userInfo.userUID forKey:@"userUid"];
+        [params setObjectSafe:self.sessionID forKey:@"groupId"];
+        [params setObjectSafe:msgModel.message.serviceMsgID forKey:@"smsgId"];
+        
+        WeakSelf;
+        [IMSDKManager MessageQueryGroupMsgStatusWith:params onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+            if ([data isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *dataDic = (NSDictionary *)data;
+                NSInteger currentType = [[dataDic objectForKeySafe:@"type"] integerValue];
+                NSInteger currentUserGroupRole = weakSelf.groupInfo ? weakSelf.groupInfo.userGroupRole : 0;
+                
+                if (currentType == 2) {
+                    // type == 2：显示取消个人置顶弹框
+                    [weakSelf showCancelPersonalTopAlertWithMsgModel:msgModel];
+                } else if (currentType == 1) {
+                    // type == 1：判断身份
+                    if (currentUserGroupRole == 1 || currentUserGroupRole == 2) {
+                        // 群主或管理员：显示取消全局置顶弹框
+                        [weakSelf showCancelGlobalTopAlertWithMsgModel:msgModel];
+                    }
+                    // 普通成员：不弹框
+                } else if (currentType == 3) {
+                    // type == 3：根据身份显示不同弹框
+                    if (currentUserGroupRole == 1 || currentUserGroupRole == 2) {
+                        // 群主或管理员：显示取消全局置顶弹框
+                        [weakSelf showCancelGlobalTopAlertWithMsgModel:msgModel];
+                    } else {
+                        // 群成员：显示取消个人置顶弹框
+                        [weakSelf showCancelPersonalTopAlertWithMsgModel:msgModel];
+                    }
+                }
+            }
+        } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
+            // 查询失败
+        }];
+    }
+}
+
+// 显示取消全局置顶提示框
+- (void)showCancelGlobalTopAlertWithMsgModel:(ZMessageModel *)msgModel {
+    ZMessageAlertView *alertView = [[ZMessageAlertView alloc] initWithMsgAlertType:ZMessageAlertTypeTitle supView:nil];
+    alertView.lblTitle.text = MultilingualTranslation(@"取消全局置顶");
+    alertView.lblContent.text = MultilingualTranslation(@"你确定取消本条消息的全局置顶吗?");
+    [alertView.btnSure setTitle:MultilingualTranslation(@"确认") forState:UIControlStateNormal];
+    [alertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
+    alertView.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
+    [alertView.btnCancel setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];
+    [alertView.btnCancel setTkThemeTitleColor:@[COLOR_66, COLOR_66_DARK] forState:UIControlStateNormal];
+    alertView.btnCancel.tkThemebackgroundColors = @[COLOR_F6F6F6, COLOR_F6F6F6_DARK];
+    alertView.sureBtnBlock = ^(BOOL isCheckBox) {
+        // 取消全局置顶
+        [self doSetMsgTopWithMsgModel:msgModel msgStatus:3];
+    };
+    alertView.cancelBtnBlock = ^{
+    };
+    [alertView alertShow];
+}
+
+// 显示取消置顶提示框（个人置顶）
+- (void)showCancelPersonalTopAlertWithMsgModel:(ZMessageModel *)msgModel {
+    ZMessageAlertView *alertView = [[ZMessageAlertView alloc] initWithMsgAlertType:ZMessageAlertTypeTitle supView:nil];
+    alertView.lblTitle.text = MultilingualTranslation(@"取消置顶");
+    alertView.lblContent.text = MultilingualTranslation(@"你确定取消本条置顶消息吗?");
+    [alertView.btnSure setTitle:MultilingualTranslation(@"确认") forState:UIControlStateNormal];
+    [alertView.btnSure setTkThemeTitleColor:@[COLORWHITE, COLORWHITE] forState:UIControlStateNormal];
+    alertView.btnSure.tkThemebackgroundColors = @[COLOR_4791FF, COLOR_4791FF_DARK];
+    [alertView.btnCancel setTitle:MultilingualTranslation(@"取消") forState:UIControlStateNormal];
+    [alertView.btnCancel setTkThemeTitleColor:@[COLOR_66, COLOR_66_DARK] forState:UIControlStateNormal];
+    alertView.btnCancel.tkThemebackgroundColors = @[COLOR_F6F6F6, COLOR_F6F6F6_DARK];
+    alertView.sureBtnBlock = ^(BOOL isCheckBox) {
+        // 取消个人置顶
+        [self doSetMsgTopWithMsgModel:msgModel msgStatus:4];
+    };
+    alertView.cancelBtnBlock = ^{
+    };
+    [alertView alertShow];
+}
+
+//执行置顶/取消置顶操作
+- (void)doSetMsgTopWithMsgModel:(ZMessageModel *)msgModel msgStatus:(NSInteger)msgStatus {
+    if (!msgModel || !msgModel.message.serviceMsgID.length) {
+        return;
+    }
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObjectSafe:UserManager.userInfo.userUID forKey:@"userUid"];
+    [params setObjectSafe:self.sessionID forKey:@"groupId"];
+    [params setObjectSafe:msgModel.message.serviceMsgID forKey:@"smsgId"];
+    [params setObjectSafe:@(msgStatus) forKey:@"msgStatus"];
+    
+    WeakSelf;
+    [IMSDKManager groupSetMsgTopWith:params onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+        // 置顶/取消置顶成功，更新置顶消息列表
+        if (weakSelf && weakSelf.chatType == CIMChatType_GroupChat) {
+            [weakSelf requestGroupTopMessages];
+        }
+    } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
+        // 置顶/取消置顶失败
+        [HUD showMessageWithCode:code errorMsg:msg inView:weakSelf.view];
+    }];
+}
+
 //替换messageModel
 - (void)replaceMessageModelWithNewMsgModel:(LingIMChatMessageModel *)chatMessageModel {
     for(int i = 0; i<self.messageModels.count;i++) {
@@ -5677,35 +6224,61 @@
     }];
 }
 
+#pragma mark - Loading超时处理
+//启动loading超时计时器（30秒）
+- (void)startLoadingTimeoutTimer {
+    // 先取消之前的计时器（如果存在）
+    [self stopLoadingTimeoutTimer];
+    
+    WeakSelf
+    self.loadingTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:20.0 repeats:NO block:^(NSTimer * _Nonnull timer) {
+        [weakSelf checkAndHideLoadingIfNeeded];
+    }];
+}
+
+//停止loading超时计时器
+- (void)stopLoadingTimeoutTimer {
+    if (self.loadingTimeoutTimer) {
+        [self.loadingTimeoutTimer invalidate];
+        self.loadingTimeoutTimer = nil;
+    }
+}
+
+//检查并隐藏loading（如果还在显示）
+- (void)checkAndHideLoadingIfNeeded {
+    // 检查当前view上是否还有HUD显示
+    MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
+    if (hud != nil) {
+        // loading还在显示，隐藏它
+        [HUD hideHUD];
+    }
+    // 如果loading已经隐藏，不做任何操作
+    [HUD hideHUD];
+}
+
 #pragma mark - Other
 //计算每条消息是否显示时间
 -(void)computeVisibleTime {
     WeakSelf
     dispatch_async(_chatMessageCalculateTimeQueue, ^{
-        ZMessageModel *temoMsgModel;
-        long long  prevSendTime = 0;
-        for (int i = 0; i < weakSelf.messageModels.count; i++) {
-            temoMsgModel = [weakSelf.messageModels objectAtIndex:i];
-            if (i==0) {
-                //最上面一条消息的时间
-                prevSendTime = temoMsgModel.message.sendTime;
-                //显示时间
-                temoMsgModel.isShowSendTime = YES;
+        NSArray *snapshot = [weakSelf.messageModels safeArray];
+        if (snapshot.count == 0) { return; }
+        NSMutableArray *updated = [snapshot mutableCopy];
+        long long prevSendTime = 0;
+        for (NSUInteger i = 0; i < updated.count; i++) {
+            ZMessageModel *msg = updated[i];
+            if (i == 0) {
+                prevSendTime = msg.message.sendTime;
+                msg.isShowSendTime = YES;
             } else {
-                //如果聊天消息是同一天的，不显示间隔的日期
-                if ([ZMessageTimeTool isSameDay:temoMsgModel.message.sendTime Time2:prevSendTime]){
-                    //不显示时间
-                    temoMsgModel.isShowSendTime = NO;
-                } else {
-                    //显示时间
-                    temoMsgModel.isShowSendTime = YES;
-                }
-                //上一条消息的发送时间
-                prevSendTime = temoMsgModel.message.sendTime;
+                BOOL sameDay = [ZMessageTimeTool isSameDay:msg.message.sendTime Time2:prevSendTime];
+                msg.isShowSendTime = sameDay ? NO : YES;
+                prevSendTime = msg.message.sendTime;
             }
-            //时间设置完成后数据替换
-            [weakSelf.messageModels replaceObjectAtIndex:i withObject:temoMsgModel];
+            updated[i] = msg;
         }
+        // 批量一次性写入，避免多次 barrier
+        [weakSelf.messageModels replaceAllObjectsWithArray:updated];
     });
 }
 
@@ -5928,6 +6501,10 @@
             [_viewGroupNotice removeFromSuperview];
             _viewGroupNotice = nil;
         }
+        // 关闭群公告后，重新请求并显示群置顶消息（如果有）
+        if (self.chatType == CIMChatType_GroupChat) {
+            [self requestGroupTopMessages];
+        }
     }else {
         //跳转到群公告界面
         /**
@@ -5951,12 +6528,14 @@
     [dict setValue:@(_chatType) forKey:@"dialogType"];//聊天类型
     [dict setValue:UserManager.userInfo.userUID forKey:@"userUid"];//操作人
     [IMSDKManager MessageTimeDeleteInfoWith:dict onSuccess:^(id  _Nullable data, long long serviceTime) {
+        [HUD hideHUD];
         if([data isKindOfClass:[NSDictionary class]]){
             NSDictionary *dataDict = (NSDictionary *)data;
             NSInteger freqValue = [[dataDict objectForKeySafe:@"freq"] integerValue];
             weakSelf.messageTimeDeleteType = freqValue;
         }
     } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
+        [HUD hideHUD];
     }];
 }
 
@@ -5973,7 +6552,7 @@
     [timeDeleteView viewShow];
 }
 
-#pragma mark - HomeMssageTimeDeleteViewDelegate
+#pragma mark - ZMessageTimeDeleteViewDelegate
 - (void)messageTimeDeleteType:(NSInteger)deleteType {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setValue:@(_chatType) forKey:@"dialogType"];
@@ -6077,6 +6656,15 @@
     return _viewGroupNotice;
 }
 
+- (ZGroupTopMessageView *)groupTopMessageView {
+    if (!_groupTopMessageView && self.chatType == CIMChatType_GroupChat) {
+        _groupTopMessageView = [[ZGroupTopMessageView alloc] initWithFrame:CGRectMake(DWScale(16), DStatusBarH + 44 + DWScale(40) + DWScale(8), DScreenWidth - DWScale(32), DWScale(48))];
+        _groupTopMessageView.delegate = self;
+        [self.view addSubview:_groupTopMessageView];
+    }
+    return _groupTopMessageView;
+}
+
 - (CTalkMultiSelectSendHander *)collectionSendHander {
     if (!_collectionSendHander) {
         _collectionSendHander = [[CTalkMultiSelectSendHander alloc] init];
@@ -6145,10 +6733,35 @@
         
         [self.uploadReadedTimer invalidate];
         self.uploadReadedTimer = nil;
+        
+        [self stopLoadingTimeoutTimer];
 
         [[NSNotificationCenter defaultCenter] removeObserver:self];
     }
 }
+#pragma mark - ZGroupTopMessageViewDelegate
+- (void)groupTopMessageViewDidClickListButton:(ZGroupTopMessageView *)view {
+    // 跳转到消息置顶列表页面
+    ZGroupTopMessageListViewController *vc = [[ZGroupTopMessageListViewController alloc] init];
+    vc.groupId = self.sessionID;
+    vc.groupInfo = self.groupInfo;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)groupTopMessageViewDidClickLocationButtonWithSmsgId:(NSString *)smsgId {
+    // 在列表页面中点击定位按钮，跳转到对应的消息位置
+    // TODO: 实现定位到消息的逻辑
+}
+
+- (void)groupTopMessageViewDidClickView:(ZGroupTopMessageView *)view {
+    // 点击整个 view 时，定位当前显示的消息
+    NSString *smsgId = [view currentSmsgId];
+    if (smsgId.length > 0) {
+        // 发送通知定位消息
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"GroupTopMessageLocationNotification" object:nil userInfo:@{@"smsgId": smsgId, @"groupId": self.sessionID}];
+    }
+}
+
 - (void)dealloc {
     [self dismissTipAlertView];
     
@@ -6157,8 +6770,11 @@
     
     [self.uploadReadedTimer invalidate];
     self.uploadReadedTimer = nil;
+    
+    [self stopLoadingTimeoutTimer];
 
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
+

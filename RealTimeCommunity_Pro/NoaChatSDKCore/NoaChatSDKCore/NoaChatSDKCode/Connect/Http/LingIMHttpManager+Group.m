@@ -419,4 +419,13 @@
     }
 }
 
+#pragma mark - 设置/取消 消息置顶
+- (void)groupSetMsgTopWith:(NSMutableDictionary * _Nullable)params onSuccess:(LingIMSuccessCallback)onSuccess onFailure:(LingIMFailureCallback)onFailure {
+    if (kAllHttpRequestUseTcp) {
+        [LingIMTcpRequestModel sendTcpRequestWithParam:params Url:Group_Set_Msg_Top_Url Method:LingRequestPost SuccessFunc:onSuccess FailureFunc:onFailure];
+    }else {
+        [self netRequestWithType:LingIMHttpRequestTypePOST path:Group_Set_Msg_Top_Url parameters:params onSuccess:onSuccess onFailure:onFailure];
+    }
+}
+
 @end

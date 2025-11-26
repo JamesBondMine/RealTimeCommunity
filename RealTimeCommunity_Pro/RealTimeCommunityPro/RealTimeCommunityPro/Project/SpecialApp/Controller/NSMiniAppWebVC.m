@@ -128,7 +128,7 @@
         }
     };
     NSArray *moreItemArray;
-    if (self.webType == ZMiniAppWebVCTypeMiniApp) {
+    if (self.webType == NSMiniAppWebVCTypeMiniApp) {
         //小程序
         moreItemArray = @[browserItem, floatItem, copyItem];
     }else {
@@ -146,7 +146,7 @@
 }
 - (void)webMoreItemWith:(NSInteger)index {
     switch (self.webType) {
-        case ZMiniAppWebVCTypeMiniApp:
+        case NSMiniAppWebVCTypeMiniApp:
         {
             if (index == 0) {
                 //在浏览器打开

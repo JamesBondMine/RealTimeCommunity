@@ -43,9 +43,9 @@
 
 #pragma mark - 数据操作方法 (凡涉及更改数组中元素的操作，使用异步派发+栅栏块；读取数据使用 同步派发+并行队列)
 
-- (NSMutableArray *)safeArray
+- (NSArray *)safeArray
 {
-    __block NSMutableArray *safeArray;
+    __block NSArray *safeArray;
     WeakSelf
     dispatch_sync(_syncQueue, ^{
         safeArray = [weakSelf.array copy];
@@ -111,12 +111,12 @@
 
 - (NSEnumerator *)objectEnumerator
 {
-    __block NSEnumerator *enu;
+    __block NSArray *snapshot;
     WeakSelf
     dispatch_sync(_syncQueue, ^{
-        enu = [weakSelf.array objectEnumerator];
+        snapshot = [weakSelf.array copy];
     });
-    return enu;
+    return [snapshot objectEnumerator];
 }
 
 - (void)insertObject:(id)anObject atIndex:(NSUInteger)index
@@ -211,18 +211,37 @@
     __block NSUInteger index = NSNotFound;
     WeakSelf
     dispatch_sync(_syncQueue, ^{
-        for (int i = 0; i < [weakSelf.array count]; i ++) {
-            if ([weakSelf.array objectAtIndex:i] == anObject) {
-                index = i;
-                break;
-            }
-        }
+        index = [weakSelf.array indexOfObject:anObject];
     });
     return index;
 }
 //枚举
 - (void)enumerateObjectsUsingBlock:(void (^)(id _Nonnull, NSUInteger, BOOL * _Nonnull))block {
-    [self.array enumerateObjectsUsingBlock:block];
+    __block NSArray *snapshot;
+    WeakSelf
+    dispatch_sync(_syncQueue, ^{
+        snapshot = [weakSelf.array copy];
+    });
+    [snapshot enumerateObjectsUsingBlock:block];
+}
+
+#pragma mark - 批量接口
+- (void)performBatchWrite:(void (^)(NSMutableArray *inner))block {
+    if (!block) return;
+    WeakSelf
+    dispatch_barrier_async(_syncQueue, ^{
+        block(weakSelf.array);
+    });
+}
+
+- (void)replaceAllObjectsWithArray:(NSArray *)array {
+    WeakSelf
+    dispatch_barrier_async(_syncQueue, ^{
+        [weakSelf.array removeAllObjects];
+        if (array.count > 0) {
+            [weakSelf.array addObjectsFromArray:array];
+        }
+    });
 }
 
 

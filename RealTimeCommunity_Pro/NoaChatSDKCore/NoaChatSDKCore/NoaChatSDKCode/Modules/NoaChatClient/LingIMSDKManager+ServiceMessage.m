@@ -636,6 +636,11 @@
             [self serverMessageForGroupCloseSearchUserMessageWith:model serverMessage:message];
         }
             break;
+        case IMServerMessage_ServerMsgType_GroupMessageTop://群消息置顶/取消置顶 该消息转发给在线所有成员 516
+        {
+            [self serverMessageForGroupMessageTopWith:model serverMessage:message];
+        }
+            break;
         default:
         {
             model.currentVersionMessageOK = NO;
@@ -648,6 +653,12 @@
     if (message.sMsgType == IMServerMessage_ServerMsgType_LockAndNoGroupMessage) return;
     //群内禁止私聊，不做数据存储，不进行展示
     if(message.sMsgType == IMServerMessage_ServerMsgType_NoChatGroupMessage) {
+        return;
+    }
+    //群消息置顶/取消置顶，不做数据存储，不进行展示，只通知UI层刷新
+    if (message.sMsgType == IMServerMessage_ServerMsgType_GroupMessageTop) {
+        // 通知UI层刷新置顶消息列表
+        [self.messageDelegate cimToolChatMessageReceive:model];
         return;
     }
     //是否允许是视频通话，不进行展示
@@ -705,71 +716,76 @@
     //3.更新会话列表+消息存储到数据库
     BOOL resultSession = NO;
     if (message.sMsgType == IMServerMessage_ServerMsgType_OutGroupMessage) {
-       /**主动退群*/
-       OutGroupMessage *outGroupMember = message.outGroupMessage;
-       LingIMGroupModel *groupModel = [IMSDKManager toolCheckMyGroupWith:outGroupMember.gid];
-       if (groupModel.groupInformStatus == 1) {
-           //开启群通知
-           LingIMGroupMemberModel *groupOwnerModel = [self imSdkGetGroupOwnerWith:outGroupMember.gid exceptUserId:@""];
-           if (groupModel.isMessageInform == 1) {
-               //开关打开，除了群主，其他人不显示该条提示
-               if ([groupOwnerModel.userUid isEqualToString:self.myUserID]) {
-                   //群主 此消息需要缓存数据库，并且传递给kit层
-                   resultSession = [IMSDKManager toolInsertOrUpdateSessionWith:model isRemind:YES];
-               } else {
-                   resultSession = [IMSDKManager toolInsertSessionForCloseGroupRemindWith:model];
-               }
-           } else {
-               //此消息需要缓存数据库，并且传递给kit层
-               if (outGroupMember.informUidArray != nil) {
-                   if (outGroupMember.informUidArray.count == 0 || [outGroupMember.informUidArray containsObject:self.myUserID]) {
-                       resultSession = [IMSDKManager toolInsertOrUpdateSessionWith:model isRemind:YES];
-                   } else {
-                       resultSession = [IMSDKManager toolInsertSessionForCloseGroupRemindWith:model];
-                   }
-               } else {
-                   resultSession = [IMSDKManager toolInsertOrUpdateSessionWith:model isRemind:YES];
-               }
-           }
-       } else {
-           //关闭群通知（此消息不需要缓存数据库，但是需要传递给kit层）
-           resultSession = [IMSDKManager toolInsertSessionForCloseGroupRemindWith:model];
-       }
+        /**主动退群*/
+        OutGroupMessage *outGroupMember = message.outGroupMessage;
+        LingIMGroupModel *groupModel = [IMSDKManager toolCheckMyGroupWith:outGroupMember.gid];
+        //       if (groupModel.groupInformStatus == 1) {
+        //           //开启群通知
+        //           LingIMGroupMemberModel *groupOwnerModel = [self imSdkGetGroupOwnerWith:outGroupMember.gid exceptUserId:@""];
+        //           if (groupModel.isMessageInform == 1) {
+        //               //开关打开，除了群主，其他人不显示该条提示
+        //               if ([groupOwnerModel.userUid isEqualToString:self.myUserID]) {
+        //                   //群主 此消息需要缓存数据库，并且传递给kit层
+        //                   resultSession = [IMSDKManager toolInsertOrUpdateSessionWith:model isRemind:YES];
+        //               } else {
+        //                   resultSession = [IMSDKManager toolInsertSessionForCloseGroupRemindWith:model];
+        //               }
+        //           } else {
+        //               //此消息需要缓存数据库，并且传递给kit层
+        //               if (outGroupMember.informUidArray != nil) {
+        //                   if (outGroupMember.informUidArray.count == 0 || [outGroupMember.informUidArray containsObject:self.myUserID]) {
+        //                       resultSession = [IMSDKManager toolInsertOrUpdateSessionWith:model isRemind:YES];
+        //                   } else {
+        //                       resultSession = [IMSDKManager toolInsertSessionForCloseGroupRemindWith:model];
+        //                   }
+        //               } else {
+        //                   resultSession = [IMSDKManager toolInsertOrUpdateSessionWith:model isRemind:YES];
+        //               }
+        //           }
+        //       } else {
+        //           //关闭群通知（此消息不需要缓存数据库，但是需要传递给kit层）
+        //           resultSession = [IMSDKManager toolInsertSessionForCloseGroupRemindWith:model];
+        //       }
+        //        resultSession = [IMSDKManager toolInsertSessionForCloseGroupRemindWith:model];
+        [self.messageDelegate cimToolChatMessageReceive:model];
+    } else if (message.sMsgType == IMServerMessage_ServerMsgType_DelGroupMessage) {
+        [self.messageDelegate cimToolChatMessageReceive:model];
    } else if (message.sMsgType == IMServerMessage_ServerMsgType_KickGroupMessage) {
        /**踢人*/
        KickGroupMessage *kickGroupMsg = message.kickGroupMessage;
        if (kickGroupMsg.msgDel) {//是否删除该成员在本群发送的所有消息
            [self toolDeleteGroupMemberAllSendMessageWith:kickGroupMsg.uid groupID:kickGroupMsg.gid];
        }
-       LingIMGroupModel *groupModel = [IMSDKManager toolCheckMyGroupWith:kickGroupMsg.gid];
-       if (groupModel.groupInformStatus == 1) {
-           LingIMGroupMemberModel *groupOwnerModel = [self imSdkGetGroupOwnerWith:message.kickGroupMessage.gid exceptUserId:@""];
-           if (groupModel.isMessageInform == 1) {
-               //开关打开，除了群主和相关操作人员，其他人不显示该条提示
-               /*群内收到踢人消息消息KickGroupMessage：
-                1、uid等于自己，代表自己被踢了；（执行逻辑之前一样，展示被踢弹窗）
-                2、operate_uid等于自己，代表自己踢了某人；（展示内容和之前一样）
-                3、uid不等于自己，operate_uid不等于自己，自己是群主，代表管理员踢了某人；（展示内容和之前一样）
-                4、其他情况，代表群主或管理员踢了某人；（不展示，但是需要更新群信息与群成员列表）
-                */
-               if ([message.kickGroupMessage.uid isEqualToString:self.myUserID] || [message.kickGroupMessage.operateUid isEqualToString:self.myUserID] || (![message.kickGroupMessage.uid isEqualToString:self.myUserID] && ![message.kickGroupMessage.operateUid isEqualToString:self.myUserID] && [groupOwnerModel.userUid isEqualToString:self.myUserID])) {
-                   
-                   resultSession = [IMSDKManager toolInsertOrUpdateSessionWith:model isRemind:YES];
-               }
-           } else {
-               if (kickGroupMsg.informUidArray != nil) {
-                   if (kickGroupMsg.informUidArray.count == 0 || [kickGroupMsg.informUidArray containsObject:self.myUserID]) {
-                       resultSession = [IMSDKManager toolInsertOrUpdateSessionWith:model isRemind:YES];
-                   } else {
-                       resultSession = [IMSDKManager toolInsertSessionForCloseGroupRemindWith:model];
-                   }
-               } else {
-                   resultSession = [IMSDKManager toolInsertOrUpdateSessionWith:model isRemind:YES];
-               }
-           }
-       } else {
-           resultSession = [IMSDKManager toolInsertSessionForCloseGroupRemindWith:model];
-       }
+//       LingIMGroupModel *groupModel = [IMSDKManager toolCheckMyGroupWith:kickGroupMsg.gid];
+//       if (groupModel.groupInformStatus == 1) {
+//           LingIMGroupMemberModel *groupOwnerModel = [self imSdkGetGroupOwnerWith:message.kickGroupMessage.gid exceptUserId:@""];
+//           if (groupModel.isMessageInform == 1) {
+//               //开关打开，除了群主和相关操作人员，其他人不显示该条提示
+//               /*群内收到踢人消息消息KickGroupMessage：
+//                1、uid等于自己，代表自己被踢了；（执行逻辑之前一样，展示被踢弹窗）
+//                2、operate_uid等于自己，代表自己踢了某人；（展示内容和之前一样）
+//                3、uid不等于自己，operate_uid不等于自己，自己是群主，代表管理员踢了某人；（展示内容和之前一样）
+//                4、其他情况，代表群主或管理员踢了某人；（不展示，但是需要更新群信息与群成员列表）
+//                */
+//               if ([message.kickGroupMessage.uid isEqualToString:self.myUserID] || [message.kickGroupMessage.operateUid isEqualToString:self.myUserID] || (![message.kickGroupMessage.uid isEqualToString:self.myUserID] && ![message.kickGroupMessage.operateUid isEqualToString:self.myUserID] && [groupOwnerModel.userUid isEqualToString:self.myUserID])) {
+//
+//                   resultSession = [IMSDKManager toolInsertOrUpdateSessionWith:model isRemind:YES];
+//               }
+//           } else {
+//               if (kickGroupMsg.informUidArray != nil) {
+//                   if (kickGroupMsg.informUidArray.count == 0 || [kickGroupMsg.informUidArray containsObject:self.myUserID]) {
+//                       resultSession = [IMSDKManager toolInsertOrUpdateSessionWith:model isRemind:YES];
+//                   } else {
+//                       resultSession = [IMSDKManager toolInsertSessionForCloseGroupRemindWith:model];
+//                   }
+//               } else {
+//                   resultSession = [IMSDKManager toolInsertOrUpdateSessionWith:model isRemind:YES];
+//               }
+//           }
+//       } else {
+//           resultSession = [IMSDKManager toolInsertSessionForCloseGroupRemindWith:model];
+//       }
+       [self.messageDelegate cimToolChatMessageReceive:model];
    } else if (message.sMsgType == IMServerMessage_ServerMsgType_EstoppelGroupMessage) {
        /**全员禁言/解除禁言提示**/
        GroupStatusMessage *groupStatusMessage = message.groupStatusMessage;
@@ -1589,5 +1605,16 @@
 
     }
     
+}
+
+#pragma mark - 处理接收到的 群消息置顶/取消置顶 系统通知消息
+- (void)serverMessageForGroupMessageTopWith:(LingIMChatMessageModel *)model serverMessage:(IMServerMessage *)message {
+    GroupMessageTop *groupMessageTop = message.groupMessageTop;
+    
+    //和该群相关的信息
+    model.toID = groupMessageTop.gid;
+    model.fromID = groupMessageTop.gid;
+    model.fromNickname = groupMessageTop.nick;
+    model.fromIcon = @"";
 }
 @end
