@@ -6,8 +6,8 @@
   
 */
 //简体中文
-"CFBundleDisplayName" = "RealTalk";
-"CFBundleName" = "RealTalk";
+"CFBundleDisplayName" = "风铃鸟";
+"CFBundleName" = "风铃鸟";
 
 "NSCameraUsageDescription" = "我们需要访问您的相机以拍摄照片和视频，用于与联系人分享、视频通话和直播功能。";
 "NSLocationAlwaysUsageDescription" = "我们需要访问您的位置信息，以便分享当前位置给联系人和发现附近用户。";

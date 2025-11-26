@@ -6,8 +6,8 @@
   
 */
 //繁体中文
-"CFBundleDisplayName" = "螢火蟲";
-"CFBundleName" = "螢火蟲";
+"CFBundleDisplayName" = "風鈴鳥";
+"CFBundleName" = "風鈴鳥";
 
 "NSCameraUsageDescription" = "請點擊“好”以允許訪問。如果不允許將無法正常使用相機進行掃碼登錄、拍攝照片、頭像、錄製視頻，進行視頻通話。";
 "NSLocationAlwaysUsageDescription" = "請點擊“好”以允許允許訪問,以便在個人名片中訪問您的位置。";
