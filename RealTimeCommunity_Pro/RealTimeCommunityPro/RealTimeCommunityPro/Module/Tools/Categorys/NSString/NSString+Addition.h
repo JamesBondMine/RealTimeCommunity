@@ -151,6 +151,8 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - 通过注册/登录的类型值返回类型的文本
 + (NSString *)getAuthContetnWithAuthType:(int)authType;
 
++ (NSString *)getAuthCodeWithAuthType:(int)authType;
+
 #pragma mark - 加载用户头像逻辑：先判断用户是否注销，如果注销显示注销头像，如果未注销，显示真实头像、
 + (NSString *)loadAvatarWithUserStatus:(NSInteger)userStatus avatarUri:(NSString *)avatarUri;
 

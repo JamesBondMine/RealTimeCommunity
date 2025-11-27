@@ -296,11 +296,15 @@
 #pragma mark - ZGroupJoinApplyCellDelegate
 //一键全选/不选
 - (void)allSelectButtonAction:(BOOL)selected {
+    [self.selectedApplyList removeAllObjects];
     WeakSelf
     [self.systemRecordList.safeArray enumerateObjectsUsingBlock:^(MSSSMessageModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //一键全部设置状态
         obj.selectedStatus = selected;
         [weakSelf.systemRecordList replaceObjectAtIndex:idx withObject:obj];
+        if (selected) {
+            [weakSelf.selectedApplyList addObject:obj];
+        }
     }];
     [self.baseTableView reloadData];
 }

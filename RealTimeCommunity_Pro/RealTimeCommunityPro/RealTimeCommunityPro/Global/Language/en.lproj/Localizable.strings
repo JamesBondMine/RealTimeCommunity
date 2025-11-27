@@ -1608,3 +1608,5 @@
 
 "当前群不支持二维码入群" = "This group doesn’t support QR code joining";
 "无感解散当前群聊并清空群内聊天记录？" = "Disolver y borrar chat?";
+"账号或密码错误，请重新输入" = "Incorrect account or password. Please try again. Error code: %@";
+"账号或密码错误，请重新输入，错误码：%@" = "Incorrect account or password. Please try again. Error code: %@";

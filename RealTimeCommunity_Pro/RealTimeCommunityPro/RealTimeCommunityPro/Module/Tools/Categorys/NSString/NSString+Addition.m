@@ -280,7 +280,7 @@ static NSString * notReachable = @"notReachable";
 }
 
 #pragma mark - 加密 32位小写
-- (NSString *)MD5Encryption {    
+- (NSString *)MD5Encryption {
     const char *input = [self UTF8String];
     unsigned char result[CC_MD5_DIGEST_LENGTH];
     CC_MD5(input, (CC_LONG)strlen(input), result);
@@ -1050,7 +1050,7 @@ static NSString * notReachable = @"notReachable";
     
     NSString *fileType;
     if (![NSString isNil:mimeType]) {
-        NSString *fileTypeDicPath = [[NSBundle mainBundle] pathForResource:@"mainToFileType" ofType:@"plist"];
+        NSString *fileTypeDicPath = [[NSBundle mainBundle] pathForResource:@"mineToFileType" ofType:@"plist"];
         NSDictionary *fileTypeDic = [NSDictionary dictionaryWithContentsOfFile:fileTypeDicPath];
         if ([[fileTypeDic allKeys] containsObject:mimeType]) {
             fileType = [fileTypeDic objectForKey:mimeType];
@@ -1174,6 +1174,25 @@ static NSString * notReachable = @"notReachable";
             break;
         case UserAuthTypeAccount:
             return MultilingualTranslation(@"账号");
+            break;
+            
+        default:
+            break;
+    }
+    return @"";
+}
+
+#pragma mark - 通过注册/登录的类型值返回类型的文本
++ (NSString *)getAuthCodeWithAuthType:(int)authType {
+    switch (authType) {
+        case UserAuthTypePhone:
+            return MultilingualTranslation(@"50001");
+            break;
+        case UserAuthTypeEmail:
+            return MultilingualTranslation(@"50000");
+            break;
+        case UserAuthTypeAccount:
+            return MultilingualTranslation(@"2036");
             break;
             
         default:
