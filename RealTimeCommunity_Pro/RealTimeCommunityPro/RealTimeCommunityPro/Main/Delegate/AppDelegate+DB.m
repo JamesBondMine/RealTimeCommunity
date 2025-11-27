@@ -14,7 +14,7 @@
 //#import "ZSessionModel.h"
 //#import "ZServceMessageModel.h"
 //#import "ZMessageRecordModel.h"
-
+#import "ZMessageTools.h"
 
 @interface AppDelegate ()
 
@@ -301,6 +301,8 @@
     }
     [[LingIMSDKManager sharedTool] deleteServerConversation:dict onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
         [IMSDKManager toolDeleteSessionModelWith:model andDeleteAllChatModel:YES];
+        //清除缓存
+        [ZMessageTools clearChatLocalImgAndVideoFromSessionId:model.sessionID];
         [IMSDKManager toolDeleteMyGroupWith:model.sessionID];
     } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
         [HUD showErrorMessage:msg];
@@ -336,7 +338,7 @@
 - (void)cimToolSessionReceiveWith:(LingIMSessionModel *)model {
     if ([model.sessionID isEqualToString:@"100002"]) {
         //更新会话列表文件助手
-        [ZTOOL sessionFileHelperLanguageUpdate];        
+        [ZTOOL sessionFileHelperLanguageUpdate];
     }
     if ([model.sessionID isEqualToString:@"100003"]) {
         //更新会话列表签到提醒

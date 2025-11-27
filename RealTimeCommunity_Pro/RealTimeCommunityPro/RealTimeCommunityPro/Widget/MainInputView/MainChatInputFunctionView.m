@@ -758,6 +758,7 @@
             
             return YES;
         } else {
+            // 没有权限@别人，允许输入@但不调起@列表
             return YES;
         }
     }

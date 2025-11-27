@@ -89,9 +89,9 @@
 }
 
 #pragma mark - UITextViewDelegate
-- (void)textViewDidChange {
+- (void)textViewDidChange:(UITextView *)textView {
     NSInteger maxFontNum = 30;//最大输入限制
-    NSString *toBeString = self.tvNickname.text;
+    NSString *toBeString = textView.text;
     
     // 获取键盘输入模式
     NSString *lang = [[UIApplication sharedApplication] textInputMode].primaryLanguage;
@@ -110,14 +110,14 @@
         }
     } else {// 中文输入法以外的直接统计
         if (toBeString.length > maxFontNum) {
-            self.tvNickname.text = [toBeString substringToIndex:maxFontNum];
+            textView.text = [toBeString substringToIndex:maxFontNum];
             _lblNumber.text = [NSString stringWithFormat:@"%ld/30",maxFontNum];
         } else {
             _lblNumber.text = [NSString stringWithFormat:@"%ld/30",toBeString.length];
         }
     }
     if (toBeString.length > maxFontNum) {
-        _tvNickname.text = [toBeString substringToIndex:maxFontNum];
+        textView.text = [toBeString substringToIndex:maxFontNum];
         _lblNumber.text = [NSString stringWithFormat:@"%ld/30",maxFontNum];
     } else {
         _lblNumber.text = [NSString stringWithFormat:@"%ld/30",toBeString.length];
@@ -135,14 +135,11 @@
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     if (textView == self.tvNickname) {
         if ([text isEqualToString:@"'"] || [text isEqualToString:@"’"]) {
-            [self textViewDidChange];
             return NO;
         } else {
-            [self textViewDidChange];
             return YES;
         }
     }
-    [self textViewDidChange];
     return YES;
 }
 
