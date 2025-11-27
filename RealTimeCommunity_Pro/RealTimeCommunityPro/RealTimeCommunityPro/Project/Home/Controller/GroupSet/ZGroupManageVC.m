@@ -143,11 +143,7 @@
     WeakSelf;
     [IMSDKManager groupDissolutionGroupWith:dict onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
         if (data) {
-            [weakSelf deleteSessionAndChatMessage];
-            //删除本地聊天记录 删除本地会话
-            [IMSDKManager toolDeleteSessionModelWith:model andDeleteAllChatModel:YES];
-            //清除缓存
-            [ZMessageTools clearChatLocalImgAndVideoFromSessionId:weakSelf.groupInfoModel.groupId];
+            [weakSelf deleteSessionAndChatMessage:model];
         }
     } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
         [HUD showMessageWithCode:code errorMsg:msg];
@@ -155,7 +151,7 @@
 }
 
 //删除会话 + 清空聊天内容
-- (void)deleteSessionAndChatMessage {
+- (void)deleteSessionAndChatMessage:(LingIMSessionModel *)model {
     WeakSelf
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setValue:self.groupInfoModel.groupId forKey:@"peerUid"];
@@ -166,6 +162,10 @@
     }
     
     [[LingIMSDKManager sharedTool] deleteServerConversation:dict onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+        //删除本地聊天记录 删除本地会话
+        [IMSDKManager toolDeleteSessionModelWith:model andDeleteAllChatModel:YES];
+        //清除缓存
+        [ZMessageTools clearChatLocalImgAndVideoFromSessionId:weakSelf.groupInfoModel.groupId];
         [weakSelf.navigationController popToRootViewControllerAnimated:YES];
         [HUD showMessage:MultilingualTranslation(@"群组解散成功")];
     } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
