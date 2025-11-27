@@ -32,8 +32,8 @@
     //选中状态
     _selectedStatusBtn = [[UIButton alloc] init];
     _selectedStatusBtn.frame = CGRectMake(16, 15, 0, 0);
-    [_selectedStatusBtn setImage:ImgNamed(@"relogimg_checkbox_unselected_reb") forState:UIControlStateNormal];
-    [_selectedStatusBtn setImage:ImgNamed(@"relogimg_checkbox_selected_reb") forState:UIControlStateSelected];
+    [_selectedStatusBtn setImage:ImgNamed(@"checkbox_unselected") forState:UIControlStateNormal];
+    [_selectedStatusBtn setImage:ImgNamed(@"checkbox_selected") forState:UIControlStateSelected];
     [self.contentView addSubview:_selectedStatusBtn];
     
     //头像
@@ -139,7 +139,7 @@
     
     //发送失败
     _reSendBtn = [UIButton new];
-    [_reSendBtn setImage:ImgNamed(@"remsg_icon_msg_resend") forState:UIControlStateNormal];
+    [_reSendBtn setImage:ImgNamed(@"icon_msg_resend") forState:UIControlStateNormal];
     [_reSendBtn addTarget:self action:@selector(MessageReSendAction) forControlEvents:UIControlEventTouchUpInside];
     _reSendBtn.hidden = YES;
     [self.contentView addSubview:_reSendBtn];
@@ -151,7 +151,7 @@
     }];
     
     _sendLoadingView = [UIImageView new];
-    _sendLoadingView.image = ImgNamed(@"remsg_img_msg_send_loading");
+    _sendLoadingView.image = ImgNamed(@"img_msg_send_loading");
     _sendLoadingView.hidden = YES;
     [self.contentView addSubview:_sendLoadingView];
     [_sendLoadingView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -167,7 +167,7 @@
     [self.contentView addSubview:_msgTimeLbl];
     [_msgTimeLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.equalTo(_viewReceiveBubble.mas_leading);
-        make.bottom.equalTo(_viewReceiveBubble.mas_top).offset(-2);
+        make.top.equalTo(_viewReceiveBubble.mas_bottom).offset(2);
         make.width.mas_equalTo(DWScale(40));
         make.height.mas_equalTo(DWScale(18));
     }];
@@ -245,7 +245,17 @@
         messageFromNickname = UserManager.userInfo.nickname;
         //角色名称
         messageUserRoleName = [UserManager matchUserRoleConfigInfo:UserManager.userInfo.roleId disableStatus:UserManager.userInfo.disableStatus];
-        if (model.message.chatType == CIMChatType_GroupChat && model.isActivityLevel == 1) {
+        if (model.message.chatType == CIMChatType_GroupChat) {
+            LingIMGroupMemberModel *groupMemberModel = [IMSDKManager imSdkCheckGroupMemberWith:model.message.fromID groupID:model.message.toID];
+            if (groupMemberModel) {
+                if (groupMemberModel.nicknameInGroup.length > 0) {
+                    messageFromNickname = groupMemberModel.nicknameInGroup;
+                }
+                if (model.isActivityLevel == 1) {
+                    activityScroe = groupMemberModel.activityScroe;
+                }
+            }
+        } else if (model.isActivityLevel == 1) {
             LingIMGroupMemberModel *groupMemberModel = [IMSDKManager imSdkCheckGroupMemberWith:model.message.fromID groupID:model.message.toID];
             if (groupMemberModel) {
                 activityScroe = groupMemberModel.activityScroe;
