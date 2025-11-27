@@ -196,8 +196,12 @@
                     [Logger info:[NSString stringWithFormat:@"[短连接转长连接] 当前socket未连接，当前是token请求请求进入 waitSendRequestModelArr：%@", requestModel.url]];
                     [self.waitSendRequestModelArr insertObject:requestModel atIndex:0];
                 }else {
-                    //  tcp没有连接，任何请求都需要缓存起来等待发送
-                    [Logger info:[NSString stringWithFormat:@"[短连接转长连接] 未连接，请求进入 waitSendRequestModelArr：%@", requestModel.url]];
+                    if (![self socketConnectStatus]) {
+                        //  tcp没有连接，任何请求都需要缓存起来等待发送
+                        [Logger info:[NSString stringWithFormat:@"[短连接转长连接] 未连接，请求进入 waitSendRequestModelArr：%@", requestModel.url]];
+                    }else if (![self isExchangeEcdhKeySuccess]) {
+                        [Logger info:[NSString stringWithFormat:@"[短连接转长连接] ecdh交换还未成功，请求进入 waitSendRequestModelArr：%@", requestModel.url]];
+                    }
                     [self.waitSendRequestModelArr addObject:requestModel];
                 }
             });
@@ -314,7 +318,11 @@
     dispatch_async(self.waitSendQueue, ^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self) return;
-    
+        [self.waitSendRequestModelArr enumerateObjectsUsingBlock:^(LingIMTcpRequestModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (obj.failureCallBack) {
+                obj.failureCallBack(999991, @"", @"");
+            }
+        }];
         [self.waitSendRequestModelArr removeAllObjects];
     });
 }

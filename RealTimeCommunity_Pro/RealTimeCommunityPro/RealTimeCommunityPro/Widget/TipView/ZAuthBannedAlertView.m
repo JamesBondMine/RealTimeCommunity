@@ -11,15 +11,25 @@
 
 @property (nonatomic, assign) ZAuthBannedAlertType alertType;
 @property (nonatomic, strong) UIView *viewBg;
-
+@property (nonatomic, strong) UIWindow *alertWindow; // 高层级窗口，确保提示框始终在最上层
+@property (nonatomic, assign) BOOL isDismissing; // 标记是否正在关闭，防止重复关闭
 @end
 
 @implementation ZAuthBannedAlertView
+
+// 静态变量，用于跟踪当前显示的提示框，防止重复创建
+static ZAuthBannedAlertView *_currentAlertView = nil;
 
 - (instancetype)initWithAlertType:(ZAuthBannedAlertType)alertType {
     self = [super init];
     if (self) {
         _alertType = alertType;
+        _isDismissing = NO;
+        // 如果已有提示框在显示，先关闭它
+        if (_currentAlertView && _currentAlertView != self) {
+            [_currentAlertView alertTipViewDismiss];
+        }
+        _currentAlertView = self;
         [self setupUI];
     }
     return self;
@@ -27,9 +37,32 @@
 
 #pragma mark - 界面布局
 - (void)setupUI {
+    // 创建高层级窗口，确保提示框始终显示在最上层，不会被其他页面遮盖
+    self.alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    self.alertWindow.windowLevel = UIWindowLevelAlert;
+    self.alertWindow.backgroundColor = [UIColor clearColor];
+    
+    // iOS 13+ 支持 Scene
+    if (@available(iOS 13.0, *)) {
+        NSArray *scenes = [[[UIApplication sharedApplication] connectedScenes] allObjects];
+        if (scenes.count > 0) {
+            UIWindowScene *windowScene = (UIWindowScene *)scenes.firstObject;
+            if (windowScene) {
+                self.alertWindow.windowScene = windowScene;
+            }
+        }
+    }
+    
+    self.alertWindow.hidden = NO;
+    
+    // 创建根视图控制器
+    UIViewController *rootVC = [[UIViewController alloc] init];
+    rootVC.view.backgroundColor = [UIColor clearColor];
+    self.alertWindow.rootViewController = rootVC;
+    
     self.frame = CGRectMake(0, 0, DScreenWidth, DScreenHeight);
     self.tkThemebackgroundColors = @[[COLOR_00 colorWithAlphaComponent:0.3],[COLOR_00 colorWithAlphaComponent:0.6]];
-    [CurrentWindow addSubview:self];
+    [rootVC.view addSubview:self];
     
     _viewBg = [UIView new];
     _viewBg.tkThemebackgroundColors = @[COLORWHITE, COLOR_33];
@@ -167,6 +200,18 @@
     }];
 }
 - (void)alertTipViewDismiss {
+    // 防止重复调用
+    if (self.isDismissing) {
+        return;
+    }
+    self.isDismissing = YES;
+    
+    // 立即禁用所有按钮，防止重复点击
+    self.btnCancel.enabled = NO;
+    if (self.btnSure) {
+        self.btnSure.enabled = NO;
+    }
+    
     WeakSelf
     [UIView animateWithDuration:0.3 animations:^{
         weakSelf.viewBg.transform = CGAffineTransformScale(CGAffineTransformIdentity, CGFLOAT_MIN, CGFLOAT_MIN);
@@ -174,21 +219,53 @@
         [weakSelf.viewBg removeFromSuperview];
         weakSelf.viewBg = nil;
         [weakSelf removeFromSuperview];
+        // 隐藏并释放高层级窗口
+        if (weakSelf.alertWindow) {
+            weakSelf.alertWindow.hidden = YES;
+            weakSelf.alertWindow.rootViewController = nil;
+            weakSelf.alertWindow = nil;
+        }
+        // 清除静态引用
+        if (_currentAlertView == weakSelf) {
+            _currentAlertView = nil;
+        }
     }];
 }
 
 - (void)sureBtnAction {
-    if (self.sureBtnBlock) {
-        self.sureBtnBlock();
+    // 防止重复点击
+    if (self.isDismissing) {
+        return;
     }
+    // 保存 block，因为 dismiss 后可能会被清理
+    void(^sureBlock)(void) = self.sureBtnBlock;
+    // 先关闭提示框，再执行 block（避免 block 中可能创建新的提示框导致叠加）
     [self alertTipViewDismiss];
+    // 延迟执行 block，确保提示框先关闭
+    WeakSelf
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (sureBlock) {
+            sureBlock();
+        }
+    });
 }
 
 - (void)cancelBtnAction {
-    if (self.cancelBtnBlock) {
-        self.cancelBtnBlock();
+    // 防止重复点击
+    if (self.isDismissing) {
+        return;
     }
+    // 保存 block，因为 dismiss 后可能会被清理
+    void(^cancelBlock)(void) = self.cancelBtnBlock;
+    // 先关闭提示框，再执行 block（避免 block 中可能创建新的提示框导致叠加）
     [self alertTipViewDismiss];
+    // 延迟执行 block，确保提示框先关闭
+    WeakSelf
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (cancelBlock) {
+            cancelBlock();
+        }
+    });
 }
 
 

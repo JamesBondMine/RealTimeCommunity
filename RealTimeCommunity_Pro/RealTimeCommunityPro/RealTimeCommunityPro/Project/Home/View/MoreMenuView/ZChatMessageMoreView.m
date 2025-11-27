@@ -102,7 +102,7 @@
 
 }
 
-#pragma mark - ZChatMessageMoreItemViewDelegate
+#pragma mark - CMessageMoreItemViewDelegate
 - (void)menuItemViewSelectedAction:(MessageMenuItemActionType)actionType {
     if (self.menuClick) {
         self.menuClick(actionType);

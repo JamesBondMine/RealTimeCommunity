@@ -47,9 +47,16 @@
 - (void)setMenuArr:(NSArray *)menuArr {
     _menuArr = menuArr;
     
-    if (menuArr.count > 5) {
-        _collectionView.height = DWScale(56) * 2 + DWScale(12);
-    }
+    // 计算实际需要的行数（每行5个，向上取整）
+    NSInteger rowCount = (NSInteger)ceil(menuArr.count / 5.0);
+    // 根据行数动态计算高度：每行高度56，上下内边距各6，总共12
+    CGFloat collectionViewHeight = DWScale(56) * rowCount + DWScale(12);
+    // 更新整个 view 的高度（collectionView 高度 + 箭头区域10）
+    self.height = collectionViewHeight + 10;
+    // 更新 collectionView 的 frame（确保宽度和高度都正确）
+    _collectionView.frame = CGRectMake(0, 10, self.width, collectionViewHeight);
+    // 禁用滚动，让所有内容都能显示
+    _collectionView.scrollEnabled = NO;
     [_collectionView reloadData];
 }
 
@@ -122,7 +129,7 @@
         case MessageMenuItemActionTypeCollection:
             return @{
                 @"titleName" : MultilingualTranslation(@"收藏"),
-                @"imageName" : @"talk_more_collection"
+                @"imageName" : @"c_more_collection"
             };
             break;
         case MessageMenuItemActionTypeMultiSelect:
@@ -165,6 +172,18 @@
             return @{
                 @"titleName" : MultilingualTranslation(@"听筒播放"),
                 @"imageName" : @"c_more_mute_playback"
+            };
+            break;
+        case MessageMenuItemActionTypeGroupTop:
+            return @{
+                @"titleName" : MultilingualTranslation(@"置顶"),
+                @"imageName" : @"c_more_group_top"
+            };
+            break;
+        case MessageMenuItemActionTypeGroupTopCancel:
+            return @{
+                @"titleName" : MultilingualTranslation(@"取消置顶"),
+                @"imageName" : @"c_more_group_cancel_top"
             };
             break;
         default:
