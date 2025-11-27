@@ -21,16 +21,8 @@
         NSMutableString *translationString = [NSMutableString stringWithString:messageStr];
         NSMutableString *atString = [NSMutableString string];
         NSMutableString *emojiString = [NSMutableString string];
-        //匹配 at信息
-        for (NSDictionary *atUserDic in atUserList) {
-            NSArray *atKeyArr = [atUserDic allKeys];
-            NSString *atKey = (NSString *)[atKeyArr firstObject];
-            
-            NSString * atUidStr = [NSString stringWithFormat:@"\v%@\v",atKey];
-            [translationString replaceCharactersInRange:[translationString rangeOfString:atUidStr] withString:@""];
-            [atString appendString:atUidStr];
-        }
-        //匹配 emoji
+        
+        // 先匹配 emoji，避免表情符号的]和@消息的\v紧邻时出现误匹配
         NSError *error;
         NSRegularExpression *regex = [NSRegularExpression
                                       regularExpressionWithPattern:@"\\[[^ \\[\\]]+?\\]"
@@ -39,17 +31,42 @@
         NSArray *matchs = [regex matchesInString:translationString
                                          options:0
                                            range:NSMakeRange(0, [translationString length])];
-        //找到所有的 表情字符串 存放起来
+        //找到所有的 表情字符串 存放起来（倒序处理，避免索引偏移）
         NSMutableArray *emojiArray = [NSMutableArray array];
         for (NSTextCheckingResult *match in matchs) {
-            [emojiArray addObject:[translationString substringWithRange:match.range]];
+            [emojiArray addObject:@{@"text": [translationString substringWithRange:match.range], @"range": [NSValue valueWithRange:match.range]}];
         }
-        //匹配 表情字符串
-        for (NSString * emojiStr in emojiArray) {
-            NSRange emojiRang = [translationString rangeOfString:emojiStr];
+        // 按位置倒序排序，从后往前移除，避免索引偏移
+        [emojiArray sortUsingComparator:^NSComparisonResult(NSDictionary *obj1, NSDictionary *obj2) {
+            NSRange range1 = [obj1[@"range"] rangeValue];
+            NSRange range2 = [obj2[@"range"] rangeValue];
+            if (range1.location > range2.location) {
+                return NSOrderedAscending;
+            } else if (range1.location < range2.location) {
+                return NSOrderedDescending;
+            }
+            return NSOrderedSame;
+        }];
+        // 从后往前移除表情字符串，避免索引偏移
+        for (NSDictionary *emojiDict in emojiArray) {
+            NSRange emojiRang = [emojiDict[@"range"] rangeValue];
             [translationString replaceCharactersInRange:emojiRang withString:@""];
-            [emojiString appendString:emojiStr];
+            [emojiString appendString:emojiDict[@"text"]];
         }
+        
+        //匹配 at信息（在移除表情符号后再移除@信息）
+        for (NSDictionary *atUserDic in atUserList) {
+            NSArray *atKeyArr = [atUserDic allKeys];
+            NSString *atKey = (NSString *)[atKeyArr firstObject];
+            
+            NSString * atUidStr = [NSString stringWithFormat:@"\v%@\v",atKey];
+            NSRange atRange = [translationString rangeOfString:atUidStr];
+            if (atRange.location != NSNotFound) {
+                [translationString replaceCharactersInRange:atRange withString:@""];
+                [atString appendString:atUidStr];
+        }
+        }
+        
         //删除字符串开头与结尾的空白符与换行
         [translationString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         [atString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
