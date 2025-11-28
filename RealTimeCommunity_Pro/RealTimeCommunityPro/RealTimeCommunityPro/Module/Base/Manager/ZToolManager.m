@@ -1070,6 +1070,7 @@ static NSString *g_CurrentLoganPublishURL = nil; // 内存记录当前 Logan pub
     [dict setValue:infoModel.lastLiceseId ?: @"" forKey:@"lastLiceseId"];
     [dict setValue:[FCUUID uuidForDevice] forKey:@"deviceId"];
     [dict setValue:[NSDate transSecondToTimeMethod1:[NSDate currentTimeIntervalWithMillisecond]] forKey:@"errorTime"];
+    [dict setValue:[NSString isNil:self.publicIP] ? @"" : self.publicIP forKey:@"publicIpAddress"];
     event.message = message;
     //消息发送失败
     //event_message
