@@ -2553,6 +2553,7 @@ typedef NS_ENUM(NSInteger, ServerConfigType) {
     _categoryView = nil;
     
     // 初始化登录模式UI
+    [self setupLoginMethod];         // 🔧 先配置登录方式和注册方式数组
     [self setupCompanyIdButton];
     [self setupCategoryView];
     [self setupContentViews];

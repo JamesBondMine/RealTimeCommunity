@@ -178,6 +178,9 @@ return __singleton__; \
 #define ALI_HTTPDNS_TEST_DOMAIN         @"pxx.dacncloud.com"
 #define TENCENT_HTTPDNS_TEST_DOMAIN     @"pxx.jsimapp.com"
 
+// TXT 解密密钥（Ali/CF TXT解密用）
+#define Z_DNS_TXT_AES_SECRET            @"2be4613f40779c85"
+
 // 是否允许兜底重试（五源路径禁用，兜底路径启用）的默认宏
 #define Z_ALLOW_FALLBACK_RETRY_DEFAULT   NO
 

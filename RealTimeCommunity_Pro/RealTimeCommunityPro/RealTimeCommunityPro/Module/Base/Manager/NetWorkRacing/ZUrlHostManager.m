@@ -30,6 +30,7 @@
 #define OSS_ERROR_MAX_NUM               5
 #define OSS_INFO_FILE_NAME              @"edge.rtf"
 
+
 static dispatch_once_t onceToken;
 
 @interface ZUrlHostManager() <ZNetworkQualityDetectorDelegate>
@@ -77,9 +78,126 @@ static dispatch_once_t onceToken;
 @property (atomic, assign) NSInteger multiSourceTotalCount;
 @property (atomic, assign) BOOL multiSourceActive;
 
+/// 通知状态管理(通过此标记来确认是否需要移除通知，防止重复注册或重复移除)
+@property (nonatomic, assign) BOOL isEcdhNotificationRegistered;
+
 @end
 
 @implementation ZUrlHostManager
+
+// MARK: - DNS 二进制编解码（A 记录）
+static NSData *ZBuildDNSQueryA(NSString *domain, uint16_t txid) {
+    // Header: 12 bytes
+    uint8_t header[12] = {0};
+    header[0] = (txid >> 8) & 0xFF; header[1] = txid & 0xFF; // ID
+    header[2] = 0x01; header[3] = 0x00; // RD=1
+    header[4] = 0x00; header[5] = 0x01; // QDCOUNT=1
+    header[6] = 0; header[7] = 0;      // ANCOUNT=0
+    header[8] = 0; header[9] = 0;      // NSCOUNT=0
+    header[10] = 0; header[11] = 0;    // ARCOUNT=0
+    
+    NSMutableData *data = [NSMutableData dataWithBytes:header length:12];
+    // QNAME
+    NSArray<NSString *> *labels = [domain componentsSeparatedByString:@"."];
+    for (NSString *label in labels) {
+        if (label.length == 0) continue;
+        uint8_t len = (uint8_t)MIN(label.length, 63);
+        [data appendBytes:&len length:1];
+        NSData *ld = [label substringToIndex:len].lowercaseString.UTF8String ? [NSData dataWithBytes:label.lowercaseString.UTF8String length:len] : [label.lowercaseString dataUsingEncoding:NSUTF8StringEncoding];
+        if (ld) {
+            // 直接写入 UTF8 的前 len 字节
+            [data appendData:[[label.lowercaseString substringToIndex:len] dataUsingEncoding:NSUTF8StringEncoding]];
+        }
+    }
+    uint8_t zero = 0; [data appendBytes:&zero length:1]; // end of QNAME
+    // QTYPE=A(1), QCLASS=IN(1)
+    uint8_t tail[4] = {0x00, 0x01, 0x00, 0x01};
+    [data appendBytes:tail length:4];
+    return data;
+}
+
+static NSArray<NSString *> *ZParseDNSResponseA(const uint8_t *buf, ssize_t len, uint16_t txid) {
+    if (len < 12) return @[];
+    uint16_t rid = (buf[0] << 8) | buf[1];
+    if (rid != txid) return @[];
+    uint8_t rcode = buf[3] & 0x0F; if (rcode != 0) return @[];
+    uint16_t qd = (buf[4] << 8) | buf[5];
+    uint16_t an = (buf[6] << 8) | buf[7];
+    // skip question(s)
+    ssize_t idx = 12;
+    for (int i = 0; i < qd; i++) {
+        // skip QNAME
+        while (idx < len && buf[idx] != 0) {
+            uint8_t l = buf[idx]; idx += 1 + l;
+        }
+        idx++; // zero
+        idx += 4; // QTYPE+QCLASS
+        if (idx > len) return @[];
+    }
+    NSMutableArray<NSString *> *ips = [NSMutableArray array];
+    // answers
+    for (int i = 0; i < an; i++) {
+        if (idx + 12 > len) break;
+        // skip NAME (could be pointer)
+        if ((buf[idx] & 0xC0) == 0xC0) {
+            idx += 2;
+        } else {
+            while (idx < len && buf[idx] != 0) { uint8_t l = buf[idx]; idx += 1 + l; }
+            idx++;
+        }
+        if (idx + 10 > len) break;
+        uint16_t type = (buf[idx] << 8) | buf[idx+1]; idx += 2;
+        uint16_t _class = (buf[idx] << 8) | buf[idx+1]; idx += 2; (void)_class;
+        idx += 4; // TTL
+        uint16_t rdlen = (buf[idx] << 8) | buf[idx+1]; idx += 2;
+        if (idx + rdlen > len) break;
+        if (type == 1 && rdlen == 4) {
+            char ip[INET_ADDRSTRLEN];
+            struct in_addr a; memcpy(&a, buf + idx, 4);
+            const char *s = inet_ntop(AF_INET, &a, ip, sizeof(ip));
+            if (s) {
+                [ips addObject:[NSString stringWithUTF8String:s]];
+            }
+        }
+        idx += rdlen;
+    }
+    return ips;
+}
+
+- (NSArray<NSString *> *)aliyTXTChunksFromData:(NSString *)data {
+    if (data.length <= 0) return @[];
+    NSMutableArray<NSString *> *chunks = [NSMutableArray array];
+    NSUInteger len = data.length;
+    BOOL inQuote = NO;
+    NSMutableString *current = [NSMutableString string];
+    for (NSUInteger i = 0; i < len; i++) {
+        unichar c = [data characterAtIndex:i];
+        if (c == '"') {
+            if (inQuote) {
+                // 结束一个片段
+                [chunks addObject:[current copy]];
+                [current setString:@""];
+                inQuote = NO;
+            } else {
+                inQuote = YES;
+            }
+        } else {
+            if (inQuote) {
+                [current appendFormat:@"%C", c];
+            }
+        }
+    }
+    if (chunks.count == 0) {
+        NSString *trim = [data stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (trim.length > 0) {
+            if ([trim hasPrefix:@"\""] && [trim hasSuffix:@"\""] && trim.length >= 2) {
+                trim = [trim substringWithRange:NSMakeRange(1, trim.length - 2)];
+            }
+            return @[trim];
+        }
+    }
+    return chunks;
+}
 
 - (NSMutableArray<IMServerEndpoint *> *)httpDomainList {
     if (!_httpDomainList) {
@@ -216,8 +334,17 @@ static dispatch_once_t onceToken;
     };
 }
 
-#pragma mark - 对oss、http、tcp进行择优或者检查IP/Domain是否可用
-- (void)startHostNodeRace {
+#pragma mark - ECDH 通知管理
+/// 注册通知-ecdh交换成功通知
+- (void)addEcdhNotification {
+    // 使用标志位防止重复注册，如果未注册，则执行注册，如果已注册，则跳过
+    if (self.isEcdhNotificationRegistered) {
+        CIMLog(@"[ECDH通知] 通知已注册，跳过重复注册");
+        return;
+    }
+    
+    CIMLog(@"[ECDH通知] 注册 ECDH 通知监听");
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(requestSystemConfigInfo)
                                                  name:@"socketECDHDidConnectSuccese"
@@ -227,7 +354,35 @@ static dispatch_once_t onceToken;
                                              selector:@selector(systemConfigFailure)
                                                  name:@"socketECDHDidConnectFailure"
                                                object:nil];
+    
+    // 标记已注册
+    self.isEcdhNotificationRegistered = YES;
+}
+
+/**
+ * 移除 ECDH 通知
+ * 使用标志位防止重复移除，只有已注册时才执行移除
+ */
+- (void)removeEcdhNotification {
+    // 使用标志位防止重复移除
+    if (!self.isEcdhNotificationRegistered) {
+        CIMLog(@"[ECDH通知] 通知未注册，跳过移除");
+        return;
+    }
+    
+    CIMLog(@"[ECDH通知] 移除 ECDH 通知监听");
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"socketECDHDidConnectSuccese" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"socketECDHDidConnectFailure" object:nil];
+    
+    // 标记已移除
+    self.isEcdhNotificationRegistered = NO;
+}
+
+#pragma mark - 对oss、http、tcp进行择优或者检查IP/Domain是否可用
+- (void)startHostNodeRace {
     [self.codeBuilder clearInitializationErrorType];
+    self.subModulesDNSCode = @"0";
     [self clearCerData];
     ZSsoInfoModel *ssoModel = [ZSsoInfoModel getSSOInfo];
     if (ssoModel == nil || (ssoModel.liceseId.length <= 0 && ssoModel.ipDomainPortStr.length <= 0)) {
@@ -236,6 +391,9 @@ static dispatch_once_t onceToken;
         return;
     }
     if ([ZTOOL isNetworkAvailable]) {
+        // 添加监听
+        [self addEcdhNotification];
+        
         [self hostNodeRace];
     } else {
         [self.codeBuilder withInitializationSubModule:@"00"];
@@ -245,17 +403,11 @@ static dispatch_once_t onceToken;
 }
 
 - (void)QRcodeSacnNav:(IMServerListResponseBody *)serverResponse {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(requestSystemConfigInfo)
-                                                 name:@"socketECDHDidConnectSuccese"
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(systemConfigFailure)
-                                                 name:@"socketECDHDidConnectFailure"
-                                               object:nil];
     [HUD showActivityMessage:@""];
     if ([ZTOOL isNetworkAvailable]) {
+        // 添加监听
+        [self addEcdhNotification];
+        
         // 同步服务器兜底导航到本地缓存
         if (serverResponse.hasFallbackEndpoints && serverResponse.fallbackEndpoints) {
             FallbackEndpoints *fb = serverResponse.fallbackEndpoints;
@@ -390,7 +542,7 @@ static dispatch_once_t onceToken;
     self.currentRaceSessionId += 1;
     self.isRacing = YES;
     if (self.raceTasks.count > 0) {
-        NSLog(@"[竞速会话] 取消上轮HTTP任务数量: %lu", (unsigned long)self.raceTasks.count);
+        CIMLog(@"[竞速会话] 取消上轮HTTP任务数量: %lu", (unsigned long)self.raceTasks.count);
         for (NSURLSessionDataTask *task in self.raceTasks) {
             if (task && task.state == NSURLSessionTaskStateRunning) {
                 [task cancel];
@@ -402,6 +554,8 @@ static dispatch_once_t onceToken;
     ZSsoInfoModel *ssoModel = [ZSsoInfoModel getSSOInfo];
     if (ssoModel == nil || (ssoModel.liceseId.length <= 0 && ssoModel.ipDomainPortStr.length <= 0)) {
         self.racingType = ZReacingTypeNone;
+        // 移除通知，避免通知泄漏
+        [self removeEcdhNotification];
         if (isNetworkQualityTrigger) {
             return;
         }
@@ -413,7 +567,6 @@ static dispatch_once_t onceToken;
         [IMSDKManager configLoganLiceseId:ssoModel.liceseId];
         //企业号，走oss、http、tcp 竞速择优
         self.racingType = ZReacingTypeCompanyId;
-        
         // 初始化五源并发控制
         self.ossFirstSuccessGlobal = NO;
         self.multiSourceActive = YES;
@@ -431,10 +584,11 @@ static dispatch_once_t onceToken;
                     weakSelf.multiSourceFinishedCount++;
                     weakSelf.multiSourceDirectFailCount++;
                 }
+                
                 // 五源全部为空时触发 Resolver 兜底
                 @synchronized (weakSelf) {
                     if (!weakSelf.ossFirstSuccessGlobal && weakSelf.multiSourceFinishedCount >= weakSelf.multiSourceTotalCount) {
-                        NSLog(@"[DNS并发] 五源均无结果，触发 Resolver 旧逻辑兜底");
+                        CIMLog(@"[DNS并发] 五源均无结果，触发 Resolver 旧逻辑兜底");
                         BOOL isProxyFB = ([ZTOOL getCurrentProxyType] == ProxyTypeSOCKS5);
                         [weakSelf getDirectOssUrlListFromDNSComplete:^(NSArray<ZUrlHostModel *> *ossUrlList) {
                             NSArray<ZUrlHostModel *> *normalizedFB = [weakSelf normalizeDomainToIP:ossUrlList];
@@ -453,7 +607,7 @@ static dispatch_once_t onceToken;
                 // 五源全部 normalize 为空时触发 Resolver 兜底
                 @synchronized (weakSelf) {
                     if (!weakSelf.ossFirstSuccessGlobal && weakSelf.multiSourceFinishedCount >= weakSelf.multiSourceTotalCount) {
-                        NSLog(@"[DNS并发] 五源均无可用 normalize 结果，触发 Resolver 旧逻辑兜底");
+                        CIMLog(@"[DNS并发] 五源均无可用 normalize 结果，触发 Resolver 旧逻辑兜底");
                         BOOL isProxyFB = ([ZTOOL getCurrentProxyType] == ProxyTypeSOCKS5);
                         [weakSelf getDirectOssUrlListFromDNSComplete:^(NSArray<ZUrlHostModel *> *ossUrlList) {
                             NSArray<ZUrlHostModel *> *normalizedFB = [weakSelf normalizeDomainToIP:ossUrlList];
@@ -467,19 +621,19 @@ static dispatch_once_t onceToken;
                 if (raceSession != weakSelf.currentRaceSessionId) return;
                 if (weakSelf.ossFirstSuccessGlobal) return;
                 BOOL isProxy = ([ZTOOL getCurrentProxyType] == ProxyTypeSOCKS5);
-                NSLog(@"[DNS并发] 源%@ 返回可用 %lu 条，开始直连竞速", sourceTag, (unsigned long)normalized.count);
+                CIMLog(@"[DNS并发] 源%@ 返回可用 %lu 条，开始直连竞速", sourceTag, (unsigned long)normalized.count);
                 [weakSelf netWorkDirectWithFiltrateBestOssRacingWithOssList:normalized iscontinue:!isProxy allowFallbackRetry:NO sourceTag:sourceTag isNetworkQualityTrigger:isNetworkQualityTrigger];
             }
         };
         
         void (^recordError)(NSString *) = ^(NSString *msg){
-            NSLog(@"[DNS并发] 源失败: %@", msg);
+            CIMLog(@"[DNS并发] 源失败: %@", msg);
         };
         
         // Resolver DNS（阿里解析器）
         dispatch_group_enter(group);
         [self getDirectOssUrlListFromALIDNSComplete:^(NSArray<ZUrlHostModel *> *ossUrlList) {
-            NSLog(@"DNS结果 阿里AAAA:%@",ossUrlList);
+            CIMLog(@"DNS结果 阿里AAAA:%@",ossUrlList);
             consumeList(ossUrlList, @"ALIDNS");
             dispatch_group_leave(group);
         }];
@@ -487,7 +641,7 @@ static dispatch_once_t onceToken;
         // 腾讯 DoH AAAA
         dispatch_group_enter(group);
         [self getDirectOssUrlListFromTencentDoHAAAAComplete:^(NSArray<ZUrlHostModel *> *ossUrlList) {
-            NSLog(@"DNS结果 腾讯AAAA:%@",ossUrlList);
+            CIMLog(@"DNS结果 腾讯AAAA:%@",ossUrlList);
             consumeList(ossUrlList, @"TENCENT_AAAA");
             dispatch_group_leave(group);
         }];
@@ -495,7 +649,7 @@ static dispatch_once_t onceToken;
         // Cloudflare DoH TXT
         dispatch_group_enter(group);
         [self getDirectOssUrlListFromCloudflareTXTComplete:^(NSArray<ZUrlHostModel *> *ossUrlList) {
-            NSLog(@"DNS结果 CloudflareTXT:%@",ossUrlList);
+            CIMLog(@"DNS结果 CloudflareTXT:%@",ossUrlList);
             consumeList(ossUrlList, @"CF_TXT");
             dispatch_group_leave(group);
         }];
@@ -503,7 +657,7 @@ static dispatch_once_t onceToken;
         // Cloudflare DoH AAAA
         dispatch_group_enter(group);
         [self getDirectOssUrlListFromCloudflareAAAAComplete:^(NSArray<ZUrlHostModel *> *ossUrlList) {
-            NSLog(@"DNS结果 CloudflareAAAA:%@",ossUrlList);
+            CIMLog(@"DNS结果 CloudflareAAAA:%@",ossUrlList);
             consumeList(ossUrlList, @"CF_AAAA");
             dispatch_group_leave(group);
         }];
@@ -511,14 +665,14 @@ static dispatch_once_t onceToken;
         // Ali DoH TXT
         dispatch_group_enter(group);
         [self getDirectOssUrlListFromAliDoHTXTComplete:^(NSArray<ZUrlHostModel *> *ossUrlList) {
-            NSLog(@"DNS结果 阿里TXT:%@",ossUrlList);
+            CIMLog(@"DNS结果 阿里TXT:%@",ossUrlList);
             consumeList(ossUrlList, @"ALI_DOH_TXT");
             dispatch_group_leave(group);
         }];
         
         dispatch_group_notify(group, dispatch_get_main_queue(), ^{
             if (raceSession != weakSelf.currentRaceSessionId) {
-                NSLog(@"[竞速会话] 分组完成但已过期，忽略");
+                CIMLog(@"[竞速会话] 分组完成但已过期，忽略");
                 return;
             }
             // 仅结束分组，不在此触发兜底，兜底在源级失败收敛中触发
@@ -537,6 +691,9 @@ static dispatch_once_t onceToken;
         [self ipDomainPortConnectCheckWithIpDomainPort:ssoModel.ipDomainPortStr isNetworkQualityTrigger:isNetworkQualityTrigger];
         return;
     }
+    
+    // 移除通知，避免通知泄漏
+    [self removeEcdhNotification];
 }
 
 // 腾讯 DoH AAAA（JSON API）
@@ -617,7 +774,7 @@ static dispatch_once_t onceToken;
                     }
                 }
             } else {
-                NSLog(@"[ALIDNS] JSON解析失败: %@", jerr.localizedDescription);
+                CIMLog(@"[ALIDNS] JSON解析失败: %@", jerr.localizedDescription);
             }
             if (list.count > 0) {
                 if (!finished) { finished = YES; if (complete) complete(list); }
@@ -659,13 +816,12 @@ static dispatch_once_t onceToken;
                     if (![ans isKindOfClass:[NSDictionary class]]) continue;
                     NSString *data = ans[@"data"];
                     if (![data isKindOfClass:[NSString class]] || data.length <= 0) continue;
-                    // 去引号
-                    NSString *cipher = data;
-                    if ([cipher hasPrefix:@"\""] && [cipher hasSuffix:@"\""]) {
-                        cipher = [cipher substringWithRange:NSMakeRange(1, cipher.length - 2)];
-                    }
+                    // TXT 可能由多个引号片段组成，需拼接为完整 base64 再解密
+                    NSArray<NSString *> *chunks = [self aliyTXTChunksFromData:data];
+                    NSString *cipher = (chunks.count > 0) ? [chunks componentsJoinedByString:@""] : @"";
+                    if (cipher.length <= 0) continue;
                     // 解密 JSON {"1":[ports],"2":[hosts]}
-                    NSString *dec = [AesEncryptUtils decrypt:cipher secret:@"2be4613f40779c85"];
+                    NSString *dec = [AesEncryptUtils decrypt:cipher secret:Z_DNS_TXT_AES_SECRET];
                     if (dec.length <= 0) continue;
                     NSData *jdata = [dec dataUsingEncoding:NSUTF8StringEncoding];
                     NSError *jerr = nil;
@@ -773,7 +929,7 @@ static dispatch_once_t onceToken;
                 }
             }
         } else {
-            NSLog(@"[ALIDNS] JSON解析失败: %@", jerr.localizedDescription);
+            CIMLog(@"[ALIDNS] JSON解析失败: %@", jerr.localizedDescription);
         }
         if (!finished) { finished = YES; if (complete) complete(list); }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -810,7 +966,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
         if (!finished) { finished = YES; if (complete) complete(@[]); }
     });
     
-    // 组装签名参数（使用 GlobalConfigHeader.h 中的 DirectId/DirectKeyId/DirectKeySecret）
+    // 组装签名参数（使用 ZMacroHeader.h 中的 DirectId/DirectKeyId/DirectKeySecret）
     NSString *uid = DirectId;
     NSString *ak  = DirectKeyId;
     NSString *secret = DirectKeySecret;
@@ -836,11 +992,11 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                     for (NSDictionary *ans in answers) {
                         if (![ans isKindOfClass:[NSDictionary class]]) continue;
                         NSString *data = ans[@"data"]; if (![data isKindOfClass:[NSString class]] || data.length <= 0) continue;
-                        NSString *cipher = data;
-                        if ([cipher hasPrefix:@"\""] && [cipher hasSuffix:@"\""]) {
-                            cipher = [cipher substringWithRange:NSMakeRange(1, cipher.length - 2)];
-                        }
-                        NSString *dec = [AesEncryptUtils decrypt:cipher secret:@"2be4613f40779c85"];
+                        // TXT 可能被分段为多个引号包裹的片段，需要提取每段并拼接为一个base64串
+                        NSArray<NSString *> *chunks = [self aliyTXTChunksFromData:data];
+                        NSString *cipher = (chunks.count > 0) ? [chunks componentsJoinedByString:@""] : @"";
+                        if (cipher.length <= 0) continue;
+                        NSString *dec = [AesEncryptUtils decrypt:cipher secret:Z_DNS_TXT_AES_SECRET];
                         if (dec.length <= 0) continue;
                         NSData *jdata = [dec dataUsingEncoding:NSUTF8StringEncoding];
                         NSError *jerr = nil; id jobj = [NSJSONSerialization JSONObjectWithData:jdata options:0 error:&jerr];
@@ -1099,6 +1255,18 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                 }
             }
         }
+        // 端口合法性校验（仅 1..65535 的十进制）
+        BOOL hasValidPort = NO;
+        NSString *validPort = nil;
+        if (port.length > 0) {
+            NSScanner *scanner = [NSScanner scannerWithString:port];
+            NSInteger pvalue = 0;
+            BOOL numeric = [scanner scanInteger:&pvalue] && scanner.isAtEnd;
+            if (numeric && pvalue > 0 && pvalue <= 65535) {
+                hasValidPort = YES;
+                validPort = [NSString stringWithFormat:@"%ld", (long)pvalue];
+            }
+        }
         
         // 已是 IP 则直接加入（保留端口；去重）
         struct in_addr ipv4addr; struct in6_addr ipv6addr;
@@ -1106,8 +1274,8 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
             inet_pton(AF_INET6, host.UTF8String, &ipv6addr) == 1) {
             BOOL isV6 = (inet_pton(AF_INET6, host.UTF8String, &ipv6addr) == 1);
             NSString *out = nil;
-            if (port.length > 0) {
-                out = isV6 ? [NSString stringWithFormat:@"[%@]:%@", host, port] : [NSString stringWithFormat:@"%@:%@", host, port];
+            if (hasValidPort) {
+                out = isV6 ? [NSString stringWithFormat:@"[%@]:%@", host, validPort] : [NSString stringWithFormat:@"%@:%@", host, validPort];
             } else {
                 out = host;
             }
@@ -1119,91 +1287,175 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
             continue;
         }
         
-        // CNAME 链路解析：最多 5 层，防环
-        NSMutableSet<NSString *> *visited = [NSMutableSet set];
-        BOOL appended = NO;
-        for (NSInteger depth = 0; depth < 5; depth++) {
-            if ([visited containsObject:host]) { break; }
-            [visited addObject:host];
-            
-            struct addrinfo hints; memset(&hints, 0, sizeof(hints));
-            hints.ai_family = AF_UNSPEC;
-            hints.ai_socktype = SOCK_STREAM;
-            hints.ai_flags = AI_CANONNAME;
-            struct addrinfo *res = NULL;
-            int err = getaddrinfo(host.UTF8String, NULL, &hints, &res);
-            if (err != 0 || res == NULL) {
-                // 当前节点解析失败，停止
-                if (res) freeaddrinfo(res);
-                break;
+        // 并发解析：Ali DoH A + CF DoH A + 系统DNS(119/114 UDP)
+        __block NSArray<NSString *> *winnerIPs = nil;
+        __block BOOL published = NO;
+        dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+        NSTimeInterval timeout = 0.5; // 500ms
+        void (^publishIfFirst)(NSArray<NSString *> *) = ^(NSArray<NSString *> *ips){
+            if (ips.count <= 0) return;
+            @synchronized (comboSet) {
+                if (!published) { published = YES; winnerIPs = ips; dispatch_semaphore_signal(sem); }
             }
-            
-            // 收集地址
-            for (struct addrinfo *p = res; p != NULL; p = p->ai_next) {
-                char ipstr[INET6_ADDRSTRLEN]; void *addr = NULL;
-                if (p->ai_family == AF_INET) {
-                    struct sockaddr_in *s = (struct sockaddr_in *)p->ai_addr; addr = &(s->sin_addr);
-                } else if (p->ai_family == AF_INET6) {
-                    struct sockaddr_in6 *s6 = (struct sockaddr_in6 *)p->ai_addr; addr = &(s6->sin6_addr);
-                }
-                if (addr && inet_ntop(p->ai_family, addr, ipstr, sizeof(ipstr))) {
-                    NSString *ip = [NSString stringWithUTF8String:ipstr];
-                    if (ip.length > 0) {
-                        BOOL isV6 = (p->ai_family == AF_INET6);
-                        NSString *out = nil;
-                        if (port.length > 0) {
-                            out = isV6 ? [NSString stringWithFormat:@"[%@]:%@", ip, port] : [NSString stringWithFormat:@"%@:%@", ip, port];
-                        } else {
-                            out = ip;
-                        }
-                        if (![comboSet containsObject:out]) {
-                            [comboSet addObject:out];
-                            NSString *typeStr = result.count == 0 ? item.type : @"2";
-                            [result addObject:[self getUrlHostModelWithUrl:out type:typeStr]];
-                            appended = YES;
-                        }
-                    }
-                }
-            }
-            
-            // 若获得了 IP，结束；否则尝试规范名继续下一跳
-            if (appended) { if (res) freeaddrinfo(res); break; }
-            
-            NSString *canon = nil;
-            if (res && res->ai_canonname != NULL) {
-                canon = [NSString stringWithUTF8String:res->ai_canonname];
-                // 去除末尾点
-                if ([canon hasSuffix:@"."]) {
-                    canon = [canon substringToIndex:canon.length - 1];
-                }
-            }
-            if (res) freeaddrinfo(res);
-            if (canon.length > 0 && ![canon isEqualToString:host]) {
-                host = canon;
-                continue;
-            } else {
-                break;
-            }
-        }
+        };
+        // 1) Ali DoH A（直连 223.5.5.5 / 223.6.6.6 JSON）
+        [self resolveAFromAliDoHForDomain:host timeout:timeout completion:^(NSArray<NSString *> *ips) {
+            publishIfFirst(ips);
+        }];
+        // 2) Cloudflare DoH A
+        [self resolveAFromCloudflareForDomain:host timeout:timeout completion:^(NSArray<NSString *> *ips) {
+            publishIfFirst(ips);
+        }];
+        // 3) 系统 DNS（119.29.29.29 / 114.114.114.114 UDP）
+        [self resolveAFromSystemDNSForDomain:host timeout:timeout completion:^(NSArray<NSString *> *ips) {
+            publishIfFirst(ips);
+        }];
         
-        if (!appended) {
-            NSLog(@"[DNS归一化] 无法解析为IP，丢弃: %@", startHost);
+        // 等待 500ms 或首个成功结果
+        dispatch_time_t waitT = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeout * NSEC_PER_SEC));
+        dispatch_semaphore_wait(sem, waitT);
+        
+        if (winnerIPs.count > 0) {
+            for (NSString *ip in winnerIPs) {
+                if (ip.length <= 0) continue;
+                NSString *out = hasValidPort ? [NSString stringWithFormat:@"%@:%@", ip, validPort] : ip;
+                if (![comboSet containsObject:out]) {
+                    [comboSet addObject:out];
+                    NSString *typeStr = result.count == 0 ? item.type : @"2";
+                    [result addObject:[self getUrlHostModelWithUrl:out type:typeStr]];
+                }
+            }
+        } else {
+            // 三源都失败，保留原域名
+            NSString *fallbackOut = hasValidPort ? [NSString stringWithFormat:@"%@:%@", host, validPort] : host;
+            if (![comboSet containsObject:fallbackOut]) {
+                [comboSet addObject:fallbackOut];
+                NSString *typeStr = result.count == 0 ? item.type : @"2";
+                [result addObject:[self getUrlHostModelWithUrl:fallbackOut type:typeStr]];
+            }
         }
     }
     return result;
 }
 
+#pragma mark - A记录解析实现
+
+// Ali DoH JSON: https://223.5.5.5/resolve?name=example.com&type=A
+- (void)resolveAFromAliDoHForDomain:(NSString *)domain
+                            timeout:(NSTimeInterval)timeout
+                         completion:(void(^)(NSArray<NSString *> *ips))completion {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    NSMutableSet *contentTypes = [NSMutableSet setWithSet:manager.responseSerializer.acceptableContentTypes];
+    [contentTypes addObject:@"application/dns-json"]; manager.responseSerializer.acceptableContentTypes = contentTypes;
+    [manager.requestSerializer setValue:@"application/dns-json" forHTTPHeaderField:@"accept"];
+    manager.requestSerializer.timeoutInterval = timeout;
+    __block BOOL finished = NO;
+    void (^finish)(NSArray<NSString *> *) = ^(NSArray<NSString *> *ips){ if (!finished){ finished = YES; if (completion) completion(ips ?: @[]);} };
+    NSArray<NSString *> *bases = @[@"https://223.5.5.5/resolve", @"https://223.6.6.6/resolve", @"https://dns.alidns.com/resolve"];
+    __block NSInteger idx = 0;
+    __weak typeof(self) weakSelf = self;
+    __block void (^requestNext)(void) = nil;
+    __weak typeof(requestNext) weakReq = nil;
+    requestNext = ^{
+        if (finished || idx >= bases.count) { finish(@[]); return; }
+        NSString *base = bases[idx++];
+        NSString *url = [NSString stringWithFormat:@"%@?name=%@&type=A", base, domain];
+        [manager GET:url parameters:nil headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            NSArray *ips = [weakSelf parseDoHJsonAResponse:responseObject];
+            if (ips.count > 0) { finish(ips); } else { if (weakReq) weakReq(); }
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            if (weakReq) weakReq();
+        }];
+    }; weakReq = requestNext; requestNext();
+}
+
+// Cloudflare DoH JSON: https://cloudflare-dns.com/dns-query?name=example.com&type=A
+- (void)resolveAFromCloudflareForDomain:(NSString *)domain
+                                timeout:(NSTimeInterval)timeout
+                             completion:(void(^)(NSArray<NSString *> *ips))completion {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    NSMutableSet *contentTypes = [NSMutableSet setWithSet:manager.responseSerializer.acceptableContentTypes];
+    [contentTypes addObject:@"application/dns-json"]; manager.responseSerializer.acceptableContentTypes = contentTypes;
+    [manager.requestSerializer setValue:@"application/dns-json" forHTTPHeaderField:@"accept"];
+    manager.requestSerializer.timeoutInterval = timeout;
+    NSString *url = [NSString stringWithFormat:@"%@?name=%@&type=A", CF_DOH_BASE_URL, domain];
+    [manager GET:url parameters:nil headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSArray *ips = [self parseDoHJsonAResponse:responseObject];
+        if (completion) completion(ips);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (completion) completion(@[]);
+    }];
+}
+
+// 解析 DoH JSON（Google/CF/Ali 兼容）
+- (NSArray<NSString *> *)parseDoHJsonAResponse:(id)json {
+    if (![json isKindOfClass:[NSDictionary class]]) return @[];
+    NSMutableArray<NSString *> *ips = [NSMutableArray array];
+    NSArray *answers = ((NSDictionary *)json)[@"Answer"];
+    if (![answers isKindOfClass:[NSArray class]]) return @[];
+    for (NSDictionary *ans in answers) {
+        if (![ans isKindOfClass:[NSDictionary class]]) continue;
+        NSNumber *typeNum = ans[@"type"]; NSString *data = ans[@"data"];
+        if ([typeNum integerValue] == 1 && [data isKindOfClass:[NSString class]] && data.length > 0) {
+            // 仅 A 记录
+            struct in_addr a; if (inet_pton(AF_INET, data.UTF8String, &a) == 1) {
+                [ips addObject:data];
+            }
+        }
+    }
+    return ips;
+}
+
+// 系统 DNS（指定服务器）UDP 查询 A 记录，谁先返回即用
+- (void)resolveAFromSystemDNSForDomain:(NSString *)domain
+                               timeout:(NSTimeInterval)timeout
+                            completion:(void(^)(NSArray<NSString *> *ips))completion {
+    NSArray<NSString *> *servers = @[@"119.29.29.29", @"114.114.114.114"]; // 腾讯、114
+    __block BOOL finished = NO;
+    void (^finish)(NSArray<NSString *> *) = ^(NSArray<NSString *> *ips){ @synchronized (self){ if (!finished){ finished = YES; if (completion) completion(ips ?: @[]); }} };
+    dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    for (NSString *ip in servers) {
+        dispatch_async(q, ^{
+            uint16_t txid = (uint16_t)arc4random_uniform(0xFFFF);
+            NSData *query = ZBuildDNSQueryA(domain, txid);
+            int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+            if (sockfd < 0) { return; }
+            struct timeval tv; tv.tv_sec = 0; tv.tv_usec = (suseconds_t)(timeout * 1000000.0);
+            setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+            struct sockaddr_in addr; memset(&addr, 0, sizeof(addr)); addr.sin_family = AF_INET; addr.sin_port = htons(53); inet_pton(AF_INET, ip.UTF8String, &addr.sin_addr);
+            ssize_t sent = sendto(sockfd, query.bytes, query.length, 0, (struct sockaddr *)&addr, sizeof(addr));
+            if (sent < 0) { close(sockfd); return; }
+            uint8_t buf[512]; struct sockaddr_in from; socklen_t fromlen = sizeof(from);
+            ssize_t r = recvfrom(sockfd, buf, sizeof(buf), 0, (struct sockaddr *)&from, &fromlen);
+            close(sockfd);
+            if (r > 0) {
+                NSArray<NSString *> *ips = ZParseDNSResponseA(buf, r, txid);
+                if (ips.count > 0) { finish(ips); }
+            }
+        });
+    }
+    // 超时保护
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeout * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        finish(@[]);
+    });
+}
+
 //oss 直连 竞速
 - (void)netWorkDirectWithFiltrateBestOssRacingWithOssList:(NSArray<ZUrlHostModel *> *)ossList
                                                iscontinue:(BOOL)iscontinue
-                                    allowFallbackRetry:(BOOL)allowFallbackRetry
-                                              sourceTag:(NSString *)sourceTag
+                                       allowFallbackRetry:(BOOL)allowFallbackRetry
+                                                sourceTag:(NSString *)sourceTag
                                   isNetworkQualityTrigger:(BOOL)isNetworkQualityTrigger {
     __block BOOL hasResult = NO;
     __block NSInteger ossNum = 0;
     //拿到本地保存的LecseID
     ZSsoInfoModel *ssoModel = [ZSsoInfoModel getSSOInfo];
     if (ssoModel == nil || ssoModel.liceseId == nil) {
+        // 移除通知，避免通知泄漏
+        [self removeEcdhNotification];
+        
         if (isNetworkQualityTrigger) {
             return;
         }
@@ -1212,13 +1464,14 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
     }
     //ssoInfo
     [IMSDKManager configSDKSsoInfo:[ZSsoInfoModel getSSOInfoDetailInfo]];
-    WeakSelf
+    
+    @weakify(self)
     [ZTOOL getDevicePublicNetworkIPWithCompletion:^(NSString * _Nonnull ip) {
         for (ZUrlHostModel *ossUrlModel in ossList) {
             if (hasResult) {
                 break;
             }
-            NSLog(@"\n\noss竞速======%@ ------------- %@",[NSDate now], ossUrlModel.urlString);
+            CIMLog(@"\n\noss竞速======%@ ------------- %@",[NSDate now], ossUrlModel.urlString);
             IOSTcpRaceManager *manager = [[IOSTcpRaceManager alloc]
                                           initWithAppId:ssoModel.liceseId
                                           appType:DefaultAppType
@@ -1226,15 +1479,17 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                                           useProxy:!iscontinue
                                           publicIp:ip];
             [manager executeWithSuccess:^(IMServerListResponseBody * _Nonnull serverResponse) {
+                @strongify(self)
+                
                 NSArray *imArr = serverResponse.imEndpointsArray;
-                NSLog(@"✅ 单个TCP竞速成功: %@, 当前成功的地址: %@", imArr, ossUrlModel.urlString);
+                CIMLog(@"✅ 单个TCP竞速成功: %@, 当前成功的地址: %@", imArr, ossUrlModel.urlString);
                 // 上报 Sentry 成功
                 NSMutableDictionary *succDict = [NSMutableDictionary dictionary];
                 [succDict setValue:sourceTag ?: @"unknown" forKey:@"source"];
                 [succDict setValue:ossUrlModel.urlString ?: @"" forKey:@"address"];
                 [succDict setValue:@"0" forKey:@"errorCode"];
                 [ZTOOL sentryUploadWithDictionary:succDict sentryUploadType:ZSentryUploadTypeEnterpriseSuccess errorCode:@"0"];
-                NSLog(@"当前成功的地址: %@",ossUrlModel.urlString);
+                CIMLog(@"当前成功的地址: %@",ossUrlModel.urlString);
                 // 短路其余源
                 self.ossFirstSuccessGlobal = YES;
                 self.multiSourceActive = NO;
@@ -1247,10 +1502,10 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                     FallbackEndpoints *fb = serverResponse.fallbackEndpoints;
                     NSArray<NSString *> *srvDomestic = fb.domesticArray ? [fb.domesticArray copy] : @[];
                     NSArray<NSString *> *srvOverseas = fb.overseasArray ? [fb.overseasArray copy] : @[];
-                    BOOL needUpdateDomestic = (srvDomestic.count > 0) && ![srvDomestic isEqualToArray:weakSelf.fallbackStore.domesticUrls];
-                    BOOL needUpdateOverseas = (srvOverseas.count > 0) && ![srvOverseas isEqualToArray:weakSelf.fallbackStore.overseasUrls];
+                    BOOL needUpdateDomestic = (srvDomestic.count > 0) && ![srvDomestic isEqualToArray:self.fallbackStore.domesticUrls];
+                    BOOL needUpdateOverseas = (srvOverseas.count > 0) && ![srvOverseas isEqualToArray:self.fallbackStore.overseasUrls];
                     if (needUpdateDomestic || needUpdateOverseas) {
-                        [weakSelf.fallbackStore updateIfDifferentDomestic:srvDomestic overseas:srvOverseas];
+                        [self.fallbackStore updateIfDifferentDomestic:srvDomestic overseas:srvOverseas];
                     }
                 }
                 
@@ -1320,9 +1575,9 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                 }];
                 
                 if (tcpArray.count == 0 || httpArray.count == 0) {
-                    [weakSelf.codeBuilder withInitializationErrorType:[InitializationErrorTypes OSS_FAILURE]];
+                    [self.codeBuilder withInitializationErrorType:[InitializationErrorTypes OSS_FAILURE]];
                     ossNum += 1;
-                    [weakSelf ossRacingDirectFailResultHandle:ossNum totalNum:ossList.count iscontinue:iscontinue allowFallbackRetry:allowFallbackRetry sourceTag:sourceTag ossList:ossList isNetworkQualityTrigger:isNetworkQualityTrigger];
+                    [self ossRacingDirectFailResultHandle:ossNum totalNum:ossList.count iscontinue:iscontinue allowFallbackRetry:allowFallbackRetry sourceTag:sourceTag ossList:ossList isNetworkQualityTrigger:isNetworkQualityTrigger];
                 }
                 if (!hasResult) {
                     // 五源直连路径成功：标记全局成功并取消其余请求
@@ -1342,27 +1597,28 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                     [ssoModel saveSSOInfo];
                     [ssoModel saveSSOInfoWithLiceseId:ssoModel.liceseId];
                     //存储证书data
-                    weakSelf.cerData = racingModel.cerData;
-                    weakSelf.p12Data = racingModel.p12Data;
-                    weakSelf.p12pwd = [NSString getHttpsCerPassword];
+                    self.cerData = racingModel.cerData;
+                    self.p12Data = racingModel.p12Data;
+                    self.p12pwd = [NSString getHttpsCerPassword];
                     
                     //core层
                     IMSDKHTTPTOOL.cerData = racingModel.cerData;
                     IMSDKHTTPTOOL.p12Data = racingModel.p12Data;
                     IMSDKHTTPTOOL.p12pwd = [NSString getHttpsCerPassword];
-                    [weakSelf.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@%@",weakSelf.subModulesDNSCode,ossUrlModel.type]];
+                    [self.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@%@",self.subModulesDNSCode,ossUrlModel.type]];
                     //对http进行竞速
-                    [weakSelf netWorkFiltrateBestHttpRacingWithList:racingModel isNetworkQualityTrigger:isNetworkQualityTrigger];
+                    [self netWorkFiltrateBestHttpRacingWithList:racingModel isNetworkQualityTrigger:isNetworkQualityTrigger];
                 }
             } failure:^(NSError * _Nonnull error) {
-                NSLog(@"❌ 单个TCP竞速失败: %@, 错误: %@", ossUrlModel.urlString, error.localizedDescription);
-                NSLog(@"oss竞速失败 %@ ********************** %@\n",[NSDate now], ossUrlModel.urlString);
+                @strongify(self)
+                CIMLog(@"❌ 单个TCP竞速失败: %@, 错误: %@", ossUrlModel.urlString, error.localizedDescription);
+                CIMLog(@"oss竞速失败 %@ ********************** %@\n",[NSDate now], ossUrlModel.urlString);
                 if (error.code == 1) {
-                    [weakSelf.codeBuilder withInitializationErrorType:[InitializationErrorTypes OSS_NONEXISTENT_FAILURE]];
+                    [self.codeBuilder withInitializationErrorType:[InitializationErrorTypes OSS_NONEXISTENT_FAILURE]];
                 } else {
-                    [weakSelf.codeBuilder withInitializationErrorType:[InitializationErrorTypes OSS_FAILURE]];
+                    [self.codeBuilder withInitializationErrorType:[InitializationErrorTypes OSS_FAILURE]];
                 }
-                [weakSelf.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@0",weakSelf.subModulesDNSCode]];
+                [self.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@0",self.subModulesDNSCode]];
                 //日志上传 oss竞速失败
                 NSMutableDictionary *loganDict = [NSMutableDictionary dictionary];
                 [loganDict setObjectSafe:ossUrlModel.urlString forKey:@"oss"];
@@ -1371,21 +1627,22 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                 [loganDict setObjectSafe:[NSString getCurrentNetWorkType] forKey:@"netWorkType"];
                 [IMSDKManager imSdkWriteLoganWith:LingIMLoganTypeApi loganContent:[[LingIMLoganManager sharedManager] configLoganContent:loganDict]];
                 ossNum += 1;
-                [weakSelf ossRacingDirectFailResultHandle:ossNum totalNum:ossList.count iscontinue:iscontinue allowFallbackRetry:allowFallbackRetry sourceTag:sourceTag ossList:ossList isNetworkQualityTrigger:isNetworkQualityTrigger];
+                [self ossRacingDirectFailResultHandle:ossNum totalNum:ossList.count iscontinue:iscontinue allowFallbackRetry:allowFallbackRetry sourceTag:sourceTag ossList:ossList isNetworkQualityTrigger:isNetworkQualityTrigger];
                 // 五源路径统计收敛（当该源地址都失败时，计一次完成+失败）
-                if (!allowFallbackRetry && ossNum >= ossList.count) {
-                    @synchronized (weakSelf) {
-                        weakSelf.multiSourceFinishedCount++;
-                        weakSelf.multiSourceDirectFailCount++;
-                        if (!weakSelf.ossFirstSuccessGlobal && weakSelf.multiSourceFinishedCount >= weakSelf.multiSourceTotalCount) {
-                            NSLog(@"[DNS并发] 五源均失败或直连竞速全部失败，走 Resolver 兜底");
+                if (!allowFallbackRetry && ossNum >= ossList.count && ![sourceTag isEqualToString:@"OLDRESOLVER"]) {
+                    @synchronized (self) {
+                        self.multiSourceFinishedCount++;
+                        self.multiSourceDirectFailCount++;
+                        if (!self.ossFirstSuccessGlobal && self.multiSourceFinishedCount >= self.multiSourceTotalCount) {
+                            CIMLog(@"[DNS并发] 五源均失败或直连竞速全部失败，走 Resolver 兜底");
                             NSMutableDictionary *dict = [NSMutableDictionary dictionary];
                             [loganDict setValue:@"014099" forKey:@"failReason"];//失败原因
                             [ZTOOL sentryUploadWithDictionary:dict sentryUploadType:ZSentryUploadTypeEnterprise errorCode:@"014099"];
                             BOOL isProxyFB = ([ZTOOL getCurrentProxyType] == ProxyTypeSOCKS5);
-                            [weakSelf getDirectOssUrlListFromDNSComplete:^(NSArray<ZUrlHostModel *> *ossUrlList) {
-                                NSArray<ZUrlHostModel *> *normalizedFB = [weakSelf normalizeDomainToIP:ossUrlList];
-                            [weakSelf netWorkDirectWithFiltrateBestOssRacingWithOssList:normalizedFB iscontinue:!isProxyFB allowFallbackRetry:YES sourceTag:@"OLDRESOLVER" isNetworkQualityTrigger:isNetworkQualityTrigger];
+                            [self getDirectOssUrlListFromDNSComplete:^(NSArray<ZUrlHostModel *> *ossUrlList) {
+                                @strongify(self)
+                                NSArray<ZUrlHostModel *> *normalizedFB = [self normalizeDomainToIP:ossUrlList];
+                                [self netWorkDirectWithFiltrateBestOssRacingWithOssList:normalizedFB iscontinue:!isProxyFB allowFallbackRetry:YES sourceTag:@"OLDRESOLVER" isNetworkQualityTrigger:isNetworkQualityTrigger];
                             }];
                         }
                     }
@@ -1399,34 +1656,31 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
 - (void)ossRacingDirectFailResultHandle:(NSInteger)ossNum
                                totalNum:(NSInteger)totalNum
                              iscontinue:(BOOL)iscontinue
-                      allowFallbackRetry:(BOOL)allowFallbackRetry
+                     allowFallbackRetry:(BOOL)allowFallbackRetry
                               sourceTag:(NSString *)sourceTag
                                 ossList:(NSArray<ZUrlHostModel *> *)ossList
                 isNetworkQualityTrigger:(BOOL)isNetworkQualityTrigger {
     if (ossNum >= totalNum) {
+        // 若当前已是兜底列表（type=="5"），全部失败则直接失败出栈，避免再次触发 DNS 或其它回路
+        __block BOOL isFallbackList = YES;
+        [ossList enumerateObjectsUsingBlock:^(ZUrlHostModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (![obj.type isEqualToString:@"5"]) {
+                isFallbackList = NO;
+                *stop = YES;
+            }
+        }];
+        if (isFallbackList) {
+            [self.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@0",self.subModulesDNSCode]];
+            [self.codeBuilder withInitializationErrorType:[InitializationErrorTypes OSS_FAILURE]];
+            [self packageRacingResultWithStep:ZNetRacingStepOss result:NO racingCode:10000 isNetworkQualityTrigger:isNetworkQualityTrigger];
+            return;
+        }
         // oss 直连 竞速全部失败
         if (iscontinue) {
             [self netWorkDirectWithFiltrateBestOssRacingWithOssList:ossList iscontinue:NO allowFallbackRetry:allowFallbackRetry sourceTag:sourceTag isNetworkQualityTrigger:isNetworkQualityTrigger];
         } else {
             if (!allowFallbackRetry) {
                 // 五源路径：不使用兜底地址重试，仅统计为失败
-                return;
-            }
-            // 兜底路径：允许使用兜底地址重试。避免死循环：若当前已是兜底列表（type=="5"），直接失败弹框
-            __block BOOL isFallbackList = YES;
-            [ossList enumerateObjectsUsingBlock:^(ZUrlHostModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                if (![obj.type isEqualToString:@"5"]) {
-                    isFallbackList = NO;
-                    *stop = YES;
-                }
-            }];
-            if (isFallbackList) {
-                if (isNetworkQualityTrigger) {
-                    return;
-                }
-                [self.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@0",self.subModulesDNSCode]];
-                [self.codeBuilder withInitializationErrorType:[InitializationErrorTypes OSS_FAILURE]];
-                [self packageRacingResultWithStep:ZNetRacingStepOss result:NO racingCode:10000 isNetworkQualityTrigger:isNetworkQualityTrigger];
                 return;
             }
             // 使用兜底地址重试一次
@@ -1436,14 +1690,11 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
             
             for (NSString *u in fallbacks) {
                 [fallbackOss addObject:[self getUrlHostModelWithUrl:u type:@"5"]];
-                NSLog(@"当前的兜底地址: %@",u);
+                CIMLog(@"当前的兜底地址: %@",u);
             }
             if (fallbackOss.count > 0) {
                 [self netWorkDirectWithFiltrateBestOssRacingWithOssList:fallbackOss iscontinue:NO allowFallbackRetry:NO sourceTag:sourceTag isNetworkQualityTrigger:isNetworkQualityTrigger];
             } else {
-                if (isNetworkQualityTrigger) {
-                    return;
-                }
                 [self.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@0",self.subModulesDNSCode]];
                 [self.codeBuilder withInitializationErrorType:[InitializationErrorTypes OSS_FAILURE]];
                 [self packageRacingResultWithStep:ZNetRacingStepOss result:NO racingCode:10000 isNetworkQualityTrigger:isNetworkQualityTrigger];
@@ -1539,7 +1790,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                         } else {
                             @synchronized (strongSelf) {
                                 if (hasResult == NO) {
-                                    DLog(@"=======最优http: %@", httpUrl);
+                                    CIMLog(@"=======最优http: %@", httpUrl);
                                     hasResult = YES;
                                     // 取消其他请求
                                     [tasks enumerateObjectsUsingBlock:^(NSURLSessionDataTask * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -1590,7 +1841,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                 }
                 
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                NSLog(@"http竞速结果 url: %@ code: %ld", requestHost, (long)error.code);
+                CIMLog(@"http竞速结果 url: %@ code: %ld", requestHost, (long)error.code);
                 //日志上传 http竞速失败
                 NSMutableDictionary *loganDict = [NSMutableDictionary dictionary];
                 [loganDict setObjectSafe:httpUrl forKey:@"http"];
@@ -1613,7 +1864,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
             }
         }
     } else {
-        DLog(@"全部失败，停止Http择优");
+        CIMLog(@"全部失败，停止Http择优");
         [self.codeBuilder withInitializationErrorType:[InitializationErrorTypes HTTP_FAILURE]];
         //节点竞速失败回调Block
         [weakSelf packageRacingResultWithStep:ZNetRacingStepHttp result:NO racingCode:0 isNetworkQualityTrigger:NO];
@@ -1680,7 +1931,10 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
         [IMSDKManager configSDKLiceseId:sso.liceseId];
         [IMSDKManager configSDKCaptchaChannel:self.appSysSetModel.captchaChannel];
         
-        //        [self packageRacingResultWithStep:ZNetRacingStepTcp result:YES racingCode:0 isNetworkQualityTrigger:isNetworkQualityTrigger];
+        if (isNetworkQualityTrigger) {
+            // 移除通知，避免通知泄漏
+            [self removeEcdhNotification];
+        }
         return;
     }
     
@@ -1688,12 +1942,9 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
     NSArray<ZNetRacingItemModel *> *subArr = racingModel.tcpArr;
     if (subArr.count == 0) {
         // 全部组都没连通，恢复超时并回调失败
-        DLog(@"全部失败，停止 Tcp 择优");
+        CIMLog(@"全部失败，停止 Tcp 择优");
         IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 60.0;
-        if (isNetworkQualityTrigger) {
-            return;
-        }
-        [self.codeBuilder withInitializationErrorType:[InitializationErrorTypes TCP_FAILURE]];
+        [weakSelf.codeBuilder withInitializationErrorType:[InitializationErrorTypes TCP_FAILURE]];
         [weakSelf packageRacingResultWithStep:ZNetRacingStepTcp result:NO racingCode:0 isNetworkQualityTrigger:isNetworkQualityTrigger];
         return;
     }
@@ -1730,7 +1981,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
             if (success && !hasResult) {
                 @synchronized (weakSelf) {
                     hasResult = YES;
-                    DLog(@"=======最优Tcp: %@ 端口号:%@", host, port);
+                    CIMLog(@"=======最优Tcp: %@ 端口号:%@", host, port);
                     
                     // 统一关闭并释放所有流
                     [weakSelf _cleanupPendingStreams:pendingStreams];
@@ -1765,15 +2016,11 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                 // 本次失败，累加计数；全部失败后递归下一组
                 tryCount++;
                 if (tryCount >= subArr.count && !hasResult) {
-                    DLog(@"全部失败，停止 Tcp 择优");
+                    CIMLog(@"全部失败，停止 Tcp 择优");
                     [weakSelf _cleanupPendingStreams:pendingStreams];
                     IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 60.0;
                     
-                    if (isNetworkQualityTrigger) {
-                        return;
-                    }
-                    
-                    [self.codeBuilder withInitializationErrorType:[InitializationErrorTypes TCP_FAILURE]];
+                    [weakSelf.codeBuilder withInitializationErrorType:[InitializationErrorTypes TCP_FAILURE]];
                     [weakSelf packageRacingResultWithStep:ZNetRacingStepTcp result:NO racingCode:0 isNetworkQualityTrigger:isNetworkQualityTrigger];
                 }
             }
@@ -1808,147 +2055,132 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
 //对 IP/域名 进行连通性检查
 - (void)ipDomainPortConnectCheckWithIpDomainPort:(NSString *)ipDoaminPort
                          isNetworkQualityTrigger:(BOOL)isNetworkQualityTrigger {
-    if (![NSString isNil:ipDoaminPort]) {
-        NSString *cerPath = [[NSBundle mainBundle] pathForResource:@"client" ofType:@"cer"];//cer证书的路径
-        NSString *p12Path = [[NSBundle mainBundle] pathForResource:@"client" ofType:@"p12"];//p12证书的路径
-        //kit层
-        self.cerData = [NSData dataWithContentsOfFile:cerPath];
-        self.p12Data = [NSData dataWithContentsOfFile:p12Path];
-        self.p12pwd = [NSString getHttpsCerPassword];
-        //core层
-        IMSDKHTTPTOOL.cerData = [NSData dataWithContentsOfFile:cerPath];
-        IMSDKHTTPTOOL.p12Data = [NSData dataWithContentsOfFile:p12Path];
-        IMSDKHTTPTOOL.p12pwd = [NSString getHttpsCerPassword];
-        
-        //ssoInfo
-        [IMSDKManager configSDKSsoInfo:[ZSsoInfoModel getSSOInfoDetailInfo]];
-        [IMSDKManager configSDKLiceseId:@""];
-        
-        
-        //http检查
-        NSMutableString *httpsUrl = [NSMutableString stringWithFormat:@"https://%@", ipDoaminPort];
-        [self checkIpDoaminWithHttpHost:httpsUrl isNetworkQualityTrigger:isNetworkQualityTrigger];
-    }
+    NSString *cerPath = [[NSBundle mainBundle] pathForResource:@"client" ofType:@"cer"];//cer证书的路径
+    NSString *p12Path = [[NSBundle mainBundle] pathForResource:@"client" ofType:@"p12"];//p12证书的路径
+    //kit层
+    self.cerData = [NSData dataWithContentsOfFile:cerPath];
+    self.p12Data = [NSData dataWithContentsOfFile:p12Path];
+    self.p12pwd = [NSString getHttpsCerPassword];
+    //core层
+    IMSDKHTTPTOOL.cerData = [NSData dataWithContentsOfFile:cerPath];
+    IMSDKHTTPTOOL.p12Data = [NSData dataWithContentsOfFile:p12Path];
+    IMSDKHTTPTOOL.p12pwd = [NSString getHttpsCerPassword];
+    
+    //ssoInfo
+    [IMSDKManager configSDKSsoInfo:[ZSsoInfoModel getSSOInfoDetailInfo]];
+    [IMSDKManager configSDKLiceseId:@""];
+    
+    
+    //http检查
+    NSMutableString *httpsUrl = [NSMutableString stringWithFormat:@"https://%@", ipDoaminPort];
+    [self checkIpDoaminWithHttpHost:httpsUrl isNetworkQualityTrigger:isNetworkQualityTrigger];
 }
 
 //检查http并请求SystemSetting接口
 - (void)checkIpDoaminWithHttpHost:(NSString *)httpHost
           isNetworkQualityTrigger:(BOOL)isNetworkQualityTrigger {
-    if (![NSString isNil:httpHost]) {
-        WeakSelf
-        IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 20.0;
-        NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-        config.connectionProxyDictionary = @{}; // 关闭系统代理
-        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://www.baidu.com"] sessionConfiguration:config];
+    WeakSelf
+    IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 20.0;
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    config.connectionProxyDictionary = @{}; // 关闭系统代理
+    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://www.baidu.com"] sessionConfiguration:config];
+    
+    // 如果confighttpSessionManagerCerAndP12Cer没有设置允许无效证书，重新设置
+    AFSecurityPolicy *currentPolicy = manager.securityPolicy;
+    if (!currentPolicy.allowInvalidCertificates) {
+        AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
+        policy.allowInvalidCertificates = YES; // 允许无效证书（包括自签名证书）
+        policy.validatesDomainName = NO;       // 不校验证书中的域名
+        [manager setSecurityPolicy:policy];
+    }
+    
+    
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    manager.requestSerializer.timeoutInterval = 10;
+    NSString *httpUrl = [NSString stringWithFormat:@"%@%@", httpHost, App_Get_System_Setting_Url];
+    
+    /// Header
+    [manager.requestSerializer setValue:@"IOS" forHTTPHeaderField:@"deviceType"];
+    NSString *deviceID = [FCUUID uuidForDevice];
+    [manager.requestSerializer setValue:deviceID forHTTPHeaderField:@"deviceUuid"];//deviceUuid多租户
+    [manager.requestSerializer setValue:Z_OrgName forHTTPHeaderField:@"orgName"];//租户信息
+    /** 接口验签 */
+    long long timeStamp = [NSDate getCurrentTimeIntervalWithSecond];
+    //timestamp
+    [manager.requestSerializer setValue:[NSString stringWithFormat:@"%lld", timeStamp] forHTTPHeaderField:@"timestamp"];
+    //signature
+    NSString *signature = [LXChatEncrypt method5:@"getSystemConfig" uri:@"system/v2/getSystemConfig" timestamp:timeStamp];
+    [manager.requestSerializer setValue:signature forHTTPHeaderField:@"signature"];
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:@"" forKey:@"projectId"];
+    __block NSURLSessionDataTask *task = [manager dataTaskWithHTTPMethod:@"POST" URLString:httpUrl parameters:params headers:nil uploadProgress:^(NSProgress * _Nonnull uploadProgress) {
         
-        // 如果confighttpSessionManagerCerAndP12Cer没有设置允许无效证书，重新设置
-        AFSecurityPolicy *currentPolicy = manager.securityPolicy;
-        if (!currentPolicy.allowInvalidCertificates) {
-            AFSecurityPolicy *policy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-            policy.allowInvalidCertificates = YES; // 允许无效证书（包括自签名证书）
-            policy.validatesDomainName = NO;       // 不校验证书中的域名
-            [manager setSecurityPolicy:policy];
-        }
+    } downloadProgress:^(NSProgress * _Nonnull downloadProgress) {
         
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        ZHttpResponse *resp = [ZHttpResponse mj_objectWithKeyValues:responseObject];
         
-        manager.requestSerializer = [AFJSONRequestSerializer serializer];
-        manager.requestSerializer.timeoutInterval = 10;
-        NSString *httpUrl = [NSString stringWithFormat:@"%@%@", httpHost, App_Get_System_Setting_Url];
-        
-        /// Header
-        [manager.requestSerializer setValue:@"IOS" forHTTPHeaderField:@"deviceType"];
-        NSString *deviceID = [FCUUID uuidForDevice];
-        [manager.requestSerializer setValue:deviceID forHTTPHeaderField:@"deviceUuid"];//deviceUuid多租户
-        [manager.requestSerializer setValue:Z_OrgName forHTTPHeaderField:@"orgName"];//租户信息
-        /** 接口验签 */
-        long long timeStamp = [NSDate getCurrentTimeIntervalWithSecond];
-        //timestamp
-        [manager.requestSerializer setValue:[NSString stringWithFormat:@"%lld", timeStamp] forHTTPHeaderField:@"timestamp"];
-        //signature
-        NSString *signature = [LXChatEncrypt method5:@"getSystemConfig" uri:@"system/v2/getSystemConfig" timestamp:timeStamp];
-        [manager.requestSerializer setValue:signature forHTTPHeaderField:@"signature"];
-        NSMutableDictionary *params = [NSMutableDictionary dictionary];
-        [params setObject:@"" forKey:@"projectId"];
-        __block NSURLSessionDataTask *task = [manager dataTaskWithHTTPMethod:@"POST" URLString:httpUrl parameters:params headers:nil uploadProgress:^(NSProgress * _Nonnull uploadProgress) {
-            
-        } downloadProgress:^(NSProgress * _Nonnull downloadProgress) {
-            
-        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            ZHttpResponse *resp = [ZHttpResponse mj_objectWithKeyValues:responseObject];
-            
-            if (resp.isHttpSuccess && resp.data != nil) {
-                id descryptData = [resp responseDataDescryptWithDataString:resp.data url:httpUrl];
-                if (descryptData != nil) {
-                    if(![descryptData isKindOfClass:[NSDictionary class]]){
-                        if (isNetworkQualityTrigger) {
-                            return;
-                        }
-                        [strongSelf.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@0",self.subModulesDNSCode]];
-                        [strongSelf.codeBuilder withInitializationErrorType:[InitializationErrorTypes HTTP_DECODE_FAILURE]];
-                        [weakSelf packageRacingResultWithStep:ZNetRacingStepHttp result:NO racingCode:0 isNetworkQualityTrigger:isNetworkQualityTrigger];
-                        return;
-                    } else {
-                        //Kit层
-                        weakSelf.apiHost = httpHost;
-                        weakSelf.getFileHost = httpHost;
-                        weakSelf.uploadfileHost = [NSString stringWithFormat:@"%@/oss", httpHost];
-                        //SDK层
-                        LingIMSDKApiOptions *option = [LingIMSDKApiOptions new];
-                        option.imApi = httpHost;
-                        option.imOrgName = Z_OrgName;
-                        [IMSDKManager configSDKApiWith:option];
-                        //获取并保存SystemSetting信息
-                        ZSystemSettingModel *sysSettingModel = [ZSystemSettingModel mj_objectWithKeyValues:descryptData];
-                        weakSelf.appSysSetModel = sysSettingModel;
-                        //音视频相关处理
-                        [weakSelf callSDKConfig];
-                        
-                        [IMSDKManager configSDKTenantCode:sysSettingModel.tenantCode];
-                        
-                        //获取Tcp域名+端口号的List
-                        [weakSelf ipDomainGetTcpHostHandleWithHttp:httpHost isNetworkQualityTrigger:isNetworkQualityTrigger];
-                        
-                    }
-                } else {
-                    if (isNetworkQualityTrigger) {
-                        return;
-                    }
+        if (resp.isHttpSuccess && resp.data != nil) {
+            id descryptData = [resp responseDataDescryptWithDataString:resp.data url:httpUrl];
+            if (descryptData != nil) {
+                if(![descryptData isKindOfClass:[NSDictionary class]]){
                     [strongSelf.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@0",self.subModulesDNSCode]];
                     [strongSelf.codeBuilder withInitializationErrorType:[InitializationErrorTypes HTTP_DECODE_FAILURE]];
-                    [weakSelf packageRacingResultWithStep:ZNetRacingStepHttp result:NO racingCode:0 isNetworkQualityTrigger:isNetworkQualityTrigger];
+                    [strongSelf packageRacingResultWithStep:ZNetRacingStepHttp result:NO racingCode:0 isNetworkQualityTrigger:isNetworkQualityTrigger];
                     return;
+                } else {
+                    //Kit层
+                    strongSelf.apiHost = httpHost;
+                    strongSelf.getFileHost = httpHost;
+                    strongSelf.uploadfileHost = [NSString stringWithFormat:@"%@/oss", httpHost];
+                    //SDK层
+                    LingIMSDKApiOptions *option = [LingIMSDKApiOptions new];
+                    option.imApi = httpHost;
+                    option.imOrgName = Z_OrgName;
+                    [IMSDKManager configSDKApiWith:option];
+                    //获取并保存SystemSetting信息
+                    ZSystemSettingModel *sysSettingModel = [ZSystemSettingModel mj_objectWithKeyValues:descryptData];
+                    strongSelf.appSysSetModel = sysSettingModel;
+                    //音视频相关处理
+                    [strongSelf callSDKConfig];
+                    
+                    [IMSDKManager configSDKTenantCode:sysSettingModel.tenantCode];
+                    
+                    //获取Tcp域名+端口号的List
+                    [strongSelf ipDomainGetTcpHostHandleWithHttp:httpHost isNetworkQualityTrigger:isNetworkQualityTrigger];
+                    
                 }
             } else {
-                if (isNetworkQualityTrigger) {
-                    return;
-                }
-                [strongSelf.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@0",self.subModulesDNSCode]];
+                [strongSelf.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@0",strongSelf.subModulesDNSCode]];
                 [strongSelf.codeBuilder withInitializationErrorType:[InitializationErrorTypes HTTP_DECODE_FAILURE]];
-                [weakSelf packageRacingResultWithStep:ZNetRacingStepHttp result:NO racingCode:0 isNetworkQualityTrigger:isNetworkQualityTrigger];
+                [strongSelf packageRacingResultWithStep:ZNetRacingStepHttp result:NO racingCode:0 isNetworkQualityTrigger:isNetworkQualityTrigger];
                 return;
             }
-            
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            //日志上传 http竞速失败
-            NSMutableDictionary *loganDict = [NSMutableDictionary dictionary];
-            [loganDict setObjectSafe:httpHost forKey:@"http"];
-            [loganDict setObjectSafe:@(10000) forKey:@"httpCode"];
-            [loganDict setObjectSafe:ZTOOL.publicIP forKey:@"publicIp"];
-            [loganDict setObjectSafe:[NSString getCurrentNetWorkType] forKey:@"netWorkType"];
-            [IMSDKManager imSdkWriteLoganWith:LingIMLoganTypeApi loganContent:[[LingIMLoganManager sharedManager] configLoganContent:loganDict]];
-            IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 60.0;
-            DLog(@"IP/域名连通性检测全部失败");
-            if (isNetworkQualityTrigger) {
-                return;
-            }
-            //节点竞速失败回调Block
-            [self.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@0",self.subModulesDNSCode]];
-            [self.codeBuilder withInitializationErrorType:[InitializationErrorTypes HTTP_FAILURE]];
-            [weakSelf packageRacingResultWithStep:ZNetIpDomainStepHttp result:NO racingCode:10000 isNetworkQualityTrigger:isNetworkQualityTrigger];
-        }];
-        [task resume];
-    }
+        } else {
+            [strongSelf.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@0",strongSelf.subModulesDNSCode]];
+            [strongSelf.codeBuilder withInitializationErrorType:[InitializationErrorTypes HTTP_DECODE_FAILURE]];
+            [strongSelf packageRacingResultWithStep:ZNetRacingStepHttp result:NO racingCode:0 isNetworkQualityTrigger:isNetworkQualityTrigger];
+            return;
+        }
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        //日志上传 http竞速失败
+        NSMutableDictionary *loganDict = [NSMutableDictionary dictionary];
+        [loganDict setObjectSafe:httpHost forKey:@"http"];
+        [loganDict setObjectSafe:@(10000) forKey:@"httpCode"];
+        [loganDict setObjectSafe:ZTOOL.publicIP forKey:@"publicIp"];
+        [loganDict setObjectSafe:[NSString getCurrentNetWorkType] forKey:@"netWorkType"];
+        [IMSDKManager imSdkWriteLoganWith:LingIMLoganTypeApi loganContent:[[LingIMLoganManager sharedManager] configLoganContent:loganDict]];
+        IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 60.0;
+        CIMLog(@"IP/域名连通性检测全部失败");
+        //节点竞速失败回调Block
+        [strongSelf.codeBuilder withInitializationSubModule:[NSString stringWithFormat:@"%@0",strongSelf.subModulesDNSCode]];
+        [strongSelf.codeBuilder withInitializationErrorType:[InitializationErrorTypes HTTP_FAILURE]];
+        [strongSelf packageRacingResultWithStep:ZNetIpDomainStepHttp result:NO racingCode:10000 isNetworkQualityTrigger:isNetworkQualityTrigger];
+    }];
+    [task resume];
 }
 
 //通过http接口获取tcp连接地址和端口号的list
@@ -1956,117 +2188,119 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                  isNetworkQualityTrigger:(BOOL)isNetworkQualityTrigger {
     WeakSelf
     [IMSDKManager appNetworkGetConnectListWithBaseUrl:httpHost Path:App_Get_Tcp_Connect_List_Url onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+        StrongSelf
         if(![data isKindOfClass:[NSArray class]]){
+            // 移除通知，避免通知泄漏
+            [strongSelf removeEcdhNotification];
             return;
         }
         NSArray *tcpList = (NSArray *)data;
         if (tcpList.count > 0) {
             //对Tcp进行竞速
-            [weakSelf checkIpDoaminWithTcpList:tcpList isNetworkQualityTrigger:isNetworkQualityTrigger];
+            [strongSelf checkIpDoaminWithTcpList:tcpList isNetworkQualityTrigger:isNetworkQualityTrigger];
         } else {
             //TcpList获取失败
             IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 60.0;
             //首次启动
-            [weakSelf packageRacingResultWithStep:ZNetIpDomainStepTcp result:NO racingCode:ZHttpRequestCodeTypeSuccess isNetworkQualityTrigger:isNetworkQualityTrigger];
+            [strongSelf packageRacingResultWithStep:ZNetIpDomainStepTcp result:NO racingCode:ZHttpRequestCodeTypeSuccess isNetworkQualityTrigger:isNetworkQualityTrigger];
         }
     } onFailure:^(NSInteger code, NSString * _Nullable msg, NSString * _Nullable traceId) {
+        StrongSelf
         //TcpList获取失败
         //首次启动
-        [self.codeBuilder withInitializationSubModule:@"00"];
-        [self.codeBuilder withInitializationErrorType:[InitializationErrorTypes HTTP_FAILURE]];
-        [weakSelf packageRacingResultWithStep:ZNetIpDomainStepTcp result:NO racingCode:code isNetworkQualityTrigger:isNetworkQualityTrigger];
+        [strongSelf.codeBuilder withInitializationSubModule:@"00"];
+        [strongSelf.codeBuilder withInitializationErrorType:[InitializationErrorTypes HTTP_FAILURE]];
+        [strongSelf packageRacingResultWithStep:ZNetIpDomainStepTcp result:NO racingCode:code isNetworkQualityTrigger:isNetworkQualityTrigger];
     }];
 }
 
 //检查Tcp并请求
 - (void)checkIpDoaminWithTcpList:(NSArray *)TcpList
          isNetworkQualityTrigger:(BOOL)isNetworkQualityTrigger  {
-    if (TcpList.count > 0) {
-        IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 20.0;
-        __block BOOL hasResult = NO;
-        __block NSInteger tryCount  = 0;
-        NSMutableArray<NSValue *> *pendingStreams = [NSMutableArray array];
-        for (NSString *tcpHostStr in TcpList) {
-            if (hasResult) break;
-            
-            NSString *host = @"";
-            NSString *port = @"";
-            NSString *realTcpPort = [tcpHostStr stringByReplacingOccurrencesOfString:@"http://" withString:@""];
-            realTcpPort = [realTcpPort stringByReplacingOccurrencesOfString:@"https://" withString:@""];
-            if ([realTcpPort containsString:@":"]) {
-                NSArray *tcoPortArr = [realTcpPort componentsSeparatedByString:@":"];
-                if (tcoPortArr.count == 2) {
-                    host = (NSString *)[tcoPortArr objectAtIndex:0];
-                    port = (NSString *)[tcoPortArr objectAtIndex:1];
+    IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 20.0;
+    __block BOOL hasResult = NO;
+    __block NSInteger tryCount  = 0;
+    NSMutableArray<NSValue *> *pendingStreams = [NSMutableArray array];
+    for (NSString *tcpHostStr in TcpList) {
+        if (hasResult) break;
+        
+        NSString *host = @"";
+        NSString *port = @"";
+        NSString *realTcpPort = [tcpHostStr stringByReplacingOccurrencesOfString:@"http://" withString:@""];
+        realTcpPort = [realTcpPort stringByReplacingOccurrencesOfString:@"https://" withString:@""];
+        if ([realTcpPort containsString:@":"]) {
+            NSArray *tcoPortArr = [realTcpPort componentsSeparatedByString:@":"];
+            if (tcoPortArr.count == 2) {
+                host = (NSString *)[tcoPortArr objectAtIndex:0];
+                port = (NSString *)[tcoPortArr objectAtIndex:1];
+            }
+        } else {
+            host = realTcpPort;
+            //weakSelf.socketHost = realTcpPort;
+        }
+        
+        WeakSelf
+        [self checkTcpConnectivityWithHost:host port:port completion:^(BOOL success, CFWriteStreamRef writeStream) {
+            // 无论成功与否，先把刚打开的流收集起来，后面统一清理
+            if (writeStream) {
+                @synchronized (pendingStreams) {
+                    [pendingStreams addObject:[NSValue valueWithPointer:writeStream]];
                 }
-            } else {
-                host = realTcpPort;
-                //weakSelf.socketHost = realTcpPort;
             }
             
-            WeakSelf
-            [self checkTcpConnectivityWithHost:host port:port completion:^(BOOL success, CFWriteStreamRef writeStream) {
-                // 无论成功与否，先把刚打开的流收集起来，后面统一清理
-                if (writeStream) {
-                    @synchronized (pendingStreams) {
-                        [pendingStreams addObject:[NSValue valueWithPointer:writeStream]];
-                    }
+            if (success && !hasResult) {
+                @synchronized (weakSelf) {
+                    hasResult = YES;
+                    CIMLog(@"=======最优Tcp: %@ 端口号:%@", host, port);
+                    
+                    // 统一关闭并释放所有流
+                    [weakSelf _cleanupPendingStreams:pendingStreams];
+                    
+                    // 恢复 HTTP 全局超时
+                    IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 60.0;
+                    
+                    /// App启动时，节点竞速成功回调Block
+                    // 配置 SDK Host & Port
+                    LingIMSocketHostOptions *opt = [LingIMSocketHostOptions new];
+                    opt.socketHost = host;
+                    opt.socketPort = [port integerValue];
+                    opt.socketOrgName = Z_OrgName;
+                    [Logger verbose:[NSString stringWithFormat:@"调用checkIpDoaminWithTcpList:(NSArray *)TcpList isNetworkQualityTrigger:(BOOL)isNetworkQualityTrigger 回调, ip = %@, port = %ld", opt.socketHost, opt.socketPort]];
+                    cim_function_configSocketHost(opt);
+                    
+                    //SDK层用户信息
+                    LingIMSDKUserOptions *userOption = [LingIMSDKUserOptions new];
+                    userOption.userToken = UserManager.userInfo.token;
+                    userOption.userID = UserManager.userInfo.userUID;
+                    userOption.userNickname = UserManager.userInfo.nickname;
+                    userOption.userAvatar = UserManager.userInfo.avatar;
+                    [IMSDKManager configSDKUserWith:userOption];
+                    [Logger verbose:[NSString stringWithFormat:@"调用IMSDKManager configSDKUserWith - (void)checkIpDoaminWithTcpList:(NSArray *)TcpList isNetworkQualityTrigger:(BOOL)isNetworkQualityTrigger, ip = %@, port = %@", host, port]];
+                    [weakSelf packageRacingResultWithStep:ZNetIpDomainStepTcp result:YES racingCode:0 isNetworkQualityTrigger:isNetworkQualityTrigger];
+                    [ZTOOL doInMain:^{
+                        [HUD hideHUD];
+                    }];
                 }
-                
-                if (success && !hasResult) {
-                    @synchronized (weakSelf) {
-                        hasResult = YES;
-                        DLog(@"=======最优Tcp: %@ 端口号:%@", host, port);
-                        
-                        // 统一关闭并释放所有流
-                        [weakSelf _cleanupPendingStreams:pendingStreams];
-                        
-                        // 恢复 HTTP 全局超时
-                        IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 60.0;
-                        
-                        /// App启动时，节点竞速成功回调Block
-                        // 配置 SDK Host & Port
-                        LingIMSocketHostOptions *opt = [LingIMSocketHostOptions new];
-                        opt.socketHost = host;
-                        opt.socketPort = [port integerValue];
-                        opt.socketOrgName = Z_OrgName;
-                        [Logger verbose:[NSString stringWithFormat:@"调用checkIpDoaminWithTcpList:(NSArray *)TcpList isNetworkQualityTrigger:(BOOL)isNetworkQualityTrigger 回调, ip = %@, port = %ld", opt.socketHost, opt.socketPort]];
-                        cim_function_configSocketHost(opt);
-                        
-                        //SDK层用户信息
-                        LingIMSDKUserOptions *userOption = [LingIMSDKUserOptions new];
-                        userOption.userToken = UserManager.userInfo.token;
-                        userOption.userID = UserManager.userInfo.userUID;
-                        userOption.userNickname = UserManager.userInfo.nickname;
-                        userOption.userAvatar = UserManager.userInfo.avatar;
-                        [IMSDKManager configSDKUserWith:userOption];
-                        [Logger verbose:[NSString stringWithFormat:@"调用IMSDKManager configSDKUserWith - (void)checkIpDoaminWithTcpList:(NSArray *)TcpList isNetworkQualityTrigger:(BOOL)isNetworkQualityTrigger, ip = %@, port = %@", host, port]];
-                        [weakSelf packageRacingResultWithStep:ZNetIpDomainStepTcp result:YES racingCode:0 isNetworkQualityTrigger:isNetworkQualityTrigger];
-                        [ZTOOL doInMain:^{
-                            [HUD hideHUD];
-                        }];
-                    }
-                } else if (!success) {
-                    // 本次失败，累加计数；全部失败后递归下一组
-                    tryCount++;
-                    if (tryCount >= TcpList.count && !hasResult) {
-                        DLog(@"全部失败，停止 Tcp 择优");
-                        [weakSelf _cleanupPendingStreams:pendingStreams];
-                        IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 60.0;
-                        //首次启动
-                        [weakSelf packageRacingResultWithStep:ZNetIpDomainStepTcp result:NO racingCode:10000 isNetworkQualityTrigger:isNetworkQualityTrigger];
-                        
-                        //日志上传 tcp竞速失败
-                        NSMutableDictionary *loganDict = [NSMutableDictionary dictionary];
-                        [loganDict setObjectSafe:tcpHostStr forKey:@"tcp"];
-                        [loganDict setObjectSafe:@(10000) forKey:@"tcpCode"];
-                        [loganDict setObjectSafe:ZTOOL.publicIP forKey:@"publicIp"];
-                        [loganDict setObjectSafe:[NSString getCurrentNetWorkType] forKey:@"netWorkType"];
-                        [IMSDKManager imSdkWriteLoganWith:LingIMLoganTypeHost loganContent:[[LingIMLoganManager sharedManager] configLoganContent:loganDict]];
-                    }
+            } else if (!success) {
+                // 本次失败，累加计数；全部失败后递归下一组
+                tryCount++;
+                if (tryCount >= TcpList.count && !hasResult) {
+                    CIMLog(@"全部失败，停止 Tcp 择优");
+                    [weakSelf _cleanupPendingStreams:pendingStreams];
+                    IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 60.0;
+                    //首次启动
+                    [weakSelf packageRacingResultWithStep:ZNetIpDomainStepTcp result:NO racingCode:10000 isNetworkQualityTrigger:isNetworkQualityTrigger];
+                    
+                    //日志上传 tcp竞速失败
+                    NSMutableDictionary *loganDict = [NSMutableDictionary dictionary];
+                    [loganDict setObjectSafe:tcpHostStr forKey:@"tcp"];
+                    [loganDict setObjectSafe:@(10000) forKey:@"tcpCode"];
+                    [loganDict setObjectSafe:ZTOOL.publicIP forKey:@"publicIp"];
+                    [loganDict setObjectSafe:[NSString getCurrentNetWorkType] forKey:@"netWorkType"];
+                    [IMSDKManager imSdkWriteLoganWith:LingIMLoganTypeHost loganContent:[[LingIMLoganManager sharedManager] configLoganContent:loganDict]];
                 }
-            }];
-        }
+            }
+        }];
     }
 }
 
@@ -2074,7 +2308,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
 //单独进行TCP竞速时，不需要使用信号量来阻塞主线程，避免UI界面出现卡住的现象
 #pragma mark - 单独竞速TCP socket需要进行重连
 - (void)tcpNodePickOver {
-    DLog(@"单独竞速TCP socket需要进行重连");
+    CIMLog(@"单独竞速TCP socket需要进行重连");
     ZSsoInfoModel *ssoModel = [ZSsoInfoModel getSSOInfo];
     if (![NSString isNil:ssoModel.liceseId]) {
         //对Tcp进行竞速(单独竞速TCP不再使用该方法)
@@ -2131,7 +2365,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                 if (success && !hasResult) {
                     @synchronized (weakSelf) {
                         hasResult = YES;
-                        DLog(@"=======最优Tcp: %@ 端口号:%@", host, port);
+                        CIMLog(@"=======最优Tcp: %@ 端口号:%@", host, port);
                         
                         // 统一关闭并释放所有流
                         [weakSelf _cleanupPendingStreams:pendingStreams];
@@ -2178,7 +2412,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
         }
     } else {
         //停止节点择优
-        DLog(@"全部失败，停止Tcp单独竞速");
+        CIMLog(@"全部失败，停止Tcp单独竞速");
         [ZTOOL doInMain:^{
             [HUD hideHUD];
         }];
@@ -2246,7 +2480,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                 if (success && !hasResult) {
                     @synchronized (weakSelf) {
                         hasResult = YES;
-                        DLog(@"=======最优Tcp: %@ 端口号:%@", host, port);
+                        CIMLog(@"=======最优Tcp: %@ 端口号:%@", host, port);
                         
                         // 统一关闭并释放所有流
                         [weakSelf _cleanupPendingStreams:pendingStreams];
@@ -2276,7 +2510,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                     // 本次失败，累加计数；全部失败后递归下一组
                     tryCount++;
                     if (tryCount >= tcpList.count && !hasResult) {
-                        DLog(@"全部失败，停止 Tcp 择优");
+                        CIMLog(@"全部失败，停止 Tcp 择优");
                         [weakSelf _cleanupPendingStreams:pendingStreams];
                         IMSDKHTTPTOOL.requestSerializer.timeoutInterval = 60.0;
                         [IMSDKManager reconnectedSDK];
@@ -2338,11 +2572,14 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
 
 #pragma mark - 竞速成功后请求systemConfig接口
 - (void)requestSystemConfigInfo {
+    CIMLog(@"[Socket-ECDH] 🎯 收到 socketECDHDidConnectSuccese 通知，开始请求 systemConfig");
+    
     WeakSelf
     [IMSDKManager appGetSystemConfigInfoWithBaseUrl:self.apiHost
                                                Path:App_Get_System_Setting_Url
                                             IsLogin:UserManager.isLogined
                                           onSuccess:^(id _Nullable data, NSString * _Nullable traceId) {
+        CIMLog(@"[Socket-ECDH] ✅ systemConfig 请求成功");
         if(![data isKindOfClass:[NSDictionary class]]){
             return;
         }
@@ -2368,6 +2605,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
 }
 // system接口失败
 - (void)systemConfigFailure {
+    CIMLog(@"[Socket-ECDH] ❌ 收到 socketECDHDidConnectFailure 通知，连接失败");
     [self.codeBuilder withInitializationErrorType:[InitializationErrorTypes TCP_FAILURE]];
     [self packageRacingResultWithStep:ZNetRacingStepTcp result:NO racingCode:0 isNetworkQualityTrigger:NO];
 }
@@ -2581,8 +2819,9 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                              result:(BOOL)result
                          racingCode:(NSInteger)racingCode
             isNetworkQualityTrigger:(BOOL)isNetworkQualityTrigger {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"socketECDHDidConnectSuccese" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"socketECDHDidConnectFailure" object:nil];
+    // 移除通知，避免通知泄漏
+    [self removeEcdhNotification];
+    
     if (isNetworkQualityTrigger) {
         return;
     }
@@ -2600,12 +2839,12 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                 }
             }];
         } else {
-            [self clearConnectLocalStartHostNodeRaceWithIsNetworkQualityTrigger:isNetworkQualityTrigger];
             [self racingErrorInfoHandleWithStep:step result:result racingCode:racingCode];
+            [self clearConnectLocalStartHostNodeRaceWithIsNetworkQualityTrigger:isNetworkQualityTrigger];
         }
     } else {
-        [self clearConnectLocalStartHostNodeRaceWithIsNetworkQualityTrigger:isNetworkQualityTrigger];
         [self racingErrorInfoHandleWithStep:step result:result racingCode:racingCode];
+        [self clearConnectLocalStartHostNodeRaceWithIsNetworkQualityTrigger:isNetworkQualityTrigger];
     }
     if (result) {
         [ZTOOL doInMain:^{
@@ -2800,13 +3039,13 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
             [manager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession*session, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing*_credential) {
                 NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
                 __autoreleasing NSURLCredential *credential =nil;
-                // NSLog(@"authenticationMethod=%@",challenge.protectionSpace.authenticationMethod);
+                // CIMLog(@"authenticationMethod=%@",challenge.protectionSpace.authenticationMethod);
                 SecIdentityRef identity = NULL;
                 SecTrustRef trust = NULL;
                 
                 if(!self.p12Data)
                 {
-                    NSLog(@"p12data:not exist");
+                    CIMLog(@"p12data:not exist");
                 }else
                 {
                     NSData *PKCS12Data = [NSData dataWithData:self.p12Data];//self.p12Data;
@@ -2875,7 +3114,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
         tempTrust = CFDictionaryGetValue(myIdentityAndTrust,kSecImportItemTrust);
         *outTrust = (SecTrustRef)tempTrust;
     } else {
-        NSLog(@"Failedwith error code %d",(int)securityError);
+        CIMLog(@"Failedwith error code %d",(int)securityError);
         return NO;
     }
     return YES;
@@ -2931,7 +3170,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                                                                                                             NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
                                                                                                             
                                                                                                             if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-                                                                                                                NSLog(@"🔍 处理SSL服务器信任挑战: %@", challenge.protectionSpace.host);
+                                                                                                                CIMLog(@"🔍 处理SSL服务器信任挑战: %@", challenge.protectionSpace.host);
                                                                                                                 
                                                                                                                 // 获取服务器信任对象
                                                                                                                 SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
@@ -2941,17 +3180,17 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                                                                                                                     if (serverCredential) {
                                                                                                                         *credential = serverCredential;
                                                                                                                         disposition = NSURLSessionAuthChallengeUseCredential;
-                                                                                                                        NSLog(@"✅ 接受服务器SSL证书: %@", challenge.protectionSpace.host);
+                                                                                                                        CIMLog(@"✅ 接受服务器SSL证书: %@", challenge.protectionSpace.host);
                                                                                                                     } else {
-                                                                                                                        NSLog(@"❌ 无法创建服务器SSL凭据");
+                                                                                                                        CIMLog(@"❌ 无法创建服务器SSL凭据");
                                                                                                                         disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
                                                                                                                     }
                                                                                                                 } else {
-                                                                                                                    NSLog(@"❌ 服务器信任对象为空");
+                                                                                                                    CIMLog(@"❌ 服务器信任对象为空");
                                                                                                                     disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
                                                                                                                 }
                                                                                                             } else if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodClientCertificate]) {
-                                                                                                                NSLog(@"🔐 处理客户端证书认证挑战");
+                                                                                                                CIMLog(@"🔐 处理客户端证书认证挑战");
                                                                                                                 disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
                                                                                                             }
                                                                                                             
@@ -2961,9 +3200,9 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
         // 3. 配置SSL错误处理
         [manager setSessionDidBecomeInvalidBlock:^(NSURLSession *session, NSError *error) {
             if (error) {
-                NSLog(@"❌ SSL会话无效: %@", error.localizedDescription);
-                NSLog(@"   错误码: %ld", (long)error.code);
-                NSLog(@"   错误域: %@", error.domain);
+                CIMLog(@"❌ SSL会话无效: %@", error.localizedDescription);
+                CIMLog(@"   错误码: %ld", (long)error.code);
+                CIMLog(@"   错误域: %@", error.domain);
             }
         }];
         
@@ -2982,10 +3221,10 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
                                                      nil];
         manager.responseSerializer = responseSerializer;
         
-        NSLog(@"✅ 强化SSL配置完成: %@", requestHost);
+        CIMLog(@"✅ 强化SSL配置完成: %@", requestHost);
         
     } @catch (NSException *exception) {
-        NSLog(@"❌ SSL配置异常: %@", exception.reason);
+        CIMLog(@"❌ SSL配置异常: %@", exception.reason);
         
         // 降级到最基本的配置
         AFSecurityPolicy *fallbackPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
@@ -2993,7 +3232,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
         fallbackPolicy.validatesDomainName = NO;
         [manager setSecurityPolicy:fallbackPolicy];
         
-        NSLog(@"⚠️ 使用降级SSL配置");
+        CIMLog(@"⚠️ 使用降级SSL配置");
     }
 }
 
@@ -3005,7 +3244,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
     // 设置重试策略
     [manager setTaskDidCompleteBlock:^(NSURLSession *session, NSURLSessionTask *task, NSError *error) {
         if (error && (error.code == -1200 || error.code == -1202 || error.code == -9816)) {
-            NSLog(@"🔄 检测到SSL错误，准备重试: %@", error.localizedDescription);
+            CIMLog(@"🔄 检测到SSL错误，准备重试: %@", error.localizedDescription);
             
             // 这里可以添加重试逻辑
             // 注意：重试应该在调用方处理，这里只是记录日志
@@ -3047,23 +3286,23 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
         return;
     }
     
-    NSLog(@"🧪 开始测试SSL连接: %@", urlString);
+    CIMLog(@"🧪 开始测试SSL连接: %@", urlString);
     
     AFHTTPSessionManager *manager = [self createSSLCompatibleHTTPManager:urlString];
     
     // 创建一个简单的GET请求来测试连接
     NSURLSessionDataTask *task = [manager GET:urlString parameters:nil headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSLog(@"✅ SSL连接测试成功: %@", urlString);
+        CIMLog(@"✅ SSL连接测试成功: %@", urlString);
         if (completion) completion(YES, nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"❌ SSL连接测试失败: %@", urlString);
-        NSLog(@"   错误: %@", error.localizedDescription);
-        NSLog(@"   错误码: %ld", (long)error.code);
+        CIMLog(@"❌ SSL连接测试失败: %@", urlString);
+        CIMLog(@"   错误: %@", error.localizedDescription);
+        CIMLog(@"   错误码: %ld", (long)error.code);
         if (completion) completion(NO, error);
     }];
     
     if (!task) {
-        NSLog(@"❌ 无法创建SSL测试任务");
+        CIMLog(@"❌ 无法创建SSL测试任务");
         if (completion) completion(NO, [NSError errorWithDomain:@"SSLTest" code:-2 userInfo:@{NSLocalizedDescriptionKey: @"无法创建测试任务"}]);
     }
 }
@@ -3103,7 +3342,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
 
 /// 停止网络质量检测
 - (void)stopNetworkQualityDetection {
-    NSLog(@"[网络检测] 停止网络质量检测");
+    CIMLog(@"[网络检测] 停止网络质量检测");
     [self.networkQualityDetector stopNetworkQualityDetection];
 }
 
@@ -3111,7 +3350,7 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
 
 /// 网络质量检测完成回调
 - (void)networkQualityDetector:(ZNetworkQualityDetector *)detector didCompleteProbeWithResults:(NSArray<ZNetworkQualityResult *> *)results {
-    NSLog(@"[网络检测] 检测完成，共 %lu 个结果", (unsigned long)results.count);
+    CIMLog(@"[网络检测] 检测完成，共 %lu 个结果", (unsigned long)results.count);
     
     NSMutableString *logString = [NSMutableString stringWithString:@"[网络检测] 质量统计 (已按质量排序):\n"];
     
@@ -3124,45 +3363,45 @@ static inline NSString *Z_SHA256Hex(NSString *input) {
          (long)result.consecutiveFailures, (long)result.consecutiveHighLatency];
     }
     
-    NSLog(@"%@", logString);
+    CIMLog(@"%@", logString);
 }
 
 /// 网络质量异常回调
 - (void)networkQualityDetector:(ZNetworkQualityDetector *)detector didDetectException:(ZNetworkQualityException *)exception {
-    NSLog(@"[网络检测] 检测到异常: %@", exception.exceptionDescription);
+    CIMLog(@"[网络检测] 检测到异常: %@", exception.exceptionDescription);
     
     // 根据异常类型进行相应处理
     switch (exception.exceptionType) {
         case ZNetworkQualityExceptionTypeHighLatency:
-            NSLog(@"[网络检测] 高延迟异常，延迟: %.1fms", [exception.exceptionData[@"latency"] doubleValue]);
+            CIMLog(@"[网络检测] 高延迟异常，延迟: %.1fms", [exception.exceptionData[@"latency"] doubleValue]);
             break;
             
         case ZNetworkQualityExceptionTypeConsecutiveHighLatency:
-            NSLog(@"[网络检测] 连续高延迟异常，连续次数: %ld", (long)[exception.exceptionData[@"consecutiveCount"] integerValue]);
+            CIMLog(@"[网络检测] 连续高延迟异常，连续次数: %ld", (long)[exception.exceptionData[@"consecutiveCount"] integerValue]);
             break;
             
         case ZNetworkQualityExceptionTypeConsecutiveFailures:
-            NSLog(@"[网络检测] 连续失败异常，连续次数: %ld", (long)[exception.exceptionData[@"consecutiveCount"] integerValue]);
+            CIMLog(@"[网络检测] 连续失败异常，连续次数: %ld", (long)[exception.exceptionData[@"consecutiveCount"] integerValue]);
             break;
             
         case ZNetworkQualityExceptionTypeNetworkTypeChanged:
-            NSLog(@"[网络检测] 网络类型变化异常: %@ -> %@",
+            CIMLog(@"[网络检测] 网络类型变化异常: %@ -> %@",
                   exception.exceptionData[@"oldNetworkType"], exception.exceptionData[@"newNetworkType"]);
             break;
             
         case ZNetworkQualityExceptionTypeIPAddressChanged:
-            NSLog(@"[网络检测] IP地址变化异常: %@ -> %@",
+            CIMLog(@"[网络检测] IP地址变化异常: %@ -> %@",
                   exception.exceptionData[@"oldIPAddress"], exception.exceptionData[@"newIPAddress"]);
             break;
             
         case ZNetworkQualityExceptionTypeAllServersUnreachable:
-            NSLog(@"[网络检测] 所有服务器不可达异常");
+            CIMLog(@"[网络检测] 所有服务器不可达异常");
             break;
             
             // 时间相关异常处理已移除 - 由外部组件处理
             
         default:
-            NSLog(@"[网络检测] 其他异常类型: %ld", (long)exception.exceptionType);
+            CIMLog(@"[网络检测] 其他异常类型: %ld", (long)exception.exceptionType);
             break;
     }
 }
