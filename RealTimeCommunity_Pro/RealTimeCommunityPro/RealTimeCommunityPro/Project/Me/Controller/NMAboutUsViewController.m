@@ -8,6 +8,7 @@
 #import "NMAboutUsViewController.h"
 #import "ZToolManager.h"
 #import "ZAppUpdateTools.h"
+#import "BBBaseWebViewController.h"
 
 #define SERVE_BTN_TAG           101
 #define PRIVACY_BTN_TAG         102
@@ -240,12 +241,20 @@
     
     if (btn.tag == SERVE_BTN_TAG) {
         //服务协议
-        [ZTOOL setupServeAgreement];
+        NSString *urlStr = @"https://a.zqtpc.com/application/terms_of_service_en.html";
+        BBBaseWebViewController *webVC = [[BBBaseWebViewController alloc] init];
+        webVC.webViewTitle = MultilingualTranslation(@"服务协议");
+        webVC.webViewUrl = urlStr;
+        [self.navigationController pushViewController:webVC animated:YES];
     }
     
     if (btn.tag == PRIVACY_BTN_TAG) {
         //隐私政策
-        [ZTOOL setupPrivePolicy];
+        NSString *urlStr = @"https://a.zqtpc.com/application/privacy_policy_en.html";
+        BBBaseWebViewController *webVC = [[BBBaseWebViewController alloc] init];
+        webVC.webViewTitle = MultilingualTranslation(@"用户隐私协议");
+        webVC.webViewUrl = urlStr;
+        [self.navigationController pushViewController:webVC animated:YES];
     }
     
     if (btn.tag == VERSION_BTN_TAG) {

@@ -392,7 +392,17 @@ static NSString *g_CurrentLoganPublishURL = nil; // 内存记录当前 Logan pub
         BBBaseWebViewController *webVC = [[BBBaseWebViewController alloc] init];
         webVC.webViewTitle = MultilingualTranslation(@"服务协议");
         webVC.webViewUrl = urlStr;
-        [self.getCurrentVC.navigationController pushViewController:webVC animated:YES];
+        
+        // 获取当前VC及其navigationController
+        UIViewController *currentVC = self.getCurrentVC;
+        if (currentVC.navigationController) {
+            [currentVC.navigationController pushViewController:webVC animated:YES];
+        } else {
+            // 如果没有 navigationController，则创建一个并 present
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:webVC];
+            nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            [currentVC presentViewController:nav animated:YES completion:nil];
+        }
     }];
     
 
@@ -407,7 +417,17 @@ static NSString *g_CurrentLoganPublishURL = nil; // 内存记录当前 Logan pub
         BBBaseWebViewController *webVC = [[BBBaseWebViewController alloc] init];
         webVC.webViewTitle = MultilingualTranslation(@"用户隐私协议");
         webVC.webViewUrl = urlStr;
-        [self.getCurrentVC.navigationController pushViewController:webVC animated:YES];
+        
+        // 获取当前VC及其navigationController
+        UIViewController *currentVC = self.getCurrentVC;
+        if (currentVC.navigationController) {
+            [currentVC.navigationController pushViewController:webVC animated:YES];
+        } else {
+            // 如果没有 navigationController，则创建一个并 present
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:webVC];
+            nav.modalPresentationStyle = UIModalPresentationFullScreen;
+            [currentVC presentViewController:nav animated:YES completion:nil];
+        }
     }];
     
 }

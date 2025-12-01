@@ -1,0 +1,24 @@
+/* 
+  InfoPlist.strings
+  CIMKit
+
+  Created by CMac on 2025/05/16.
+  
+*/
+// Base localization (English)
+"CFBundleDisplayName" = "RealTalk";
+"CFBundleName" = "RealTalk";
+
+"NSCameraUsageDescription" = "We need access to your camera to take photos and videos for sharing with your contacts, video calls, and live streaming features.";
+"NSLocationWhenInUseUsageDescription" = "We need your location to share your current location with contacts and discover nearby users.";
+"NSLocationAlwaysUsageDescription" = "We need your location to share your current location with contacts and discover nearby users.";
+"NSMicrophoneUsageDescription" = "We need access to your microphone for voice messages, voice calls, video calls, and live streaming features.";
+"NSPhotoLibraryUsageDescription" = "We need access to your photo library to select and share photos and videos with your contacts.";
+"NSPhotoLibraryAddUsageDescription" = "We need permission to save photos and videos to your photo library.";
+"NSLocalNetworkUsageDescription" = "We need access to the local network for device communication and to provide better services.";
+"NSContactsUsageDescription" = "We need access to your contacts to help you find friends who are already using the app.";
+"NSFaceIDUsageDescription" = "We use Face ID to securely authenticate and protect your account.";
+"NSSpeechRecognitionUsageDescription" = "We need access to speech recognition for voice-to-text features in messages.";
+"NSCalendarsUsageDescription" = "We need access to your calendar to help you schedule events and meetings.";
+"NSRemindersUsageDescription" = "We need access to your reminders to set notifications for important events.";
+

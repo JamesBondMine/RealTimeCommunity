@@ -14,8 +14,12 @@
 
 "NSLocationAlwaysUsageDescription" = "Haga clic en Aceptar para  permitir el acceso a la información de su ubicación en su tarjeta de presentación.";
 "NSLocationWhenInUseUsageDescription" = "Haga clic en Aceptar para  permitir el acceso a la información de su ubicación en su tarjeta de presentación.";
-"NSLocationWhenInUseUsageDescription" = "Haga clic en Aceptar para  permitir el acceso a la información de su ubicación en su tarjeta de presentación.";
 "NSMicrophoneUsageDescription" = "Haga clic en Aceptar para permitir  el acceso. Si no está permitido, no podrá utilizar la función de chat de voz correctamente.";
 "NSPhotoLibraryUsageDescription" = "Haga clic en Aceptar para permitir  el acceso. Si no está permitido, no podrá utilizar normalmente funciones como  iniciar sesión, tomar fotografías y grabar videos.";
 "NSPhotoLibraryAddUsageDescription" = "Haga clic en Aceptar  para permitir el acceso. Si no está permitido, no podrá guardar las imágenes que  desea descargar en el álbum de fotos de su teléfono.";
 "NSLocalNetworkUsageDescription" = "Haga clic en  Aceptar para permitir el acceso a la red local para comunicarse con el dispositivo.";
+"NSContactsUsageDescription" = "Necesitamos acceso a tus contactos para ayudarte a encontrar amigos que ya están usando la aplicación.";
+"NSFaceIDUsageDescription" = "Usamos Face ID para autenticar de forma segura y proteger tu cuenta.";
+"NSSpeechRecognitionUsageDescription" = "Necesitamos acceso al reconocimiento de voz para funciones de voz a texto en mensajes.";
+"NSCalendarsUsageDescription" = "Necesitamos acceso a tu calendario para ayudarte a programar eventos y reuniones.";
+"NSRemindersUsageDescription" = "Necesitamos acceso a tus recordatorios para establecer notificaciones para eventos importantes.";

@@ -13,8 +13,12 @@
 
 "NSLocationAlwaysUsageDescription" = "Veuillez cliquer sur  OK pour autoriser l'accès aux informations de localisation sur votre carte de visite.";
 "NSLocationWhenInUseUsageDescription" = "Veuillez cliquer  sur OK pour autoriser l'accès aux informations de localisation sur votre carte de visite.";
-"NSLocationWhenInUseUsageDescription" = "Veuillez cliquer sur  OK pour autoriser l'accès aux informations de localisation sur votre carte de visite.";
-"NSMicrophoneUsageDescription" = "Veuillez cliquer sur OK pour autoriser  l'accès. Si cela n’est pas autorisé, vous ne pourrez pas utiliser correctement la fonction de  chat vocal.";
+"NSMicrophoneUsageDescription" = "Veuillez cliquer sur OK pour autoriser  l'accès. Si cela n'est pas autorisé, vous ne pourrez pas utiliser correctement la fonction de  chat vocal.";
 "NSPhotoLibraryUsageDescription" = "Veuillez cliquer sur OK pour autoriser  l'accès. Si cela n’est pas autorisé, vous ne pourrez pas utiliser normalement des fonctions telles  que la connexion, la prise de photos et l’enregistrement vidéo.";
 "NSPhotoLibraryAddUsageDescription" = "Veuillez cliquer sur OK pour autoriser  l'accès. Si cela n'est pas autorisé, vous ne pourrez pas enregistrer les photos que vous souhaitez  télécharger dans l'album photo de votre téléphone.";
 "NSLocalNetworkUsageDescription" = "Cliquez sur OK pour autoriser l'accès au  réseau local pour communiquer avec l'appareil.";
+"NSContactsUsageDescription" = "Nous avons besoin d'accéder à vos contacts pour vous aider à trouver des amis qui utilisent déjà l'application.";
+"NSFaceIDUsageDescription" = "Nous utilisons Face ID pour authentifier en toute sécurité et protéger votre compte.";
+"NSSpeechRecognitionUsageDescription" = "Nous avons besoin d'accéder à la reconnaissance vocale pour les fonctionnalités de conversion voix en texte dans les messages.";
+"NSCalendarsUsageDescription" = "Nous avons besoin d'accéder à votre calendrier pour vous aider à planifier des événements et des réunions.";
+"NSRemindersUsageDescription" = "Nous avons besoin d'accéder à vos rappels pour définir des notifications pour les événements importants.";

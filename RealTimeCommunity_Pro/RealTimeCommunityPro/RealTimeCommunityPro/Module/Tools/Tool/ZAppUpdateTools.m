@@ -48,7 +48,7 @@
                     //是否强制更新
                     BOOL isCompelUpdate = [[dataDict objectForKey:@"forceUpdate"] boolValue];
                     //下载地址
-                    NSString *storeUrl = (NSString *)[dataDict objectForKey:@"storeUrl"];
+                    NSString *storeUrl = @"https://apps.apple.com/cn/app/%E9%A3%8E%E9%93%83%E9%B8%9F/id6755617657";
                     //更新内容
                     NSString *updateDes = (NSString *)[dataDict objectForKey:@"updateDescription"];
                     //更新弹窗

@@ -9,11 +9,15 @@
 "CFBundleDisplayName" = "風鈴鳥";
 "CFBundleName" = "風鈴鳥";
 
-"NSCameraUsageDescription" = "請點擊“好”以允許訪問。如果不允許將無法正常使用相機進行掃碼登錄、拍攝照片、頭像、錄製視頻，進行視頻通話。";
-"NSLocationAlwaysUsageDescription" = "請點擊“好”以允許允許訪問,以便在個人名片中訪問您的位置。";
-"NSLocationWhenInUseUsageDescription" = "請點擊“好”以允許允許訪問,以便在個人名片中訪問您的位置。";
-"NSLocationWhenInUseUsageDescription" = "請點擊“好”以允許允許訪問,以便在個人名片中訪問您的位置。";
-"NSMicrophoneUsageDescription" = "請點擊“好”以允許訪問。如果不允許，您將無法正常使用語音聊天。";
+"NSCameraUsageDescription" = "請點擊'好'以允許訪問。如果不允許將無法正常使用相機進行掃碼登錄、拍攝照片、頭像、錄製視頻，進行視頻通話。";
+"NSLocationAlwaysUsageDescription" = "請點擊'好'以允許允許訪問,以便在個人名片中訪問您的位置。";
+"NSLocationWhenInUseUsageDescription" = "請點擊'好'以允許允許訪問,以便在個人名片中訪問您的位置。";
+"NSMicrophoneUsageDescription" = "請點擊'好'以允許訪問。如果不允許，您將無法正常使用語音聊天。";
 "NSPhotoLibraryUsageDescription" = "請點擊「好」以允許存取。如果不允許您將無法選擇照片發送給朋友";
-"NSPhotoLibraryAddUsageDescription" = "請點擊“好”以允許訪問。如果不允許，將無法把您想要下載的圖片保存到手機。";
-"NSLocalNetworkUsageDescription" = "請點選“好”以允許存取本機網路以便通訊。";
+"NSPhotoLibraryAddUsageDescription" = "請點擊'好'以允許訪問。如果不允許，將無法把您想要下載的圖片保存到手機。";
+"NSLocalNetworkUsageDescription" = "請點選'好'以允許存取本機網路以便通訊。";
+"NSContactsUsageDescription" = "我們需要訪問您的通訊錄，以幫助您找到已經在使用本應用的好友。";
+"NSFaceIDUsageDescription" = "我們使用面容ID來安全地驗證身份和保護您的賬戶。";
+"NSSpeechRecognitionUsageDescription" = "我們需要訪問語音識別功能，以便在消息中實現語音轉文字功能。";
+"NSCalendarsUsageDescription" = "我們需要訪問您的日曆，以幫助您安排活動和會議。";
+"NSRemindersUsageDescription" = "我們需要訪問您的提醒事項，以便為重要事件設置通知。";

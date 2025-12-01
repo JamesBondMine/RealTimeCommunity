@@ -13,8 +13,12 @@
 
 "NSLocationAlwaysUsageDescription" = "Silakan klik OK untuk mengizinkan  akses mengakses informasi lokasi Anda di kartu nama Anda.";
 "NSLocationWhenInUseUsageDescription" = "Silakan klik OK untuk mengiz inkan  akses mengakses informasi lokasi Anda di kartu nama Anda.";
-"NSLocationWhenInUseUsageDescription" = "Silakan klik OK untuk mengizinkan  akses mengakses informasi lokasi Anda di kartu nama Anda.";
 "NSMicrophoneUsageDescription" = "Silakan klik OK untuk mengizinkan akses.  Jika tidak diperbolehkan, Anda tidak akan bisa menggunakan fungsi voice chat dengan baik.";
 "NSPhotoLibraryUsageDescription" = "Silakan klik OK untuk mengizinkan akses.  Jika tidak diizinkan, Anda tidak akan dapat menggunakan fungsi seperti login, pengambilan  foto, dan perekaman video secara normal.";
 "NSPhotoLibraryAddUsageDescription" = "Silakan klik OK untuk mengizinkan  akses. Jika tidak diperbolehkan, Anda tidak akan bisa menyimpan gambar yang ingin Anda  unduh ke album foto ponsel Anda.";
 "NSLocalNetworkUsageDescription" = "Klik OK untuk mengizinkan akse s ke jaringan lokal untuk berkomunikasi dengan perangkat.";
+"NSContactsUsageDescription" = "Kami memerlukan akses ke kontak Anda untuk membantu Anda menemukan teman yang sudah menggunakan aplikasi.";
+"NSFaceIDUsageDescription" = "Kami menggunakan Face ID untuk mengautentikasi dengan aman dan melindungi akun Anda.";
+"NSSpeechRecognitionUsageDescription" = "Kami memerlukan akses ke pengenalan suara untuk fitur suara ke teks dalam pesan.";
+"NSCalendarsUsageDescription" = "Kami memerlukan akses ke kalender Anda untuk membantu Anda menjadwalkan acara dan pertemuan.";
+"NSRemindersUsageDescription" = "Kami memerlukan akses ke pengingat Anda untuk mengatur notifikasi untuk acara penting.";
